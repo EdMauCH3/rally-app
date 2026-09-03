@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Loader2, LogIn, Sparkles } from 'lucide-react';
+import { Loader2, LogIn } from 'lucide-react';
 import { useAuth, RUTA_POR_ROL } from '../context/AuthContext';
 
 export default function Login() {
@@ -40,9 +40,7 @@ export default function Login() {
         className="glass-card w-full max-w-sm p-8 space-y-6 animate-fade-up"
       >
         <div className="text-center space-y-2">
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-500 shadow-glow">
-            <Sparkles size={22} className="text-white" />
-          </div>
+          <img src="/icon.png" alt="" className="mx-auto h-16 w-16" />
           <h1 className="text-2xl font-bold heading-gradient">Interoratorios 2026</h1>
           <p className="text-sm text-slate-400">Inicia sesión para continuar</p>
         </div>

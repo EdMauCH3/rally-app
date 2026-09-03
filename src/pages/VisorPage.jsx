@@ -28,9 +28,12 @@ export default function VisorPage() {
   return (
     <div className="min-h-screen p-4 sm:p-8">
       <header className="flex items-center justify-between mb-8 max-w-4xl mx-auto">
-        <h1 className="text-2xl sm:text-4xl font-display font-extrabold heading-gradient">
-          Interoratorios 2026
-        </h1>
+        <div className="flex items-center gap-3">
+          <img src="/icon.png" alt="" className="h-10 w-10 sm:h-12 sm:w-12" />
+          <h1 className="text-2xl sm:text-4xl font-display font-extrabold heading-gradient">
+            Interoratorios 2026
+          </h1>
+        </div>
         <span className="flex items-center gap-2 text-sm sm:text-base font-semibold text-red-300 bg-red-500/10 border border-red-500/25 rounded-full px-3 py-1.5">
           <Radio size={14} className="animate-glow-pulse" />
           En vivo

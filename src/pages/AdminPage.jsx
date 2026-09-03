@@ -93,9 +93,12 @@ export default function AdminPage() {
   return (
     <div className="min-h-screen pb-10">
       <header className="glass-header px-4 sm:px-6 py-4 flex items-center justify-between">
-        <div>
-          <h1 className="font-bold text-white">Admin</h1>
-          <p className="text-xs text-slate-400">{perfil?.nombre}</p>
+        <div className="flex items-center gap-3">
+          <img src="/icon.png" alt="" className="h-9 w-9" />
+          <div>
+            <h1 className="font-bold text-white">Admin</h1>
+            <p className="text-xs text-slate-400">{perfil?.nombre}</p>
+          </div>
         </div>
         <button onClick={logout} className="btn-ghost hover:!text-red-400">
           <LogOut size={16} /> Salir

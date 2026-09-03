@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Flag, Map, Trophy, Radio, LogIn, Sparkles } from 'lucide-react';
+import { Flag, Map, Trophy, Radio, LogIn } from 'lucide-react';
 
 const ACTIVIDADES = [
   { to: '/gymkana', icon: Flag, nombre: 'Gymkana', desc: '6 bases, rutas emparejadas' },
@@ -12,7 +12,7 @@ export default function Home() {
     <div className="min-h-screen flex flex-col">
       <nav className="flex items-center justify-between px-4 sm:px-8 py-5">
         <span className="flex items-center gap-2 font-display font-extrabold text-lg text-white">
-          <Sparkles size={20} className="text-violet-400" />
+          <img src="/icon.png" alt="" className="h-8 w-8" />
           Interoratorios 2026
         </span>
         <Link to="/login" className="btn-secondary">
