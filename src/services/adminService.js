@@ -132,14 +132,18 @@ export async function listarPartidosGymkana() {
 }
 
 // ---------- Gymkana: alertas / auditoría ----------
+// Trae TANTO las pendientes como las ya resueltas (historial). Solo
+// se limpian con "Reiniciar Evento". Pendientes primero, luego las
+// resueltas más recientes.
 export async function listarAlertasGymkana() {
   const { data, error } = await supabase
     .from('puntuaciones_gymkana')
     .select(
-      'id, base_id, resultado_a, resultado_b, equipo_a:equipo_a_id(id, nombre, color_hex), equipo_b:equipo_b_id(id, nombre, color_hex)'
+      'id, base_id, resultado_a, resultado_b, requiere_auditoria, auditoria_reportada_en, auditoria_resuelta_en, equipo_a:equipo_a_id(id, nombre, color_hex), equipo_b:equipo_b_id(id, nombre, color_hex)'
     )
-    .eq('requiere_auditoria', true)
-    .order('base_id', { ascending: true });
+    .not('auditoria_reportada_en', 'is', null)
+    .order('requiere_auditoria', { ascending: false })
+    .order('auditoria_reportada_en', { ascending: false });
   if (error) throw error;
   return data;
 }

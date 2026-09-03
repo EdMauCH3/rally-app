@@ -98,6 +98,8 @@ export default function AdminPage() {
     cargarTodo();
   }, [cargarTodo]);
 
+  const alertasPendientes = alertas.filter((a) => a.requiere_auditoria).length;
+
   return (
     <div className="min-h-screen pb-10">
       <header className="glass-header px-4 sm:px-6 py-4 flex items-center justify-between">
@@ -124,9 +126,9 @@ export default function AdminPage() {
               }`}
             >
               {t.label}
-              {t.id === 'alertas' && alertas.length > 0 && (
+              {t.id === 'alertas' && alertasPendientes > 0 && (
                 <span className="ml-1.5 inline-flex items-center justify-center w-5 h-5 text-xs bg-red-500 text-white rounded-full">
-                  {alertas.length}
+                  {alertasPendientes}
                 </span>
               )}
               {tab === t.id && (

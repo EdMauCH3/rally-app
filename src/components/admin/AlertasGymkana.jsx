@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { AlertTriangle, Loader2 } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, Loader2 } from 'lucide-react';
 import { useToast } from '../../context/ToastContext';
 import { sobrescribirResultadoGymkana } from '../../services/adminService';
 
@@ -41,7 +41,7 @@ export default function AlertasGymkana({ alertas, onCambio }) {
   if (alertas.length === 0) {
     return (
       <p className="text-sm text-slate-400 glass-card p-4">
-        No hay alertas pendientes en Gymkana. 🎉
+        No hay alertas registradas en Gymkana. 🎉
       </p>
     );
   }
@@ -50,11 +50,34 @@ export default function AlertasGymkana({ alertas, onCambio }) {
     <div className="space-y-3">
       {alertas.map((a) => {
         const sel = seleccion[a.id] ?? {};
+        const pendiente = a.requiere_auditoria;
         return (
-          <div key={a.id} className="rounded-2xl border border-red-500/25 bg-red-500/[0.05] backdrop-blur-xl p-4 space-y-3">
-            <div className="flex items-center gap-2 text-red-300 text-sm font-semibold">
-              <AlertTriangle size={16} />
-              Base {a.base_id} — {a.equipo_a?.nombre} vs {a.equipo_b?.nombre}
+          <div
+            key={a.id}
+            className={`rounded-2xl border backdrop-blur-xl p-4 space-y-3 ${
+              pendiente
+                ? 'border-red-500/25 bg-red-500/[0.05]'
+                : 'border-emerald-500/20 bg-emerald-500/[0.04]'
+            }`}
+          >
+            <div
+              className={`flex items-center justify-between gap-2 text-sm font-semibold ${
+                pendiente ? 'text-red-300' : 'text-emerald-300'
+              }`}
+            >
+              <span className="flex items-center gap-2">
+                {pendiente ? <AlertTriangle size={16} /> : <CheckCircle2 size={16} />}
+                Base {a.base_id} — {a.equipo_a?.nombre} vs {a.equipo_b?.nombre}
+              </span>
+              <span
+                className={`text-xs font-medium px-2 py-0.5 rounded-full ${
+                  pendiente
+                    ? 'bg-red-500/15 text-red-300'
+                    : 'bg-emerald-500/15 text-emerald-300'
+                }`}
+              >
+                {pendiente ? 'Pendiente' : 'Resuelta'}
+              </span>
             </div>
 
             {[
@@ -93,7 +116,7 @@ export default function AlertasGymkana({ alertas, onCambio }) {
               className="btn-primary w-full"
             >
               {resolviendoId === a.id && <Loader2 className="animate-spin" size={16} />}
-              Confirmar resultado final
+              {pendiente ? 'Confirmar resultado final' : 'Corregir de nuevo'}
             </button>
           </div>
         );
