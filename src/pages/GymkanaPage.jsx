@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
-import { LogOut, Loader2 } from 'lucide-react';
+import { LogOut, Loader2, MapPin } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import { listarEquipos } from '../services/equiposService';
@@ -109,6 +109,22 @@ export default function GymkanaPage() {
               </div>
             ) : (
               <>
+                {estado?.actual && (
+                  <div className="rounded-2xl bg-gradient-to-r from-indigo-500 to-violet-500 p-5 flex items-center gap-4 shadow-glow-lg animate-fade-up">
+                    <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white/15 text-white animate-glow-pulse">
+                      <MapPin size={28} />
+                    </span>
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-wide text-white/80">
+                        Dirígete a la
+                      </p>
+                      <p className="text-3xl font-black text-white leading-tight">
+                        Base {estado.actual.base_id}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
                 <PartidoGymkanaActual
                   equipoId={equipoSeleccionado.id}
                   equipoColor={equipoSeleccionado.color_hex}
