@@ -8,6 +8,7 @@ import {
   listarAjustes,
   gymkanaEstaIniciada,
   listarRutasGymkana,
+  listarPartidosGymkana,
   listarAlertasGymkana,
 } from '../services/adminService';
 import TablaMarcador from '../components/admin/TablaMarcador';
@@ -37,6 +38,7 @@ export default function AdminPage() {
   const [ajustes, setAjustes] = useState([]);
   const [gymkanaIniciada, setGymkanaIniciada] = useState(false);
   const [rutasGymkana, setRutasGymkana] = useState([]);
+  const [partidosGymkana, setPartidosGymkana] = useState([]);
   const [alertas, setAlertas] = useState([]);
 
   const cargarTodo = useCallback(async () => {
@@ -59,12 +61,18 @@ export default function AdminPage() {
       setGymkanaIniciada(iniciada.value);
       if (iniciada.value) {
         try {
-          setRutasGymkana(await listarRutasGymkana());
+          const [rutasData, partidosData] = await Promise.all([
+            listarRutasGymkana(),
+            listarPartidosGymkana(),
+          ]);
+          setRutasGymkana(rutasData);
+          setPartidosGymkana(partidosData);
         } catch {
           showToast('No se pudieron cargar las rutas de Gymkana', 'error');
         }
       } else {
         setRutasGymkana([]);
+        setPartidosGymkana([]);
       }
     }
 
@@ -145,6 +153,7 @@ export default function AdminPage() {
               <IniciarGymkanaPanel
                 equipos={equipos}
                 rutas={rutasGymkana}
+                partidos={partidosGymkana}
                 gymkanaIniciada={gymkanaIniciada}
                 onCambio={cargarTodo}
               />

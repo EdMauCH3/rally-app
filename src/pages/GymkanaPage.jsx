@@ -10,7 +10,7 @@ import {
   suscribirseGymkana,
 } from '../services/gymkanaService';
 import EquipoSelector from '../components/gymkana/EquipoSelector';
-import PartidoGymkanaActual, { MiniProgresoGymkana } from '../components/gymkana/PartidoGymkanaActual';
+import PartidoGymkanaActual, { HistorialGymkana } from '../components/gymkana/PartidoGymkanaActual';
 
 export default function GymkanaPage() {
   const { perfil, logout } = useAuth();
@@ -98,27 +98,35 @@ export default function GymkanaPage() {
         )}
 
         {equipoSeleccionado && (
-          <section className="space-y-3">
-            <div className="flex items-center justify-between">
-              <h2 className="font-semibold text-slate-200">
-                Ruta — {equipoSeleccionado.nombre}
-              </h2>
-              {estado && <MiniProgresoGymkana recorrido={estado.recorrido} />}
-            </div>
+          <section className="space-y-4">
+            <h2 className="font-semibold text-slate-200">
+              Ruta — {equipoSeleccionado.nombre}
+            </h2>
 
             {cargandoEstado ? (
               <div className="flex justify-center py-10">
                 <Loader2 className="animate-spin text-indigo-400" size={28} />
               </div>
             ) : (
-              <PartidoGymkanaActual
-                equipoId={equipoSeleccionado.id}
-                equipoColor={equipoSeleccionado.color_hex}
-                rival={estado?.rival}
-                estado={estado}
-                onCalificar={handleCalificar}
-                onReportarAlerta={handleReportarAlerta}
-              />
+              <>
+                <PartidoGymkanaActual
+                  equipoId={equipoSeleccionado.id}
+                  equipoColor={equipoSeleccionado.color_hex}
+                  rival={estado?.rival}
+                  estado={estado}
+                  onCalificar={handleCalificar}
+                  onReportarAlerta={handleReportarAlerta}
+                />
+
+                {estado && (
+                  <HistorialGymkana
+                    equipoId={equipoSeleccionado.id}
+                    recorrido={estado.recorrido}
+                    actualIndex={estado.actualIndex}
+                    onReportarAlerta={handleReportarAlerta}
+                  />
+                )}
+              </>
             )}
           </section>
         )}

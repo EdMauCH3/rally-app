@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CheckCircle2, Circle, Lock, AlertTriangle, Loader2, PartyPopper } from 'lucide-react';
+import { CheckCircle2, Lock, AlertTriangle, Loader2, PartyPopper } from 'lucide-react';
 
 const ETIQUETAS_RESULTADO = {
   gano: { texto: 'Ganó', clase: 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30' },
@@ -138,22 +138,79 @@ export default function PartidoGymkanaActual({
   );
 }
 
-export function MiniProgresoGymkana({ recorrido }) {
+/**
+ * Historial completo de las 6 bases del recorrido del equipo:
+ *  - completadas (antes de la base actual): resultado + botón de
+ *    alerta (o "alerta enviada" si ya se reportó una).
+ *  - la base actual: se omite acá, ya la muestra PartidoGymkanaActual.
+ *  - futuras: bloqueadas, solo como referencia del recorrido.
+ */
+export function HistorialGymkana({ equipoId, recorrido, actualIndex, onReportarAlerta }) {
+  const [cargandoId, setCargandoId] = useState(null);
+
+  async function handleAlerta(partidoId) {
+    setCargandoId(partidoId);
+    try {
+      await onReportarAlerta(partidoId);
+    } finally {
+      setCargandoId(null);
+    }
+  }
+
   return (
-    <div className="flex items-center gap-1.5">
-      {recorrido.map((p, i) => (
-        <span
-          key={i}
-          title={p ? `Base ${p.base_id}` : ''}
-          className={`flex items-center justify-center w-6 h-6 rounded-full text-[10px] font-bold ${
-            p?.finalizado
-              ? 'bg-emerald-500 text-white shadow-[0_0_8px_rgba(16,185,129,0.6)]'
-              : 'bg-white/10 text-slate-500'
-          }`}
-        >
-          {p?.finalizado ? <CheckCircle2 size={12} /> : <Circle size={12} />}
-        </span>
-      ))}
+    <div className="space-y-2">
+      <h3 className="text-sm font-semibold text-slate-400">Historial de bases</h3>
+      {recorrido.map((partido, i) => {
+        if (!partido || i === actualIndex) return null;
+
+        const esFutura = actualIndex !== -1 ? i > actualIndex : !partido.finalizado;
+        const miLado = partido.equipo_a_id === equipoId ? 'a' : 'b';
+        const miResultado = miLado === 'a' ? partido.resultado_a : partido.resultado_b;
+
+        if (esFutura) {
+          return (
+            <div
+              key={partido.id}
+              className="flex items-center justify-between rounded-xl border border-white/5 bg-white/[0.015] px-4 py-2.5 text-sm text-slate-600"
+            >
+              <span>Base {partido.base_id}</span>
+              <span className="flex items-center gap-1 text-xs">
+                <Lock size={12} /> Pendiente
+              </span>
+            </div>
+          );
+        }
+
+        return (
+          <div key={partido.id} className="glass-row px-4 py-3 space-y-2">
+            <div className="flex items-center justify-between flex-wrap gap-2">
+              <span className="text-sm font-medium text-slate-200">Base {partido.base_id}</span>
+              <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${ETIQUETAS_RESULTADO[miResultado]?.clase}`}>
+                {ETIQUETAS_RESULTADO[miResultado]?.texto}
+              </span>
+            </div>
+
+            {partido.requiere_auditoria ? (
+              <p className="flex items-center gap-1.5 text-xs text-red-300">
+                <AlertTriangle size={12} /> Alerta enviada al Admin
+              </p>
+            ) : (
+              <button
+                onClick={() => handleAlerta(partido.id)}
+                disabled={cargandoId === partido.id}
+                className="flex items-center gap-1.5 text-xs font-medium text-red-300/80 hover:text-red-300 disabled:opacity-60"
+              >
+                {cargandoId === partido.id ? (
+                  <Loader2 className="animate-spin" size={12} />
+                ) : (
+                  <AlertTriangle size={12} />
+                )}
+                Reportar Error / Alerta
+              </button>
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 }

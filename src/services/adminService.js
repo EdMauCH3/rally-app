@@ -119,6 +119,18 @@ export async function iniciarGymkana(equipos) {
   }));
 }
 
+/** Todos los enfrentamientos de Gymkana (para que el Admin pueda editar cualquiera, no solo los marcados en alerta). */
+export async function listarPartidosGymkana() {
+  const { data, error } = await supabase
+    .from('puntuaciones_gymkana')
+    .select(
+      'id, base_id, resultado_a, resultado_b, finalizado, requiere_auditoria, equipo_a:equipo_a_id(id, nombre, color_hex), equipo_b:equipo_b_id(id, nombre, color_hex)'
+    )
+    .order('base_id', { ascending: true });
+  if (error) throw error;
+  return data;
+}
+
 // ---------- Gymkana: alertas / auditoría ----------
 export async function listarAlertasGymkana() {
   const { data, error } = await supabase
