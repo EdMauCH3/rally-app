@@ -40,7 +40,7 @@ export default function AlertasGymkana({ alertas, onCambio }) {
 
   if (alertas.length === 0) {
     return (
-      <p className="text-sm text-gray-500 bg-white rounded-xl border p-4">
+      <p className="text-sm text-slate-400 glass-card p-4">
         No hay alertas pendientes en Gymkana. 🎉
       </p>
     );
@@ -51,8 +51,8 @@ export default function AlertasGymkana({ alertas, onCambio }) {
       {alertas.map((a) => {
         const sel = seleccion[a.id] ?? {};
         return (
-          <div key={a.id} className="bg-white rounded-xl border-2 border-red-200 p-4 space-y-3">
-            <div className="flex items-center gap-2 text-red-600 text-sm font-semibold">
+          <div key={a.id} className="rounded-2xl border border-red-500/25 bg-red-500/[0.05] backdrop-blur-xl p-4 space-y-3">
+            <div className="flex items-center gap-2 text-red-300 text-sm font-semibold">
               <AlertTriangle size={16} />
               Base {a.base_id} — {a.equipo_a?.nombre} vs {a.equipo_b?.nombre}
             </div>
@@ -62,7 +62,7 @@ export default function AlertasGymkana({ alertas, onCambio }) {
               { equipo: a.equipo_b, lado: 'b', actual: a.resultado_b },
             ].map(({ equipo, lado, actual }) => (
               <div key={lado} className="space-y-1.5">
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-slate-400">
                   <span
                     className="inline-block w-2 h-2 rounded-full mr-1 align-middle"
                     style={{ backgroundColor: equipo?.color_hex }}
@@ -74,10 +74,10 @@ export default function AlertasGymkana({ alertas, onCambio }) {
                     <button
                       key={op.valor}
                       onClick={() => elegir(a.id, lado, op.valor)}
-                      className={`py-2 rounded-lg text-sm font-semibold border-2 ${
+                      className={`py-2 rounded-lg text-sm font-semibold border transition-colors ${
                         (sel[lado] ?? actual) === op.valor
-                          ? 'border-indigo-600 bg-indigo-50 text-indigo-700'
-                          : 'border-gray-200 text-gray-500'
+                          ? 'border-indigo-400/60 bg-indigo-500/15 text-indigo-200'
+                          : 'border-white/10 text-slate-400 hover:border-white/20'
                       }`}
                     >
                       {op.texto}
@@ -90,7 +90,7 @@ export default function AlertasGymkana({ alertas, onCambio }) {
             <button
               onClick={() => handleResolver(a)}
               disabled={resolviendoId === a.id}
-              className="w-full flex items-center justify-center gap-2 bg-gray-900 text-white font-semibold rounded-lg py-2.5 disabled:opacity-60"
+              className="btn-primary w-full"
             >
               {resolviendoId === a.id && <Loader2 className="animate-spin" size={16} />}
               Confirmar resultado final

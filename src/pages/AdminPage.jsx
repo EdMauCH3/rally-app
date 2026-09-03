@@ -91,37 +91,35 @@ export default function AdminPage() {
   }, [cargarTodo]);
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-10">
-      <header className="bg-white border-b sticky top-0 z-10 px-4 py-3 flex items-center justify-between">
+    <div className="min-h-screen pb-10">
+      <header className="glass-header px-4 sm:px-6 py-4 flex items-center justify-between">
         <div>
-          <h1 className="font-bold text-gray-900">Admin</h1>
-          <p className="text-xs text-gray-500">{perfil?.nombre}</p>
+          <h1 className="font-bold text-white">Admin</h1>
+          <p className="text-xs text-slate-400">{perfil?.nombre}</p>
         </div>
-        <button
-          onClick={logout}
-          className="flex items-center gap-1 text-sm text-gray-500 hover:text-red-600"
-        >
+        <button onClick={logout} className="btn-ghost hover:!text-red-400">
           <LogOut size={16} /> Salir
         </button>
       </header>
 
-      <nav className="bg-white border-b sticky top-[57px] z-10 overflow-x-auto">
+      <nav className="sticky top-[65px] z-10 border-b border-white/10 bg-slate-950/70 backdrop-blur-xl overflow-x-auto">
         <div className="flex px-4 gap-1">
           {TABS.map((t) => (
             <button
               key={t.id}
               onClick={() => setTab(t.id)}
-              className={`px-3 py-3 text-sm font-medium whitespace-nowrap border-b-2 ${
-                tab === t.id
-                  ? 'border-indigo-600 text-indigo-600'
-                  : 'border-transparent text-gray-500'
-              } ${t.id === 'alertas' && alertas.length > 0 ? 'relative' : ''}`}
+              className={`tab-pill ${
+                tab === t.id ? 'text-white' : 'text-slate-500 hover:text-slate-300'
+              }`}
             >
               {t.label}
               {t.id === 'alertas' && alertas.length > 0 && (
-                <span className="ml-1 inline-flex items-center justify-center w-5 h-5 text-xs bg-red-600 text-white rounded-full">
+                <span className="ml-1.5 inline-flex items-center justify-center w-5 h-5 text-xs bg-red-500 text-white rounded-full">
                   {alertas.length}
                 </span>
+              )}
+              {tab === t.id && (
+                <span className="absolute inset-x-3 -bottom-px h-0.5 rounded-full bg-gradient-to-r from-indigo-400 to-violet-400" />
               )}
             </button>
           ))}
@@ -131,7 +129,7 @@ export default function AdminPage() {
       <main className="max-w-3xl mx-auto px-4 py-6">
         {cargando ? (
           <div className="flex justify-center py-16">
-            <Loader2 className="animate-spin text-indigo-600" size={28} />
+            <Loader2 className="animate-spin text-indigo-400" size={28} />
           </div>
         ) : (
           <>

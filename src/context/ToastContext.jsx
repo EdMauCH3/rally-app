@@ -5,10 +5,10 @@ const ToastContext = createContext(undefined);
 let idCounter = 0;
 
 const ESTILOS = {
-  success: 'bg-emerald-600',
-  error: 'bg-red-600',
-  warning: 'bg-amber-500',
-  info: 'bg-gray-800',
+  success: 'bg-emerald-500/95 shadow-emerald-950/50',
+  error: 'bg-red-500/95 shadow-red-950/50',
+  warning: 'bg-amber-500/95 shadow-amber-950/50',
+  info: 'bg-slate-800/95 shadow-black/50',
 };
 
 export function ToastProvider({ children }) {
@@ -34,7 +34,7 @@ export function ToastProvider({ children }) {
         {toasts.map((t) => (
           <div
             key={t.id}
-            className={`rounded-lg shadow-lg px-4 py-3 text-sm font-medium text-white ${ESTILOS[t.tipo] ?? ESTILOS.info}`}
+            className={`rounded-xl backdrop-blur-xl border border-white/10 shadow-lg px-4 py-3 text-sm font-medium text-white ${ESTILOS[t.tipo] ?? ESTILOS.info}`}
           >
             {t.mensaje}
           </div>

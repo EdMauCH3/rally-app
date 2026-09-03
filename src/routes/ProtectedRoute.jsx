@@ -16,7 +16,7 @@ export default function ProtectedRoute({ children, roles }) {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="animate-spin text-indigo-600" size={32} />
+        <Loader2 className="animate-spin text-indigo-400" size={32} />
       </div>
     );
   }
@@ -29,7 +29,7 @@ export default function ProtectedRoute({ children, roles }) {
     // Usuario autenticado pero sin rol asignado en `perfiles` todavía
     return (
       <div className="min-h-screen flex items-center justify-center px-4 text-center">
-        <p className="text-gray-600">
+        <p className="glass-card px-6 py-5 text-slate-300 max-w-sm">
           Tu cuenta aún no tiene un rol asignado. Contacta al Admin del evento.
         </p>
       </div>

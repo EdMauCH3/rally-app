@@ -70,16 +70,13 @@ export default function GymkanaPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-10">
-      <header className="bg-white border-b sticky top-0 z-10 px-4 py-3 flex items-center justify-between">
+    <div className="min-h-screen pb-10">
+      <header className="glass-header px-4 py-4 flex items-center justify-between">
         <div>
-          <h1 className="font-bold text-gray-900">Staff Gymkana</h1>
-          <p className="text-xs text-gray-500">{perfil?.nombre}</p>
+          <h1 className="font-bold text-white">Staff Gymkana</h1>
+          <p className="text-xs text-slate-400">{perfil?.nombre}</p>
         </div>
-        <button
-          onClick={logout}
-          className="flex items-center gap-1 text-sm text-gray-500 hover:text-red-600"
-        >
+        <button onClick={logout} className="btn-ghost hover:!text-red-400">
           <LogOut size={16} /> Salir
         </button>
       </header>
@@ -87,7 +84,7 @@ export default function GymkanaPage() {
       <main className="max-w-2xl mx-auto px-4 py-6 space-y-6">
         {cargandoEquipos ? (
           <div className="flex justify-center py-10">
-            <Loader2 className="animate-spin text-indigo-600" size={28} />
+            <Loader2 className="animate-spin text-indigo-400" size={28} />
           </div>
         ) : (
           <EquipoSelector
@@ -100,7 +97,7 @@ export default function GymkanaPage() {
         {equipoSeleccionado && (
           <section className="space-y-3">
             <div className="flex items-center justify-between">
-              <h2 className="font-semibold text-gray-700">
+              <h2 className="font-semibold text-slate-200">
                 Ruta — {equipoSeleccionado.nombre}
               </h2>
               {estado && <MiniProgresoGymkana recorrido={estado.recorrido} />}
@@ -108,7 +105,7 @@ export default function GymkanaPage() {
 
             {cargandoEstado ? (
               <div className="flex justify-center py-10">
-                <Loader2 className="animate-spin text-indigo-600" size={28} />
+                <Loader2 className="animate-spin text-indigo-400" size={28} />
               </div>
             ) : (
               <PartidoGymkanaActual

@@ -35,13 +35,13 @@ export default function AjustesForm({ equipos, historial, onCambio }) {
 
   return (
     <div className="space-y-6">
-      <form onSubmit={handleSubmit} className="bg-white rounded-xl border p-4 space-y-3">
-        <h2 className="font-semibold text-gray-700">Nuevo ajuste manual</h2>
+      <form onSubmit={handleSubmit} className="glass-card p-4 space-y-3">
+        <h2 className="font-semibold text-slate-200">Nuevo ajuste manual</h2>
 
         <select
           value={equipoId}
           onChange={(e) => setEquipoId(e.target.value)}
-          className="w-full rounded-lg border border-gray-300 px-3 py-2"
+          className="field [&>option]:bg-slate-900"
         >
           <option value="">Selecciona un equipo</option>
           {equipos.map((eq) => (
@@ -56,7 +56,7 @@ export default function AjustesForm({ equipos, historial, onCambio }) {
           value={puntos}
           onChange={(e) => setPuntos(e.target.value)}
           placeholder="Puntos (positivo o negativo, ej: -2 o 5)"
-          className="w-full rounded-lg border border-gray-300 px-3 py-2"
+          className="field"
         />
 
         <textarea
@@ -64,34 +64,30 @@ export default function AjustesForm({ equipos, historial, onCambio }) {
           onChange={(e) => setMotivo(e.target.value)}
           placeholder="Motivo del ajuste"
           rows={2}
-          className="w-full rounded-lg border border-gray-300 px-3 py-2"
+          className="field resize-none"
         />
 
-        <button
-          type="submit"
-          disabled={guardando}
-          className="flex items-center justify-center gap-2 bg-indigo-600 text-white font-semibold rounded-lg py-2.5 px-4 disabled:opacity-60"
-        >
+        <button type="submit" disabled={guardando} className="btn-primary px-4">
           {guardando && <Loader2 className="animate-spin" size={18} />}
           Registrar ajuste
         </button>
       </form>
 
       <div className="space-y-2">
-        <h3 className="font-semibold text-gray-700 text-sm">Historial de ajustes</h3>
+        <h3 className="font-semibold text-slate-200 text-sm">Historial de ajustes</h3>
         {historial.length === 0 ? (
-          <p className="text-sm text-gray-500">Aún no hay ajustes registrados.</p>
+          <p className="text-sm text-slate-400">Aún no hay ajustes registrados.</p>
         ) : (
           <div className="space-y-2">
             {historial.map((a) => (
-              <div key={a.id} className="bg-white border rounded-lg p-3 text-sm flex justify-between">
+              <div key={a.id} className="glass-row p-3 text-sm flex justify-between">
                 <div>
                   <span className="font-medium" style={{ color: a.equipos?.color_hex }}>
                     {a.equipos?.nombre}
                   </span>
-                  <p className="text-gray-500">{a.motivo}</p>
+                  <p className="text-slate-400">{a.motivo}</p>
                 </div>
-                <span className={`font-bold ${a.puntos_extra >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
+                <span className={`font-bold ${a.puntos_extra >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
                   {a.puntos_extra >= 0 ? '+' : ''}
                   {a.puntos_extra}
                 </span>

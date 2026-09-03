@@ -1,81 +1,58 @@
-import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import './Home.css';
+import { Flag, Map, Trophy, Radio, LogIn, Sparkles } from 'lucide-react';
 
-const BOOTSTRAP_CSS = 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css';
-const BOOTSTRAP_ICONS =
-  'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css';
-
-/**
- * Carga el CSS de Bootstrap solo mientras esta pagina esta montada,
- * y lo quita al salir. Asi el resto de la app (que usa Tailwind)
- * nunca convive con el reset global de Bootstrap.
- */
-function useBootstrapMientrasMontado() {
-  useEffect(() => {
-    const enlaces = [BOOTSTRAP_CSS, BOOTSTRAP_ICONS].map((href) => {
-      const link = document.createElement('link');
-      link.rel = 'stylesheet';
-      link.href = href;
-      link.dataset.paginaPrincipal = 'true';
-      document.head.appendChild(link);
-      return link;
-    });
-
-    return () => {
-      enlaces.forEach((link) => link.remove());
-    };
-  }, []);
-}
+const ACTIVIDADES = [
+  { to: '/gymkana', icon: Flag, nombre: 'Gymkana', desc: '6 bases, rutas emparejadas' },
+  { to: '/tesoro', icon: Map, nombre: 'Búsqueda del Tesoro', desc: '10 bases por equipo' },
+  { to: '/torneo', icon: Trophy, nombre: 'Torneo', desc: 'Partidos entre los 4 equipos' },
+];
 
 export default function Home() {
-  useBootstrapMientrasMontado();
-
   return (
-    <>
-      {/* ===================== BARRA SUPERIOR ===================== */}
-      <nav className="navbar navbar-expand navbar-dark inicio-navbar">
-        <div className="container-fluid px-4">
-          <span className="navbar-brand fw-bold">Interoratorios 2026</span>
-          <Link to="/login" className="btn inicio-btn-login ms-auto">
-            <i className="bi bi-box-arrow-in-right me-1"></i> Iniciar Sesión
-          </Link>
-        </div>
+    <div className="min-h-screen flex flex-col">
+      <nav className="flex items-center justify-between px-4 sm:px-8 py-5">
+        <span className="flex items-center gap-2 font-display font-extrabold text-lg text-white">
+          <Sparkles size={20} className="text-violet-400" />
+          Interoratorios 2026
+        </span>
+        <Link to="/login" className="btn-secondary">
+          <LogIn size={16} /> Iniciar Sesión
+        </Link>
       </nav>
 
-      {/* ===================== SECCION PRINCIPAL (HERO) ===================== */}
-      <main className="inicio-hero d-flex flex-column align-items-center justify-content-center text-center px-3">
-        <h1 className="display-4 fw-bold text-white mb-2">Interoratorios 2026</h1>
-        <p className="lead text-white-50 mb-5">Elige una actividad para comenzar</p>
+      <main className="flex-1 flex flex-col items-center justify-center text-center px-4 py-12">
+        <h1 className="font-display text-4xl sm:text-6xl font-extrabold heading-gradient mb-3 animate-fade-up">
+          Interoratorios 2026
+        </h1>
+        <p className="text-slate-400 text-base sm:text-lg mb-12 animate-fade-up [animation-delay:80ms]">
+          Elige una actividad para comenzar
+        </p>
 
-        {/* Botones centrales: uno por actividad */}
-        <div className="row g-4 justify-content-center w-100 mb-5" style={{ maxWidth: 900 }}>
-          <div className="col-12 col-sm-6 col-md-4">
-            <Link to="/gymkana" className="btn inicio-btn-actividad w-100 h-100">
-              <i className="bi bi-flag-fill fs-1 d-block mb-2"></i>
-              Gymkana
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-3xl mb-12">
+          {ACTIVIDADES.map(({ to, icon: Icon, nombre, desc }, i) => (
+            <Link
+              key={to}
+              to={to}
+              style={{ animationDelay: `${140 + i * 80}ms` }}
+              className="glass-card-hover animate-fade-up group flex flex-col items-center gap-3 px-6 py-8 hover:-translate-y-1"
+            >
+              <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500/20 to-violet-500/20 border border-white/10 text-violet-300 group-hover:from-indigo-500 group-hover:to-violet-500 group-hover:text-white transition-all">
+                <Icon size={26} />
+              </span>
+              <span className="font-semibold text-white text-lg">{nombre}</span>
+              <span className="text-xs text-slate-500">{desc}</span>
             </Link>
-          </div>
-          <div className="col-12 col-sm-6 col-md-4">
-            <Link to="/tesoro" className="btn inicio-btn-actividad w-100 h-100">
-              <i className="bi bi-map-fill fs-1 d-block mb-2"></i>
-              Búsqueda del Tesoro
-            </Link>
-          </div>
-          <div className="col-12 col-sm-6 col-md-4">
-            <Link to="/torneo" className="btn inicio-btn-actividad w-100 h-100">
-              <i className="bi bi-trophy-fill fs-1 d-block mb-2"></i>
-              Torneo
-            </Link>
-          </div>
+          ))}
         </div>
 
-        {/* Boton grande hacia el Visor en vivo */}
-        <Link to="/visor" className="btn inicio-btn-visor">
-          <i className="bi bi-broadcast me-2"></i>
+        <Link
+          to="/visor"
+          className="animate-fade-up [animation-delay:380ms] inline-flex items-center gap-2.5 rounded-full bg-gradient-to-r from-red-500 to-rose-500 px-7 py-3.5 font-bold text-white shadow-lg shadow-red-950/60 transition-all hover:scale-[1.03] hover:shadow-red-500/30"
+        >
+          <Radio size={18} className="animate-glow-pulse" />
           Ver Transmisión en Vivo
         </Link>
       </main>
-    </>
+    </div>
   );
 }

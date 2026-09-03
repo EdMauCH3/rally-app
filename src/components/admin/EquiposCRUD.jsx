@@ -66,20 +66,16 @@ export default function EquiposCRUD({ equipos, onCambio }) {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="font-semibold text-gray-700">
-          Equipos ({equipos.length}/{MAX_EQUIPOS})
+        <h2 className="font-semibold text-slate-200">
+          Equipos <span className="text-slate-500">({equipos.length}/{MAX_EQUIPOS})</span>
         </h2>
-        <button
-          onClick={abrirNuevo}
-          disabled={!puedeCrear}
-          className="flex items-center gap-1 text-sm font-semibold text-white bg-indigo-600 disabled:opacity-40 rounded-lg px-3 py-2"
-        >
+        <button onClick={abrirNuevo} disabled={!puedeCrear} className="btn-primary !px-3 !py-2 text-sm">
           <Plus size={16} /> Nuevo equipo
         </button>
       </div>
 
       {!puedeCrear && (
-        <p className="text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+        <p className="text-xs text-amber-300 bg-amber-500/10 border border-amber-500/25 rounded-xl px-3 py-2">
           Ya existen los 4 equipos del evento. Elimina uno para poder crear otro.
         </p>
       )}
@@ -88,27 +84,21 @@ export default function EquiposCRUD({ equipos, onCambio }) {
         {equipos.map((equipo) => (
           <div
             key={equipo.id}
-            className="flex items-center justify-between rounded-xl border-2 bg-white p-4"
-            style={{ borderColor: equipo.color_hex }}
+            className="glass-card-hover flex items-center justify-between p-4"
+            style={{ borderColor: `${equipo.color_hex}55` }}
           >
             <div className="flex items-center gap-3">
               <span
                 className="w-6 h-6 rounded-full"
-                style={{ backgroundColor: equipo.color_hex }}
+                style={{ backgroundColor: equipo.color_hex, boxShadow: `0 0 10px ${equipo.color_hex}` }}
               />
-              <span className="font-semibold text-gray-800">{equipo.nombre}</span>
+              <span className="font-semibold text-slate-100">{equipo.nombre}</span>
             </div>
-            <div className="flex gap-2">
-              <button
-                onClick={() => abrirEditar(equipo)}
-                className="p-2 rounded-lg text-gray-500 hover:bg-gray-100"
-              >
+            <div className="flex gap-1">
+              <button onClick={() => abrirEditar(equipo)} className="btn-ghost !px-2">
                 <Pencil size={16} />
               </button>
-              <button
-                onClick={() => handleEliminar(equipo)}
-                className="p-2 rounded-lg text-red-500 hover:bg-red-50"
-              >
+              <button onClick={() => handleEliminar(equipo)} className="btn-ghost !px-2 hover:!text-red-400">
                 <Trash2 size={16} />
               </button>
             </div>
@@ -117,53 +107,46 @@ export default function EquiposCRUD({ equipos, onCambio }) {
       </div>
 
       {editando && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-40 px-4">
-          <form
-            onSubmit={handleGuardar}
-            className="bg-white rounded-2xl p-6 w-full max-w-sm space-y-4"
-          >
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-40 px-4">
+          <form onSubmit={handleGuardar} className="glass-card w-full max-w-sm p-6 space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="font-bold text-gray-900">
+              <h3 className="font-bold text-white">
                 {editando === 'nuevo' ? 'Nuevo equipo' : 'Editar equipo'}
               </h3>
-              <button type="button" onClick={cerrar} className="text-gray-400">
+              <button type="button" onClick={cerrar} className="text-slate-500 hover:text-slate-200">
                 <X size={20} />
               </button>
             </div>
 
-            <div className="space-y-1">
-              <label className="text-sm font-medium text-gray-700">Nombre</label>
+            <div className="space-y-1.5">
+              <label className="field-label">Nombre</label>
               <input
                 required
                 value={nombre}
                 onChange={(e) => setNombre(e.target.value)}
-                className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="field"
                 placeholder="Equipo Rojo"
               />
             </div>
 
-            <div className="space-y-1">
-              <label className="text-sm font-medium text-gray-700">Color</label>
+            <div className="space-y-1.5">
+              <label className="field-label">Color</label>
               <div className="flex items-center gap-3">
                 <input
                   type="color"
                   value={colorHex}
                   onChange={(e) => setColorHex(e.target.value)}
-                  className="w-12 h-10 rounded cursor-pointer"
+                  className="w-12 h-10 rounded-lg cursor-pointer bg-transparent border border-white/10"
                 />
                 <input
                   value={colorHex}
                   onChange={(e) => setColorHex(e.target.value)}
-                  className="flex-1 rounded-lg border border-gray-300 px-3 py-2 font-mono text-sm"
+                  className="field flex-1 font-mono text-sm"
                 />
               </div>
             </div>
 
-            <button
-              type="submit"
-              disabled={guardando}
-              className="w-full flex items-center justify-center gap-2 bg-indigo-600 text-white font-semibold rounded-lg py-2.5 disabled:opacity-60"
-            >
+            <button type="submit" disabled={guardando} className="btn-primary w-full">
               {guardando && <Loader2 className="animate-spin" size={18} />}
               Guardar
             </button>

@@ -29,44 +29,38 @@ export default function ReiniciarEvento({ onCambio }) {
   }
 
   return (
-    <div className="bg-red-50 border-2 border-red-200 rounded-xl p-5 space-y-3">
-      <div className="flex items-center gap-2 text-red-700 font-bold">
+    <div className="rounded-2xl border border-red-500/25 bg-red-500/[0.05] backdrop-blur-xl p-5 space-y-3">
+      <div className="flex items-center gap-2 text-red-300 font-bold">
         <AlertOctagon size={20} />
         Zona de peligro
       </div>
-      <p className="text-sm text-red-600">
+      <p className="text-sm text-red-300/80">
         Reiniciar el evento borra TODAS las puntuaciones de Gymkana, Tesoro y los partidos del
         Torneo. Los equipos, usuarios y el historial de ajustes manuales se conservan.
       </p>
-      <button
-        onClick={() => setPaso(1)}
-        className="bg-red-600 text-white font-semibold rounded-lg px-4 py-2 text-sm"
-      >
+      <button onClick={() => setPaso(1)} className="btn-danger !px-4 !py-2 text-sm">
         Reiniciar Evento
       </button>
 
       {paso > 0 && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4">
-          <div className="bg-white rounded-2xl p-6 w-full max-w-sm space-y-4">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 px-4">
+          <div className="glass-card w-full max-w-sm p-6 space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="font-bold text-red-700">
+              <h3 className="font-bold text-red-300">
                 {paso === 1 ? '¿Reiniciar el evento?' : 'Última confirmación'}
               </h3>
-              <button onClick={cerrar} className="text-gray-400">
+              <button onClick={cerrar} className="text-slate-500 hover:text-slate-200">
                 <X size={20} />
               </button>
             </div>
 
             {paso === 1 && (
               <>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-slate-400">
                   Esta acción es irreversible. Se borrarán todas las puntuaciones y partidos
                   registrados hasta ahora.
                 </p>
-                <button
-                  onClick={() => setPaso(2)}
-                  className="w-full bg-red-600 text-white font-semibold rounded-lg py-2.5"
-                >
+                <button onClick={() => setPaso(2)} className="btn-danger w-full">
                   Sí, entiendo, continuar
                 </button>
               </>
@@ -74,20 +68,20 @@ export default function ReiniciarEvento({ onCambio }) {
 
             {paso === 2 && (
               <>
-                <p className="text-sm text-gray-600">
-                  Escribe <span className="font-mono font-bold">REINICIAR</span> para confirmar
+                <p className="text-sm text-slate-400">
+                  Escribe <span className="font-mono font-bold text-slate-200">REINICIAR</span> para confirmar
                   definitivamente.
                 </p>
                 <input
                   value={textoConfirmacion}
                   onChange={(e) => setTextoConfirmacion(e.target.value)}
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2 font-mono"
+                  className="field font-mono"
                   placeholder="REINICIAR"
                 />
                 <button
                   onClick={handleConfirmarFinal}
                   disabled={textoConfirmacion !== 'REINICIAR' || procesando}
-                  className="w-full flex items-center justify-center gap-2 bg-red-700 text-white font-semibold rounded-lg py-2.5 disabled:opacity-40"
+                  className="btn-danger w-full"
                 >
                   {procesando && <Loader2 className="animate-spin" size={18} />}
                   Reiniciar definitivamente
