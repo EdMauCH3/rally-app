@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { LogOut, Loader2, Shuffle } from 'lucide-react';
+import { Loader2, Shuffle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import { listarEquipos } from '../services/equiposService';
@@ -12,7 +12,7 @@ import {
 import PartidoCard from '../components/torneo/PartidoCard';
 
 export default function TorneoPage() {
-  const { perfil, logout } = useAuth();
+  const { perfil } = useAuth();
   const { showToast } = useToast();
   const esAdmin = perfil?.rol === 'admin';
 
@@ -67,21 +67,9 @@ export default function TorneoPage() {
   }
 
   return (
-    <div className="min-h-screen pb-10">
-      <header className="glass-header px-4 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <img src="/icon.png" alt="" className="h-9 w-9" />
-          <div>
-            <h1 className="font-bold text-white">Árbitros del Torneo</h1>
-            <p className="text-xs text-slate-400">{perfil?.nombre}</p>
-          </div>
-        </div>
-        <button onClick={logout} className="btn-ghost hover:!text-red-400">
-          <LogOut size={16} /> Salir
-        </button>
-      </header>
+    <main className="max-w-2xl mx-auto px-4 py-6 space-y-4">
+      <h1 className="sr-only">Árbitros del Torneo</h1>
 
-      <main className="max-w-2xl mx-auto px-4 py-6 space-y-4">
         {cargando ? (
           <div className="flex justify-center py-16">
             <Loader2 className="animate-spin text-indigo-400" size={28} />
@@ -122,6 +110,5 @@ export default function TorneoPage() {
           ))
         )}
       </main>
-    </div>
   );
 }

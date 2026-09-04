@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { LogOut, Loader2 } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
+import { Loader2 } from 'lucide-react';
 import { useToast } from '../context/ToastContext';
 import { listarEquipos } from '../services/equiposService';
 import {
@@ -28,7 +27,6 @@ const TABS = [
 ];
 
 export default function AdminPage() {
-  const { perfil, logout } = useAuth();
   const { showToast } = useToast();
 
   const [tab, setTab] = useState('resumen');
@@ -101,21 +99,10 @@ export default function AdminPage() {
   const alertasPendientes = alertas.filter((a) => a.requiere_auditoria).length;
 
   return (
-    <div className="min-h-screen pb-10">
-      <header className="glass-header px-4 sm:px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <img src="/icon.png" alt="" className="h-9 w-9" />
-          <div>
-            <h1 className="font-bold text-white">Admin</h1>
-            <p className="text-xs text-slate-400">{perfil?.nombre}</p>
-          </div>
-        </div>
-        <button onClick={logout} className="btn-ghost hover:!text-red-400">
-          <LogOut size={16} /> Salir
-        </button>
-      </header>
+    <>
+      <h1 className="sr-only">Admin</h1>
 
-      <nav className="sticky top-[65px] z-10 border-b border-white/10 bg-slate-950/70 backdrop-blur-xl overflow-x-auto">
+      <nav className="sticky top-[112px] sm:top-[136px] z-10 border-b border-white/10 bg-brand-navy/70 backdrop-blur-xl shadow-xl shadow-black/30 transition-all duration-300 overflow-x-auto">
         <div className="flex px-4 gap-1">
           {TABS.map((t) => (
             <button
@@ -132,7 +119,7 @@ export default function AdminPage() {
                 </span>
               )}
               {tab === t.id && (
-                <span className="absolute inset-x-3 -bottom-px h-0.5 rounded-full bg-gradient-to-r from-indigo-400 to-violet-400" />
+                <span className="absolute inset-x-3 -bottom-px h-0.5 rounded-full bg-brand-brown" />
               )}
             </button>
           ))}
@@ -165,6 +152,6 @@ export default function AdminPage() {
           </>
         )}
       </main>
-    </div>
+    </>
   );
 }

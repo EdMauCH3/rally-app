@@ -15,7 +15,7 @@ export default function EquipoSelector({ equipos, equipoSeleccionado, onSeleccio
           <button
             key={equipo.id}
             onClick={() => onSeleccionar(equipo)}
-            className="rounded-2xl p-4 text-left border-2 font-semibold text-slate-100 transition-all backdrop-blur-xl"
+            className="rounded-2xl p-4 text-left border-2 font-semibold text-slate-100 transition-all duration-300 ease-in-out hover:scale-105 backdrop-blur-xl"
             style={{
               borderColor: activo ? equipo.color_hex : 'rgba(255,255,255,0.1)',
               backgroundColor: activo ? `${equipo.color_hex}1f` : 'rgba(255,255,255,0.03)',

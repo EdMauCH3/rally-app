@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Flag, Map, Trophy, Radio, LogIn } from 'lucide-react';
+import { Flag, Map, Trophy, Radio } from 'lucide-react';
 
 const ACTIVIDADES = [
   { to: '/gymkana', icon: Flag, nombre: 'Gymkana', desc: '6 bases, rutas emparejadas' },
@@ -9,21 +9,12 @@ const ACTIVIDADES = [
 
 export default function Home() {
   return (
-    <div className="min-h-screen flex flex-col">
-      <nav className="flex items-center justify-between px-4 sm:px-8 py-5">
-        <span className="flex items-center gap-2 font-display font-extrabold text-lg text-white">
-          <img src="/icon.png" alt="" className="h-8 w-8" />
-          Interoratorios 2026
-        </span>
-        <Link to="/login" className="btn-secondary">
-          <LogIn size={16} /> Iniciar Sesión
-        </Link>
-      </nav>
-
-      <main className="flex-1 flex flex-col items-center justify-center text-center px-4 py-12">
-        <h1 className="font-display text-4xl sm:text-6xl font-extrabold heading-gradient mb-3 animate-fade-up">
-          Interoratorios 2026
-        </h1>
+    <main className="min-h-[calc(100vh-64px)] flex flex-col items-center justify-center text-center px-4 py-12">
+        <img
+          src="/widelogo.png"
+          alt="Interoratorios 2026"
+          className="w-full max-w-md object-contain mb-3 animate-fade-up"
+        />
         <p className="text-slate-400 text-base sm:text-lg mb-12 animate-fade-up [animation-delay:80ms]">
           Elige una actividad para comenzar
         </p>
@@ -36,7 +27,7 @@ export default function Home() {
               style={{ animationDelay: `${140 + i * 80}ms` }}
               className="glass-card-hover animate-fade-up group flex flex-col items-center gap-3 px-6 py-8 hover:-translate-y-1"
             >
-              <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500/20 to-violet-500/20 border border-white/10 text-violet-300 group-hover:from-indigo-500 group-hover:to-violet-500 group-hover:text-white transition-all">
+              <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-brown/25 to-amber-700/20 border border-white/10 text-amber-200 group-hover:from-brand-brown group-hover:to-amber-800 group-hover:text-white transition-all">
                 <Icon size={26} />
               </span>
               <span className="font-semibold text-white text-lg">{nombre}</span>
@@ -52,7 +43,6 @@ export default function Home() {
           <Radio size={18} className="animate-glow-pulse" />
           Ver Transmisión en Vivo
         </Link>
-      </main>
-    </div>
+    </main>
   );
 }

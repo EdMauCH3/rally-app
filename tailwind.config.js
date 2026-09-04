@@ -3,6 +3,12 @@ export default {
   content: ['./index.html', './src/**/*.{js,jsx}'],
   theme: {
     extend: {
+      colors: {
+        brand: {
+          navy: '#053866', // fondo predominante de toda la app
+          brown: '#733f2d', // acento secundario ("café"): usar con moderación
+        },
+      },
       fontFamily: {
         sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
         display: ['Manrope', 'Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],

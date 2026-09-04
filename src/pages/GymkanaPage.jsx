@@ -1,6 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
-import { LogOut, Loader2, MapPin } from 'lucide-react';
-import { useAuth } from '../context/AuthContext';
+import { Loader2, MapPin } from 'lucide-react';
 import { useToast } from '../context/ToastContext';
 import { listarEquipos } from '../services/equiposService';
 import {
@@ -13,7 +12,6 @@ import EquipoSelector from '../components/gymkana/EquipoSelector';
 import PartidoGymkanaActual, { HistorialGymkana } from '../components/gymkana/PartidoGymkanaActual';
 
 export default function GymkanaPage() {
-  const { perfil, logout } = useAuth();
   const { showToast } = useToast();
 
   const [equipos, setEquipos] = useState([]);
@@ -70,21 +68,9 @@ export default function GymkanaPage() {
   }
 
   return (
-    <div className="min-h-screen pb-10">
-      <header className="glass-header px-4 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <img src="/icon.png" alt="" className="h-9 w-9" />
-          <div>
-            <h1 className="font-bold text-white">Staff Gymkana</h1>
-            <p className="text-xs text-slate-400">{perfil?.nombre}</p>
-          </div>
-        </div>
-        <button onClick={logout} className="btn-ghost hover:!text-red-400">
-          <LogOut size={16} /> Salir
-        </button>
-      </header>
+    <main className="max-w-2xl mx-auto px-4 py-6 space-y-6">
+      <h1 className="sr-only">Staff Gymkana</h1>
 
-      <main className="max-w-2xl mx-auto px-4 py-6 space-y-6">
         {cargandoEquipos ? (
           <div className="flex justify-center py-10">
             <Loader2 className="animate-spin text-indigo-400" size={28} />
@@ -147,6 +133,5 @@ export default function GymkanaPage() {
           </section>
         )}
       </main>
-    </div>
   );
 }

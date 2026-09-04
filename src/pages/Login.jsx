@@ -34,15 +34,21 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4">
+    <div className="relative min-h-screen flex items-center justify-center px-4 overflow-hidden">
+      {/* Resplandor café decorativo detrás de la tarjeta */}
+      <div className="pointer-events-none absolute h-72 w-72 sm:h-96 sm:w-96 rounded-full bg-brand-brown/30 blur-[100px]" />
+
       <form
         onSubmit={handleSubmit}
-        className="glass-card w-full max-w-sm p-8 space-y-6 animate-fade-up"
+        className="relative w-full max-w-sm p-8 space-y-6 rounded-2xl border border-brand-brown/40 bg-gradient-to-b from-brand-brown/20 via-brand-navy/50 to-brand-navy/70 backdrop-blur-2xl shadow-2xl shadow-black/60 transition-all duration-300 ease-in-out hover:border-brand-brown/60 animate-fade-up"
       >
         <div className="text-center space-y-2">
-          <img src="/icon.png" alt="" className="mx-auto h-16 w-16" />
-          <h1 className="text-2xl font-bold heading-gradient">Interoratorios 2026</h1>
-          <p className="text-sm text-slate-400">Inicia sesión para continuar</p>
+          <img
+            src="/widelogo.png"
+            alt="Interoratorios 2026"
+            className="w-full max-w-[220px] object-contain mx-auto mb-1 drop-shadow-2xl"
+          />
+          <p className="text-sm text-slate-300">Inicia sesión para continuar</p>
         </div>
 
         {error && (
