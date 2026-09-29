@@ -135,6 +135,7 @@ export default function AdminPage() {
           </div>
         ) : (
           <>
+            {tab === 'colores' && <RotacionColoresAdmin />}
             {tab === 'resumen' && <TablaMarcador equipos={marcador} />}
             {tab === 'equipos' && <EquiposCRUD equipos={equipos} onCambio={cargarTodo} />}
             {tab === 'ajustes' && (
@@ -151,7 +152,6 @@ export default function AdminPage() {
             )}
             {tab === 'alertas' && <AlertasGymkana alertas={alertas} onCambio={cargarTodo} />}
             {tab === 'peligro' && <ReiniciarEvento onCambio={cargarTodo} />}
-            {tab === 'colores' && <RotacionColoresAdmin />}
           </>
         )}
       </main>
