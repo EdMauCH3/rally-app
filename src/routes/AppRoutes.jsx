@@ -9,6 +9,7 @@ import TesoroPage from '../pages/TesoroPage';
 import TorneoPage from '../pages/TorneoPage';
 import AdminPage from '../pages/AdminPage';
 import VisorPage from '../pages/VisorPage';
+import ColoresPage from '../pages/ColoresPage';
 
 export default function AppRoutes() {
   return (
@@ -18,8 +19,9 @@ export default function AppRoutes() {
         {/* Pagina principal publica, con botones a cada actividad */}
         <Route path="/" element={<Home />} />
 
-        {/* Publica, sin autenticacion */}
+        {/* Publicas, sin autenticacion */}
         <Route path="/visor" element={<VisorPage />} />
+        <Route path="/colores" element={<ColoresPage />} />
 
         <Route path="/login" element={<Login />} />
 

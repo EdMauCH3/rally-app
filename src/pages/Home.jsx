@@ -41,7 +41,13 @@ export default function Home() {
           className="animate-fade-up [animation-delay:380ms] inline-flex items-center gap-2.5 rounded-full bg-gradient-to-r from-red-500 to-rose-500 px-7 py-3.5 font-bold text-white shadow-lg shadow-red-950/60 transition-all hover:scale-[1.03] hover:shadow-red-500/30"
         >
           <Radio size={18} className="animate-glow-pulse" />
-          Ver Transmisión en Vivo
+          Ver Transmisión en Vivo - LIVE
+        </Link>
+        <Link
+          to="/colores"
+          className="btn-secondary"
+        >
+          Rotación de Colores
         </Link>
     </main>
   );

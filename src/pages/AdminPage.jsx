@@ -1,3 +1,4 @@
+import RotacionColoresAdmin from '../components/admin/RotacionColoresAdmin';
 import { useCallback, useEffect, useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import { useToast } from '../context/ToastContext';
@@ -24,6 +25,7 @@ const TABS = [
   { id: 'gymkana', label: 'Gymkana' },
   { id: 'alertas', label: 'Alertas' },
   { id: 'peligro', label: 'Reiniciar' },
+  { id: 'colores', label: 'Rotación' },
 ];
 
 export default function AdminPage() {
@@ -149,6 +151,7 @@ export default function AdminPage() {
             )}
             {tab === 'alertas' && <AlertasGymkana alertas={alertas} onCambio={cargarTodo} />}
             {tab === 'peligro' && <ReiniciarEvento onCambio={cargarTodo} />}
+            {tab === 'colores' && <RotacionColoresAdmin />}
           </>
         )}
       </main>

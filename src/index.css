@@ -105,3 +105,17 @@
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(115, 63, 45, 0.6);
 }
+/* ============================================
+   EFECTO DE ROTACION (Modulo Colores) - agregar al final de src/index.css
+   ============================================ */
+@keyframes luces-rotacion {
+  0%, 100% { background-color: rgba(115, 63, 45, 0.65); }  /* cafe */
+  20%      { background-color: rgba(5, 56, 102, 0.65); }   /* navy */
+  40%      { background-color: rgba(220, 38, 38, 0.55); }  /* rojo */
+  60%      { background-color: rgba(234, 179, 8, 0.55); }  /* amarillo */
+  80%      { background-color: rgba(22, 163, 74, 0.55); }  /* verde */
+}
+
+.animate-luces-rotacion {
+  animation: luces-rotacion 0.35s steps(1) infinite;
+}

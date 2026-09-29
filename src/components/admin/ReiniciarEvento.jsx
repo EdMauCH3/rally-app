@@ -36,7 +36,8 @@ export default function ReiniciarEvento({ onCambio }) {
       </div>
       <p className="text-sm text-red-300/80">
         Reiniciar el evento borra TODAS las puntuaciones de Gymkana, Tesoro y los partidos del
-        Torneo. Los equipos, usuarios y el historial de ajustes manuales se conservan.
+        Torneo, y también el historial de ajustes manuales y de alertas de Gymkana. Los
+        equipos y los usuarios se conservan.
       </p>
       <button onClick={() => setPaso(1)} className="btn-danger !px-4 !py-2 text-sm">
         Reiniciar Evento

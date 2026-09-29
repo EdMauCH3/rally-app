@@ -1,0 +1,3794 @@
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+assets/
+  logo.png
+public/
+  bg.png
+  favicon.svg
+  icon.png
+  icons.svg
+  logo-transparent.png
+  logo.png
+  widelogo.png
+src/
+  assets/
+    hero.png
+    react.svg
+    vite.svg
+  components/
+    admin/
+      AjustesForm.jsx
+      AlertasGymkana.jsx
+      EquiposCRUD.jsx
+      IniciarGymkanaPanel.jsx
+      PartidoGymkanaRow.jsx
+      ReiniciarEvento.jsx
+      TablaMarcador.jsx
+    gymkana/
+      EquipoSelector.jsx
+      PartidoGymkanaActual.jsx
+    layout/
+      AppLayout.jsx
+      Header.jsx
+    tesoro/
+      BaseTesoroCard.jsx
+      ProgresoTesoro.jsx
+    torneo/
+      PartidoCard.jsx
+    visor/
+      TablaPosicionesVisor.jsx
+      TrackerUbicacion.jsx
+  context/
+    AuthContext.jsx
+    ToastContext.jsx
+  pages/
+    AdminPage.jsx
+    GymkanaPage.jsx
+    Home.jsx
+    Login.jsx
+    TesoroPage.jsx
+    TorneoPage.jsx
+    VisorPage.jsx
+  routes/
+    AppRoutes.jsx
+    ProtectedRoute.jsx
+  services/
+    adminService.js
+    equiposService.js
+    gymkanaService.js
+    supabaseClient.js
+    tesoroService.js
+    torneoService.js
+    visorService.js
+  App.jsx
+  index.css
+  main.jsx
+supabase/
+  fix_reiniciar_evento.sql
+  gymkana_rutas_refactor.sql
+.gitignore
+.oxlintrc.json
+index.html
+package.json
+postcss.config.js
+README.md
+tailwind.config.js
+vercel.json
+vite.config.js
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="public/favicon.svg">
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="46" fill="none" viewBox="0 0 48 46"><path fill="#863bff" d="M25.946 44.938c-.664.845-2.021.375-2.021-.698V33.937a2.26 2.26 0 0 0-2.262-2.262H10.287c-.92 0-1.456-1.04-.92-1.788l7.48-10.471c1.07-1.497 0-3.578-1.842-3.578H1.237c-.92 0-1.456-1.04-.92-1.788L10.013.474c.214-.297.556-.474.92-.474h28.894c.92 0 1.456 1.04.92 1.788l-7.48 10.471c-1.07 1.498 0 3.579 1.842 3.579h11.377c.943 0 1.473 1.088.89 1.83L25.947 44.94z" style="fill:#863bff;fill:color(display-p3 .5252 .23 1);fill-opacity:1"/><mask id="a" width="48" height="46" x="0" y="0" maskUnits="userSpaceOnUse" style="mask-type:alpha"><path fill="#000" d="M25.842 44.938c-.664.844-2.021.375-2.021-.698V33.937a2.26 2.26 0 0 0-2.262-2.262H10.183c-.92 0-1.456-1.04-.92-1.788l7.48-10.471c1.07-1.498 0-3.579-1.842-3.579H1.133c-.92 0-1.456-1.04-.92-1.787L9.91.473c.214-.297.556-.474.92-.474h28.894c.92 0 1.456 1.04.92 1.788l-7.48 10.471c-1.07 1.498 0 3.578 1.842 3.578h11.377c.943 0 1.473 1.088.89 1.832L25.843 44.94z" style="fill:#000;fill-opacity:1"/></mask><g mask="url(#a)"><g filter="url(#b)"><ellipse cx="5.508" cy="14.704" fill="#ede6ff" rx="5.508" ry="14.704" style="fill:#ede6ff;fill:color(display-p3 .9275 .9033 1);fill-opacity:1" transform="matrix(.00324 1 1 -.00324 -4.47 31.516)"/></g><g filter="url(#c)"><ellipse cx="10.399" cy="29.851" fill="#ede6ff" rx="10.399" ry="29.851" style="fill:#ede6ff;fill:color(display-p3 .9275 .9033 1);fill-opacity:1" transform="matrix(.00324 1 1 -.00324 -39.328 7.883)"/></g><g filter="url(#d)"><ellipse cx="5.508" cy="30.487" fill="#7e14ff" rx="5.508" ry="30.487" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="rotate(89.814 -25.913 -14.639)scale(1 -1)"/></g><g filter="url(#e)"><ellipse cx="5.508" cy="30.599" fill="#7e14ff" rx="5.508" ry="30.599" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="rotate(89.814 -32.644 -3.334)scale(1 -1)"/></g><g filter="url(#f)"><ellipse cx="5.508" cy="30.599" fill="#7e14ff" rx="5.508" ry="30.599" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="matrix(.00324 1 1 -.00324 -34.34 30.47)"/></g><g filter="url(#g)"><ellipse cx="14.072" cy="22.078" fill="#ede6ff" rx="14.072" ry="22.078" style="fill:#ede6ff;fill:color(display-p3 .9275 .9033 1);fill-opacity:1" transform="rotate(93.35 24.506 48.493)scale(-1 1)"/></g><g filter="url(#h)"><ellipse cx="3.47" cy="21.501" fill="#7e14ff" rx="3.47" ry="21.501" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="rotate(89.009 28.708 47.59)scale(-1 1)"/></g><g filter="url(#i)"><ellipse cx="3.47" cy="21.501" fill="#7e14ff" rx="3.47" ry="21.501" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="rotate(89.009 28.708 47.59)scale(-1 1)"/></g><g filter="url(#j)"><ellipse cx=".387" cy="8.972" fill="#7e14ff" rx="4.407" ry="29.108" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="rotate(39.51 .387 8.972)"/></g><g filter="url(#k)"><ellipse cx="47.523" cy="-6.092" fill="#7e14ff" rx="4.407" ry="29.108" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="rotate(37.892 47.523 -6.092)"/></g><g filter="url(#l)"><ellipse cx="41.412" cy="6.333" fill="#47bfff" rx="5.971" ry="9.665" style="fill:#47bfff;fill:color(display-p3 .2799 .748 1);fill-opacity:1" transform="rotate(37.892 41.412 6.333)"/></g><g filter="url(#m)"><ellipse cx="-1.879" cy="38.332" fill="#7e14ff" rx="4.407" ry="29.108" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="rotate(37.892 -1.88 38.332)"/></g><g filter="url(#n)"><ellipse cx="-1.879" cy="38.332" fill="#7e14ff" rx="4.407" ry="29.108" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="rotate(37.892 -1.88 38.332)"/></g><g filter="url(#o)"><ellipse cx="35.651" cy="29.907" fill="#7e14ff" rx="4.407" ry="29.108" style="fill:#7e14ff;fill:color(display-p3 .4922 .0767 1);fill-opacity:1" transform="rotate(37.892 35.651 29.907)"/></g><g filter="url(#p)"><ellipse cx="38.418" cy="32.4" fill="#47bfff" rx="5.971" ry="15.297" style="fill:#47bfff;fill:color(display-p3 .2799 .748 1);fill-opacity:1" transform="rotate(37.892 38.418 32.4)"/></g></g><defs><filter id="b" width="60.045" height="41.654" x="-19.77" y="16.149" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="7.659"/></filter><filter id="c" width="90.34" height="51.437" x="-54.613" y="-7.533" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="7.659"/></filter><filter id="d" width="79.355" height="29.4" x="-49.64" y="2.03" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="e" width="79.579" height="29.4" x="-45.045" y="20.029" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="f" width="79.579" height="29.4" x="-43.513" y="21.178" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="g" width="74.749" height="58.852" x="15.756" y="-17.901" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="7.659"/></filter><filter id="h" width="61.377" height="25.362" x="23.548" y="2.284" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="i" width="61.377" height="25.362" x="23.548" y="2.284" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="j" width="56.045" height="63.649" x="-27.636" y="-22.853" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="k" width="54.814" height="64.646" x="20.116" y="-38.415" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="l" width="33.541" height="35.313" x="24.641" y="-11.323" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="m" width="54.814" height="64.646" x="-29.286" y="6.009" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="n" width="54.814" height="64.646" x="-29.286" y="6.009" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="o" width="54.814" height="64.646" x="8.244" y="-2.416" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter><filter id="p" width="39.409" height="43.623" x="18.713" y="10.588" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17158" stdDeviation="4.596"/></filter></defs></svg>
+</file>
+
+<file path="public/icons.svg">
+<svg xmlns="http://www.w3.org/2000/svg">
+  <symbol id="bluesky-icon" viewBox="0 0 16 17">
+    <g clip-path="url(#bluesky-clip)"><path fill="#08060d" d="M7.75 7.735c-.693-1.348-2.58-3.86-4.334-5.097-1.68-1.187-2.32-.981-2.74-.79C.188 2.065.1 2.812.1 3.251s.241 3.602.398 4.13c.52 1.744 2.367 2.333 4.07 2.145-2.495.37-4.71 1.278-1.805 4.512 3.196 3.309 4.38-.71 4.987-2.746.608 2.036 1.307 5.91 4.93 2.746 2.72-2.746.747-4.143-1.747-4.512 1.702.189 3.55-.4 4.07-2.145.156-.528.397-3.691.397-4.13s-.088-1.186-.575-1.406c-.42-.19-1.06-.395-2.741.79-1.755 1.24-3.64 3.752-4.334 5.099"/></g>
+    <defs><clipPath id="bluesky-clip"><path fill="#fff" d="M.1.85h15.3v15.3H.1z"/></clipPath></defs>
+  </symbol>
+  <symbol id="discord-icon" viewBox="0 0 20 19">
+    <path fill="#08060d" d="M16.224 3.768a14.5 14.5 0 0 0-3.67-1.153c-.158.286-.343.67-.47.976a13.5 13.5 0 0 0-4.067 0c-.128-.306-.317-.69-.476-.976A14.4 14.4 0 0 0 3.868 3.77C1.546 7.28.916 10.703 1.231 14.077a14.7 14.7 0 0 0 4.5 2.306q.545-.748.965-1.587a9.5 9.5 0 0 1-1.518-.74q.191-.14.372-.293c2.927 1.369 6.107 1.369 8.999 0q.183.152.372.294-.723.437-1.52.74.418.838.963 1.588a14.6 14.6 0 0 0 4.504-2.308c.37-3.911-.63-7.302-2.644-10.309m-9.13 8.234c-.878 0-1.599-.82-1.599-1.82 0-.998.705-1.82 1.6-1.82.894 0 1.614.82 1.599 1.82.001 1-.705 1.82-1.6 1.82m5.91 0c-.878 0-1.599-.82-1.599-1.82 0-.998.705-1.82 1.6-1.82.893 0 1.614.82 1.599 1.82 0 1-.706 1.82-1.6 1.82"/>
+  </symbol>
+  <symbol id="documentation-icon" viewBox="0 0 21 20">
+    <path fill="none" stroke="#aa3bff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.35" d="m15.5 13.333 1.533 1.322c.645.555.967.833.967 1.178s-.322.623-.967 1.179L15.5 18.333m-3.333-5-1.534 1.322c-.644.555-.966.833-.966 1.178s.322.623.966 1.179l1.534 1.321"/>
+    <path fill="none" stroke="#aa3bff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.35" d="M17.167 10.836v-4.32c0-1.41 0-2.117-.224-2.68-.359-.906-1.118-1.621-2.08-1.96-.599-.21-1.349-.21-2.848-.21-2.623 0-3.935 0-4.983.369-1.684.591-3.013 1.842-3.641 3.428C3 6.449 3 7.684 3 10.154v2.122c0 2.558 0 3.838.706 4.726q.306.383.713.671c.76.536 1.79.64 3.581.66"/>
+    <path fill="none" stroke="#aa3bff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.35" d="M3 10a2.78 2.78 0 0 1 2.778-2.778c.555 0 1.209.097 1.748-.047.48-.129.854-.503.982-.982.145-.54.048-1.194.048-1.749a2.78 2.78 0 0 1 2.777-2.777"/>
+  </symbol>
+  <symbol id="github-icon" viewBox="0 0 19 19">
+    <path fill="#08060d" fill-rule="evenodd" d="M9.356 1.85C5.05 1.85 1.57 5.356 1.57 9.694a7.84 7.84 0 0 0 5.324 7.44c.387.079.528-.168.528-.376 0-.182-.013-.805-.013-1.454-2.165.467-2.616-.935-2.616-.935-.349-.91-.864-1.143-.864-1.143-.71-.48.051-.48.051-.48.787.051 1.2.805 1.2.805.695 1.194 1.817.857 2.268.649.064-.507.27-.857.49-1.052-1.728-.182-3.545-.857-3.545-3.87 0-.857.31-1.558.8-2.104-.078-.195-.349-1 .077-2.078 0 0 .657-.208 2.14.805a7.5 7.5 0 0 1 1.946-.26c.657 0 1.328.092 1.946.26 1.483-1.013 2.14-.805 2.14-.805.426 1.078.155 1.883.078 2.078.502.546.799 1.247.799 2.104 0 3.013-1.818 3.675-3.558 3.87.284.247.528.714.528 1.454 0 1.052-.012 1.896-.012 2.156 0 .208.142.455.528.377a7.84 7.84 0 0 0 5.324-7.441c.013-4.338-3.48-7.844-7.773-7.844" clip-rule="evenodd"/>
+  </symbol>
+  <symbol id="social-icon" viewBox="0 0 20 20">
+    <path fill="none" stroke="#aa3bff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.35" d="M12.5 6.667a4.167 4.167 0 1 0-8.334 0 4.167 4.167 0 0 0 8.334 0"/>
+    <path fill="none" stroke="#aa3bff" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.35" d="M2.5 16.667a5.833 5.833 0 0 1 8.75-5.053m3.837.474.513 1.035c.07.144.257.282.414.309l.93.155c.596.1.736.536.307.965l-.723.73a.64.64 0 0 0-.152.531l.207.903c.164.715-.213.991-.84.618l-.872-.52a.63.63 0 0 0-.577 0l-.872.52c-.624.373-1.003.094-.84-.618l.207-.903a.64.64 0 0 0-.152-.532l-.723-.729c-.426-.43-.289-.864.306-.964l.93-.156a.64.64 0 0 0 .412-.31l.513-1.034c.28-.562.735-.562 1.012 0"/>
+  </symbol>
+  <symbol id="x-icon" viewBox="0 0 19 19">
+    <path fill="#08060d" fill-rule="evenodd" d="M1.893 1.98c.052.072 1.245 1.769 2.653 3.77l2.892 4.114c.183.261.333.48.333.486s-.068.089-.152.183l-.522.593-.765.867-3.597 4.087c-.375.426-.734.834-.798.905a1 1 0 0 0-.118.148c0 .01.236.017.664.017h.663l.729-.83c.4-.457.796-.906.879-.999a692 692 0 0 0 1.794-2.038c.034-.037.301-.34.594-.675l.551-.624.345-.392a7 7 0 0 1 .34-.374c.006 0 .93 1.306 2.052 2.903l2.084 2.965.045.063h2.275c1.87 0 2.273-.003 2.266-.021-.008-.02-1.098-1.572-3.894-5.547-2.013-2.862-2.28-3.246-2.273-3.266.008-.019.282-.332 2.085-2.38l2-2.274 1.567-1.782c.022-.028-.016-.03-.65-.03h-.674l-.3.342a871 871 0 0 1-1.782 2.025c-.067.075-.405.458-.75.852a100 100 0 0 1-.803.91c-.148.172-.299.344-.99 1.127-.304.343-.32.358-.345.327-.015-.019-.904-1.282-1.976-2.808L6.365 1.85H1.8zm1.782.91 8.078 11.294c.772 1.08 1.413 1.973 1.425 1.984.016.017.241.02 1.05.017l1.03-.004-2.694-3.766L7.796 5.75 5.722 2.852l-1.039-.004-1.039-.004z" clip-rule="evenodd"/>
+  </symbol>
+</svg>
+</file>
+
+<file path="src/assets/react.svg">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--logos" width="35.93" height="32" preserveAspectRatio="xMidYMid meet" viewBox="0 0 256 228"><path fill="#00D8FF" d="M210.483 73.824a171.49 171.49 0 0 0-8.24-2.597c.465-1.9.893-3.777 1.273-5.621c6.238-30.281 2.16-54.676-11.769-62.708c-13.355-7.7-35.196.329-57.254 19.526a171.23 171.23 0 0 0-6.375 5.848a155.866 155.866 0 0 0-4.241-3.917C100.759 3.829 77.587-4.822 63.673 3.233C50.33 10.957 46.379 33.89 51.995 62.588a170.974 170.974 0 0 0 1.892 8.48c-3.28.932-6.445 1.924-9.474 2.98C17.309 83.498 0 98.307 0 113.668c0 15.865 18.582 31.778 46.812 41.427a145.52 145.52 0 0 0 6.921 2.165a167.467 167.467 0 0 0-2.01 9.138c-5.354 28.2-1.173 50.591 12.134 58.266c13.744 7.926 36.812-.22 59.273-19.855a145.567 145.567 0 0 0 5.342-4.923a168.064 168.064 0 0 0 6.92 6.314c21.758 18.722 43.246 26.282 56.54 18.586c13.731-7.949 18.194-32.003 12.4-61.268a145.016 145.016 0 0 0-1.535-6.842c1.62-.48 3.21-.974 4.76-1.488c29.348-9.723 48.443-25.443 48.443-41.52c0-15.417-17.868-30.326-45.517-39.844Zm-6.365 70.984c-1.4.463-2.836.91-4.3 1.345c-3.24-10.257-7.612-21.163-12.963-32.432c5.106-11 9.31-21.767 12.459-31.957c2.619.758 5.16 1.557 7.61 2.4c23.69 8.156 38.14 20.213 38.14 29.504c0 9.896-15.606 22.743-40.946 31.14Zm-10.514 20.834c2.562 12.94 2.927 24.64 1.23 33.787c-1.524 8.219-4.59 13.698-8.382 15.893c-8.067 4.67-25.32-1.4-43.927-17.412a156.726 156.726 0 0 1-6.437-5.87c7.214-7.889 14.423-17.06 21.459-27.246c12.376-1.098 24.068-2.894 34.671-5.345a134.17 134.17 0 0 1 1.386 6.193ZM87.276 214.515c-7.882 2.783-14.16 2.863-17.955.675c-8.075-4.657-11.432-22.636-6.853-46.752a156.923 156.923 0 0 1 1.869-8.499c10.486 2.32 22.093 3.988 34.498 4.994c7.084 9.967 14.501 19.128 21.976 27.15a134.668 134.668 0 0 1-4.877 4.492c-9.933 8.682-19.886 14.842-28.658 17.94ZM50.35 144.747c-12.483-4.267-22.792-9.812-29.858-15.863c-6.35-5.437-9.555-10.836-9.555-15.216c0-9.322 13.897-21.212 37.076-29.293c2.813-.98 5.757-1.905 8.812-2.773c3.204 10.42 7.406 21.315 12.477 32.332c-5.137 11.18-9.399 22.249-12.634 32.792a134.718 134.718 0 0 1-6.318-1.979Zm12.378-84.26c-4.811-24.587-1.616-43.134 6.425-47.789c8.564-4.958 27.502 2.111 47.463 19.835a144.318 144.318 0 0 1 3.841 3.545c-7.438 7.987-14.787 17.08-21.808 26.988c-12.04 1.116-23.565 2.908-34.161 5.309a160.342 160.342 0 0 1-1.76-7.887Zm110.427 27.268a347.8 347.8 0 0 0-7.785-12.803c8.168 1.033 15.994 2.404 23.343 4.08c-2.206 7.072-4.956 14.465-8.193 22.045a381.151 381.151 0 0 0-7.365-13.322Zm-45.032-43.861c5.044 5.465 10.096 11.566 15.065 18.186a322.04 322.04 0 0 0-30.257-.006c4.974-6.559 10.069-12.652 15.192-18.18ZM82.802 87.83a323.167 323.167 0 0 0-7.227 13.238c-3.184-7.553-5.909-14.98-8.134-22.152c7.304-1.634 15.093-2.97 23.209-3.984a321.524 321.524 0 0 0-7.848 12.897Zm8.081 65.352c-8.385-.936-16.291-2.203-23.593-3.793c2.26-7.3 5.045-14.885 8.298-22.6a321.187 321.187 0 0 0 7.257 13.246c2.594 4.48 5.28 8.868 8.038 13.147Zm37.542 31.03c-5.184-5.592-10.354-11.779-15.403-18.433c4.902.192 9.899.29 14.978.29c5.218 0 10.376-.117 15.453-.343c-4.985 6.774-10.018 12.97-15.028 18.486Zm52.198-57.817c3.422 7.8 6.306 15.345 8.596 22.52c-7.422 1.694-15.436 3.058-23.88 4.071a382.417 382.417 0 0 0 7.859-13.026a347.403 347.403 0 0 0 7.425-13.565Zm-16.898 8.101a358.557 358.557 0 0 1-12.281 19.815a329.4 329.4 0 0 1-23.444.823c-7.967 0-15.716-.248-23.178-.732a310.202 310.202 0 0 1-12.513-19.846h.001a307.41 307.41 0 0 1-10.923-20.627a310.278 310.278 0 0 1 10.89-20.637l-.001.001a307.318 307.318 0 0 1 12.413-19.761c7.613-.576 15.42-.876 23.31-.876H128c7.926 0 15.743.303 23.354.883a329.357 329.357 0 0 1 12.335 19.695a358.489 358.489 0 0 1 11.036 20.54a329.472 329.472 0 0 1-11 20.722Zm22.56-122.124c8.572 4.944 11.906 24.881 6.52 51.026c-.344 1.668-.73 3.367-1.15 5.09c-10.622-2.452-22.155-4.275-34.23-5.408c-7.034-10.017-14.323-19.124-21.64-27.008a160.789 160.789 0 0 1 5.888-5.4c18.9-16.447 36.564-22.941 44.612-18.3ZM128 90.808c12.625 0 22.86 10.235 22.86 22.86s-10.235 22.86-22.86 22.86s-22.86-10.235-22.86-22.86s10.235-22.86 22.86-22.86Z"></path></svg>
+</file>
+
+<file path="src/assets/vite.svg">
+<svg xmlns="http://www.w3.org/2000/svg" width="77" height="47" fill="none" aria-labelledby="vite-logo-title" viewBox="0 0 77 47"><title id="vite-logo-title">Vite</title><style>.parenthesis{fill:#000}@media (prefers-color-scheme:dark){.parenthesis{fill:#fff}}</style><path fill="#9135ff" d="M40.151 45.71c-.663.844-2.02.374-2.02-.699V34.708a2.26 2.26 0 0 0-2.262-2.262H24.493c-.92 0-1.457-1.04-.92-1.788l7.479-10.471c1.07-1.498 0-3.578-1.842-3.578H15.443c-.92 0-1.456-1.04-.92-1.788l9.696-13.576c.213-.297.556-.474.92-.474h28.894c.92 0 1.456 1.04.92 1.788l-7.48 10.472c-1.07 1.497 0 3.578 1.842 3.578h11.376c.944 0 1.474 1.087.89 1.83L40.153 45.712z"/><mask id="a" width="48" height="47" x="14" y="0" maskUnits="userSpaceOnUse" style="mask-type:alpha"><path fill="#000" d="M40.047 45.71c-.663.843-2.02.374-2.02-.699V34.708a2.26 2.26 0 0 0-2.262-2.262H24.389c-.92 0-1.457-1.04-.92-1.788l7.479-10.472c1.07-1.497 0-3.578-1.842-3.578H15.34c-.92 0-1.456-1.04-.92-1.788l9.696-13.575c.213-.297.556-.474.92-.474H53.93c.92 0 1.456 1.04.92 1.788L47.37 13.03c-1.07 1.498 0 3.578 1.842 3.578h11.376c.944 0 1.474 1.088.89 1.831L40.049 45.712z"/></mask><g mask="url(#a)"><g filter="url(#b)"><ellipse cx="5.508" cy="14.704" fill="#eee6ff" rx="5.508" ry="14.704" transform="rotate(269.814 20.96 11.29)scale(-1 1)"/></g><g filter="url(#c)"><ellipse cx="10.399" cy="29.851" fill="#eee6ff" rx="10.399" ry="29.851" transform="rotate(89.814 -16.902 -8.275)scale(1 -1)"/></g><g filter="url(#d)"><ellipse cx="5.508" cy="30.487" fill="#8900ff" rx="5.508" ry="30.487" transform="rotate(89.814 -19.197 -7.127)scale(1 -1)"/></g><g filter="url(#e)"><ellipse cx="5.508" cy="30.599" fill="#8900ff" rx="5.508" ry="30.599" transform="rotate(89.814 -25.928 4.177)scale(1 -1)"/></g><g filter="url(#f)"><ellipse cx="5.508" cy="30.599" fill="#8900ff" rx="5.508" ry="30.599" transform="rotate(89.814 -25.738 5.52)scale(1 -1)"/></g><g filter="url(#g)"><ellipse cx="14.072" cy="22.078" fill="#eee6ff" rx="14.072" ry="22.078" transform="rotate(93.35 31.245 55.578)scale(-1 1)"/></g><g filter="url(#h)"><ellipse cx="3.47" cy="21.501" fill="#8900ff" rx="3.47" ry="21.501" transform="rotate(89.009 35.419 55.202)scale(-1 1)"/></g><g filter="url(#i)"><ellipse cx="3.47" cy="21.501" fill="#8900ff" rx="3.47" ry="21.501" transform="rotate(89.009 35.419 55.202)scale(-1 1)"/></g><g filter="url(#j)"><ellipse cx="14.592" cy="9.743" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(39.51 14.592 9.743)"/></g><g filter="url(#k)"><ellipse cx="61.728" cy="-5.321" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(37.892 61.728 -5.32)"/></g><g filter="url(#l)"><ellipse cx="55.618" cy="7.104" fill="#00c2ff" rx="5.971" ry="9.665" transform="rotate(37.892 55.618 7.104)"/></g><g filter="url(#m)"><ellipse cx="12.326" cy="39.103" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(37.892 12.326 39.103)"/></g><g filter="url(#n)"><ellipse cx="12.326" cy="39.103" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(37.892 12.326 39.103)"/></g><g filter="url(#o)"><ellipse cx="49.857" cy="30.678" fill="#8900ff" rx="4.407" ry="29.108" transform="rotate(37.892 49.857 30.678)"/></g><g filter="url(#p)"><ellipse cx="52.623" cy="33.171" fill="#00c2ff" rx="5.971" ry="15.297" transform="rotate(37.892 52.623 33.17)"/></g></g><path d="M6.919 0c-9.198 13.166-9.252 33.575 0 46.789h6.215c-9.25-13.214-9.196-33.623 0-46.789zm62.424 0h-6.215c9.198 13.166 9.252 33.575 0 46.789h6.215c9.25-13.214 9.196-33.623 0-46.789" class="parenthesis"/><defs><filter id="b" width="60.045" height="41.654" x="-5.564" y="16.92" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="7.659"/></filter><filter id="c" width="90.34" height="51.437" x="-40.407" y="-6.762" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="7.659"/></filter><filter id="d" width="79.355" height="29.4" x="-35.435" y="2.801" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="e" width="79.579" height="29.4" x="-30.84" y="20.8" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="f" width="79.579" height="29.4" x="-29.307" y="21.949" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="g" width="74.749" height="58.852" x="29.961" y="-17.13" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="7.659"/></filter><filter id="h" width="61.377" height="25.362" x="37.754" y="3.055" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="i" width="61.377" height="25.362" x="37.754" y="3.055" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="j" width="56.045" height="63.649" x="-13.43" y="-22.082" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="k" width="54.814" height="64.646" x="34.321" y="-37.644" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="l" width="33.541" height="35.313" x="38.847" y="-10.552" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="m" width="54.814" height="64.646" x="-15.081" y="6.78" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="n" width="54.814" height="64.646" x="-15.081" y="6.78" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="o" width="54.814" height="64.646" x="22.45" y="-1.645" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter><filter id="p" width="39.409" height="43.623" x="32.919" y="11.36" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"/><feBlend in="SourceGraphic" in2="BackgroundImageFix" result="shape"/><feGaussianBlur result="effect1_foregroundBlur_2002_17286" stdDeviation="4.596"/></filter></defs></svg>
+</file>
+
+<file path="src/components/admin/PartidoGymkanaRow.jsx">
+import { useState } from 'react';
+import { AlertTriangle, Loader2, Pencil } from 'lucide-react';
+import { useToast } from '../../context/ToastContext';
+import { sobrescribirResultadoGymkana } from '../../services/adminService';
+
+const OPCIONES = [
+  { valor: 'gano', texto: 'Ganó' },
+  { valor: 'empato', texto: 'Empató' },
+  { valor: 'perdio', texto: 'Perdió' },
+];
+
+const ETIQUETA = { gano: 'Ganó', empato: 'Empató', perdio: 'Perdió' };
+const INVERSO = { gano: 'perdio', perdio: 'gano', empato: 'empato' };
+
+/** Fila editable de un enfrentamiento de Gymkana: el Admin puede fijar
+ * o corregir el resultado de cualquier base, esté o no marcada en alerta. */
+export default function PartidoGymkanaRow({ partido, onCambio }) {
+  const { showToast } = useToast();
+  const [editando, setEditando] = useState(false);
+  const [seleccion, setSeleccion] = useState(partido.resultado_a ?? 'gano');
+  const [guardando, setGuardando] = useState(false);
+
+  async function handleGuardar() {
+    setGuardando(true);
+    try {
+      await sobrescribirResultadoGymkana(partido.id, seleccion, INVERSO[seleccion]);
+      showToast('Resultado actualizado', 'success');
+      setEditando(false);
+      onCambio();
+    } catch (err) {
+      showToast(err.message ?? 'No se pudo actualizar el resultado', 'error');
+    } finally {
+      setGuardando(false);
+    }
+  }
+
+  return (
+    <div className="glass-row px-3 py-2.5 space-y-2">
+      <div className="flex items-center justify-between gap-2 flex-wrap">
+        <span className="text-sm text-slate-300">
+          Base {partido.base_id} ·{' '}
+          <span style={{ color: partido.equipo_a?.color_hex }}>{partido.equipo_a?.nombre}</span>
+          {' vs '}
+          <span style={{ color: partido.equipo_b?.color_hex }}>{partido.equipo_b?.nombre}</span>
+        </span>
+
+        <div className="flex items-center gap-2">
+          {partido.requiere_auditoria && (
+            <span className="flex items-center gap-1 text-xs text-red-300">
+              <AlertTriangle size={12} /> Alerta
+            </span>
+          )}
+          <span className="text-xs text-slate-500">
+            {partido.finalizado ? `${ETIQUETA[partido.resultado_a]} / ${ETIQUETA[partido.resultado_b]}` : 'Pendiente'}
+          </span>
+          <button onClick={() => setEditando((v) => !v)} className="btn-ghost !px-2">
+            <Pencil size={14} />
+          </button>
+        </div>
+      </div>
+
+      {editando && (
+        <div className="space-y-2 pt-1">
+          <p className="text-xs text-slate-500">
+            Resultado de <span style={{ color: partido.equipo_a?.color_hex }}>{partido.equipo_a?.nombre}</span> (el
+            del rival se calcula solo):
+          </p>
+          <div className="grid grid-cols-3 gap-2">
+            {OPCIONES.map((op) => (
+              <button
+                key={op.valor}
+                onClick={() => setSeleccion(op.valor)}
+                className={`py-1.5 rounded-lg text-xs font-semibold border transition-colors ${
+                  seleccion === op.valor
+                    ? 'border-indigo-400/60 bg-indigo-500/15 text-indigo-200'
+                    : 'border-white/10 text-slate-400 hover:border-white/20'
+                }`}
+              >
+                {op.texto}
+              </button>
+            ))}
+          </div>
+          <button onClick={handleGuardar} disabled={guardando} className="btn-primary w-full !py-2 text-sm">
+            {guardando && <Loader2 className="animate-spin" size={14} />}
+            Guardar
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+</file>
+
+<file path="src/components/layout/AppLayout.jsx">
+import { Outlet } from 'react-router-dom';
+import Header from './Header';
+
+export default function AppLayout() {
+  return (
+    <div className="min-h-screen flex flex-col">
+      <Header />
+      <div className="flex-1 pb-10">
+        <Outlet />
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="src/components/layout/Header.jsx">
+import { Link, useLocation } from 'react-router-dom';
+import { LogOut, LogIn } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
+
+const ETIQUETAS_ROL = {
+  admin: 'Admin',
+  staff_gymkana: 'Staff Gymkana',
+  staff_tesoro: 'Staff Tesoro',
+  arbitro: 'Árbitro',
+};
+
+/**
+ * Header compartido por toda la app.
+ * - Logo: en Home (/) se usa icon.png (isotipo cuadrado); en cualquier
+ *   otra página se usa widelogo.png (logo horizontal), ya que en Home
+ *   el logo va junto al título grande y en el resto va solo en la
+ *   esquina, donde un logo ancho se lee mejor.
+ * - Clic en el logo siempre regresa a "/".
+ * - Sesión: si hay usuario logueado, muestra su nombre/rol + "Cerrar
+ *   sesión". Si no, muestra "Iniciar Sesión" (excepto en /login, donde
+ *   ese botón sería redundante).
+ */
+export default function Header() {
+  const { pathname } = useLocation();
+  const { session, perfil, logout } = useAuth();
+
+  const esHome = pathname === '/';
+  const esLogin = pathname === '/login';
+  const logoSrc = esHome ? '/icon.png' : '/widelogo.png';
+
+  return (
+    <header className="glass-header px-4 sm:px-8 py-4 sm:py-5 flex items-center justify-between">
+      <Link
+        to="/"
+        className="flex items-center shrink-0 min-w-0 transition-transform duration-300 ease-in-out hover:scale-105"
+      >
+        {esHome ? (
+          <img
+            src={logoSrc}
+            alt="Interoratorios 2026"
+            className="h-20 w-20 sm:h-24 sm:w-24 object-contain drop-shadow-2xl"
+          />
+        ) : (
+          <img
+            src={logoSrc}
+            alt="Interoratorios 2026"
+            className="w-48 sm:w-64 max-w-[70vw] h-auto object-contain drop-shadow-2xl"
+          />
+        )}
+      </Link>
+
+      {!esLogin && (
+        <div className="flex items-center gap-3 shrink-0">
+          {session ? (
+            <>
+              <span className="text-sm text-white/90 hidden sm:inline font-medium drop-shadow">
+                {perfil?.nombre || ETIQUETAS_ROL[perfil?.rol] || 'Usuario'}
+              </span>
+              <button onClick={logout} className="btn-ghost hover:!text-red-300 hover:!bg-red-500/20">
+                <LogOut size={16} /> Cerrar sesión
+              </button>
+            </>
+          ) : (
+            <Link to="/login" className="btn-secondary">
+              <LogIn size={16} /> Iniciar Sesión
+            </Link>
+          )}
+        </div>
+      )}
+    </header>
+  );
+}
+</file>
+
+<file path="src/context/AuthContext.jsx">
+import { createContext, useContext, useEffect, useState } from 'react';
+import { supabase } from '../services/supabaseClient';
+
+const AuthContext = createContext(undefined);
+
+// Mapa rol -> ruta de inicio para redirección tras login
+export const RUTA_POR_ROL = {
+  admin: '/admin',
+  staff_gymkana: '/gymkana',
+  staff_tesoro: '/tesoro',
+  arbitro: '/torneo',
+};
+
+export function AuthProvider({ children }) {
+  const [session, setSession] = useState(null);
+  const [perfil, setPerfil] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let mounted = true;
+
+    supabase.auth.getSession().then(({ data: { session: s } }) => {
+      if (!mounted) return;
+      setSession(s);
+      if (s) {
+        cargarPerfil(s.user.id);
+      } else {
+        setLoading(false);
+      }
+    });
+
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, s) => {
+      setSession(s);
+      if (s) {
+        cargarPerfil(s.user.id);
+      } else {
+        setPerfil(null);
+        setLoading(false);
+      }
+    });
+
+    return () => {
+      mounted = false;
+      listener.subscription.unsubscribe();
+    };
+  }, []);
+
+  async function cargarPerfil(userId) {
+    setLoading(true);
+    const { data, error } = await supabase
+      .from('perfiles')
+      .select('id, nombre, rol')
+      .eq('id', userId)
+      .single();
+
+    if (error) {
+      // Usuario existe en Auth pero no tiene fila en `perfiles` todavía.
+      // El Admin debe asignarle un rol manualmente.
+      console.error('Error cargando perfil:', error.message);
+      setPerfil(null);
+    } else {
+      setPerfil(data);
+    }
+    setLoading(false);
+  }
+
+  async function login(email, password) {
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+  }
+
+  async function logout() {
+    await supabase.auth.signOut();
+    setPerfil(null);
+    setSession(null);
+  }
+
+  const value = {
+    session,
+    perfil,
+    rol: perfil?.rol ?? null,
+    loading,
+    login,
+    logout,
+  };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+}
+
+export function useAuth() {
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error('useAuth debe usarse dentro de <AuthProvider>');
+  return ctx;
+}
+</file>
+
+<file path="src/services/equiposService.js">
+import { supabase } from './supabaseClient';
+
+export async function listarEquipos() {
+  const { data, error } = await supabase
+    .from('equipos')
+    .select('id, nombre, color_hex')
+    .order('nombre', { ascending: true });
+
+  if (error) throw error;
+  return data;
+}
+</file>
+
+<file path="src/services/supabaseClient.js">
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.error(
+    'Faltan VITE_SUPABASE_URL o VITE_SUPABASE_ANON_KEY en tu archivo .env'
+  );
+}
+
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+</file>
+
+<file path="src/services/tesoroService.js">
+import { supabase } from './supabaseClient';
+
+export const BASES_TESORO = Array.from({ length: 10 }, (_, i) => i + 1);
+
+export async function obtenerPuntuacionesTesoro(equipoId) {
+  const { data, error } = await supabase
+    .from('puntuaciones_tesoro')
+    .select('*')
+    .eq('equipo_id', equipoId);
+
+  if (error) throw error;
+  return data;
+}
+
+export async function marcarLlegadaTesoro(equipoId, baseId) {
+  const { data, error } = await supabase.rpc('marcar_llegada_tesoro', {
+    p_equipo_id: equipoId,
+    p_base_id: baseId,
+  });
+  if (error) throw error;
+  return data?.[0];
+}
+
+export async function calificarBaseTesoro(equipoId, baseId, puntos) {
+  const { data, error } = await supabase.rpc('calificar_base_tesoro', {
+    p_equipo_id: equipoId,
+    p_base_id: baseId,
+    p_puntos: puntos,
+  });
+  if (error) throw error;
+  return data?.[0];
+}
+
+export function suscribirseTesoro(equipoId, onChange) {
+  const channel = supabase
+    .channel(`tesoro-${equipoId}`)
+    .on(
+      'postgres_changes',
+      {
+        event: '*',
+        schema: 'public',
+        table: 'puntuaciones_tesoro',
+        filter: `equipo_id=eq.${equipoId}`,
+      },
+      onChange
+    )
+    .subscribe();
+
+  return () => {
+    supabase.removeChannel(channel);
+  };
+}
+</file>
+
+<file path="src/services/torneoService.js">
+import { supabase } from './supabaseClient';
+
+export async function listarPartidos() {
+  const { data, error } = await supabase
+    .from('partidos_torneo')
+    .select('*')
+    .order('partido_num', { ascending: true });
+  if (error) throw error;
+  return data;
+}
+
+export async function generarPartidos() {
+  const { error } = await supabase.rpc('generar_partidos_torneo');
+  if (error) throw error;
+}
+
+export async function finalizarPartido(partidoId, ganador) {
+  const { data, error } = await supabase.rpc('finalizar_partido', {
+    p_partido_id: partidoId,
+    p_ganador: ganador, // 'equipo_a' | 'empate' | 'equipo_b'
+  });
+  if (error) throw error;
+  return data?.[0];
+}
+
+export function suscribirsePartidos(onChange) {
+  const channel = supabase
+    .channel('partidos-torneo')
+    .on(
+      'postgres_changes',
+      { event: '*', schema: 'public', table: 'partidos_torneo' },
+      onChange
+    )
+    .subscribe();
+
+  return () => {
+    supabase.removeChannel(channel);
+  };
+}
+</file>
+
+<file path="src/App.jsx">
+import AppRoutes from './routes/AppRoutes';
+
+function App() {
+  return <AppRoutes />;
+}
+
+export default App;
+</file>
+
+<file path="src/main.jsx">
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import { ToastProvider } from './context/ToastContext';
+import App from './App';
+import './index.css';
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+    <BrowserRouter>
+      <ToastProvider>
+        <AuthProvider>
+          <App />
+        </AuthProvider>
+      </ToastProvider>
+    </BrowserRouter>
+  </React.StrictMode>
+);
+</file>
+
+<file path="supabase/fix_reiniciar_evento.sql">
+-- =====================================================================
+-- FIX: reiniciar_evento() no borraba rutas_gymkana
+-- ---------------------------------------------------------------------
+-- Síntoma reportado: después de "Reiniciar Evento" en el Admin, la
+-- pestaña Gymkana seguía mostrando las parejas/rutas anteriores y no
+-- dejaba volver a presionar "Iniciar Gymkana" (guardar_rutas_gymkana
+-- revisa `exists (select 1 from rutas_gymkana)` y aborta si ya hay
+-- filas). Confirmado en la base: puntuaciones_gymkana quedó en 0 filas
+-- pero rutas_gymkana seguía con las 4 filas viejas.
+--
+-- Esta versión reemplaza reiniciar_evento() para que borre TODO lo que
+-- corresponde a "puntuaciones del evento" (Gymkana, sus rutas, Tesoro,
+-- Torneo) y conserve equipos, perfiles y el historial de ajustes
+-- manuales — igual a como ya lo describe el texto de la Zona de
+-- Peligro en el Admin. También queda restringida a Admin a nivel de
+-- base de datos, no solo por la ruta protegida del frontend.
+--
+-- CÓMO EJECUTAR: Supabase Dashboard -> SQL Editor -> pegar y correr.
+-- =====================================================================
+
+create or replace function public.reiniciar_evento()
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_es_admin boolean;
+begin
+  select exists (
+    select 1 from public.perfiles where id = auth.uid() and rol = 'admin'
+  ) into v_es_admin;
+
+  if not v_es_admin then
+    raise exception 'Solo el Admin puede reiniciar el evento';
+  end if;
+
+  -- El "where true" es a propósito: la extensión safeupdate que Supabase
+  -- activa por defecto bloquea cualquier DELETE sin WHERE (incluso
+  -- dentro de una función) con el error "DELETE requires a WHERE
+  -- clause". Con "where true" se sigue borrando todo, pero se cumple
+  -- el requisito sintáctico.
+  delete from public.puntuaciones_gymkana where true;
+  delete from public.rutas_gymkana where true;
+  delete from public.puntuaciones_tesoro where true;
+  delete from public.partidos_torneo where true;
+  -- equipos, perfiles y ajustes_admin NO se tocan: se conservan.
+end;
+$$;
+
+revoke all on function public.reiniciar_evento() from public;
+grant execute on function public.reiniciar_evento() to authenticated;
+</file>
+
+<file path="supabase/gymkana_rutas_refactor.sql">
+-- =====================================================================
+-- REFACTOR CRÍTICO — Módulo 1: Staff Gymkana
+-- De "calificación independiente por equipo" a "rutas emparejadas +
+-- bloqueo por primera inserción" (mismo espíritu que partidos_torneo).
+--
+-- CÓMO EJECUTAR:
+--   Supabase Dashboard -> SQL Editor -> pegar y correr completo.
+--   (No se aplicó automáticamente: solo tenemos la anon key del proyecto,
+--   no una conexión con privilegios de servicio, así que este archivo
+--   se entrega para que lo corras tú manualmente.)
+--
+-- ⚠️  PASO PREVIO OBLIGATORIO — LÉEME:
+--   `puntuaciones_gymkana` casi seguro es usada por la vista
+--   `marcador_general` (columna total_gymkana) y por la función
+--   `reiniciar_evento()`. El DROP TABLE ... CASCADE de más abajo
+--   eliminará automáticamente cualquier vista/función que dependa de
+--   esta tabla. Antes de correr este script, ejecuta esto y GUARDA el
+--   resultado (por si necesitas comparar con lo que reconstruyo abajo):
+--
+--     select pg_get_viewdef('public.marcador_general', true);
+--     select pg_get_functiondef('public.reiniciar_evento'::regproc);
+--
+--   Abajo reconstruyo `marcador_general` asumiendo la convención de
+--   puntos gano=3 / empate=1 / perdio=0 (igual a como se ve el resto
+--   de la app). Si tu versión anterior usaba otros valores u otras
+--   reglas para total_torneo / total_tesoro / total_ajustes, AJUSTA
+--   esas partes con lo que obtuviste arriba antes de dar por bueno
+--   el marcador general.
+-- =====================================================================
+
+begin;
+
+create extension if not exists pgcrypto; -- gen_random_uuid()
+
+-- ---------------------------------------------------------------------
+-- 1. Tabla de rutas y emparejamiento (persistente, una fila por equipo)
+-- ---------------------------------------------------------------------
+create table if not exists public.rutas_gymkana (
+  id           uuid primary key default gen_random_uuid(),
+  equipo_id    uuid not null references public.equipos(id) on delete cascade,
+  rival_id     uuid not null references public.equipos(id) on delete cascade,
+  pareja_num   smallint not null check (pareja_num in (1, 2)),
+  orden_bases  smallint[] not null,
+  creado_en    timestamptz not null default now(),
+  unique (equipo_id),
+  check (equipo_id <> rival_id)
+);
+
+comment on table public.rutas_gymkana is
+  'Emparejamiento fijo (pareja_num) y recorrido de bases (orden_bases) '
+  'de cada equipo para toda la Gymkana. Se genera una sola vez con '
+  'guardar_rutas_gymkana().';
+
+-- ---------------------------------------------------------------------
+-- 2. Rediseño de puntuaciones_gymkana: de "1 fila por equipo" a
+--    "1 fila por enfrentamiento (pareja x base)", igual que
+--    partidos_torneo (equipo_a_id / equipo_b_id / resultado_a / resultado_b).
+--
+--    ⚠️ Esto reemplaza la tabla anterior. Si el evento ya tiene datos
+--    reales cargados, expórtalos antes de continuar.
+-- ---------------------------------------------------------------------
+drop table if exists public.puntuaciones_gymkana cascade;
+
+create table public.puntuaciones_gymkana (
+  id                 uuid primary key default gen_random_uuid(),
+  base_id            smallint not null check (base_id between 1 and 6),
+  equipo_a_id        uuid not null references public.equipos(id) on delete cascade,
+  equipo_b_id        uuid not null references public.equipos(id) on delete cascade,
+  resultado_a        text check (resultado_a in ('gano', 'empato', 'perdio')),
+  resultado_b        text check (resultado_b in ('gano', 'empato', 'perdio')),
+  finalizado         boolean not null default false,
+  requiere_auditoria boolean not null default false,
+  registrado_por     uuid references public.perfiles(id),
+  fecha              timestamptz not null default now(),
+  actualizado_en      timestamptz not null default now(),
+  unique (base_id, equipo_a_id, equipo_b_id),
+  check (equipo_a_id <> equipo_b_id)
+);
+
+comment on column public.puntuaciones_gymkana.requiere_auditoria is
+  'Bandera de "Reportar Error/Alerta" del Staff: dispara la notificación '
+  'en el Panel de Admin para que revise y, si hace falta, sobrescriba.';
+
+create index if not exists idx_puntuaciones_gymkana_equipo_a on public.puntuaciones_gymkana (equipo_a_id);
+create index if not exists idx_puntuaciones_gymkana_equipo_b on public.puntuaciones_gymkana (equipo_b_id);
+create index if not exists idx_puntuaciones_gymkana_auditoria on public.puntuaciones_gymkana (requiere_auditoria) where requiere_auditoria;
+
+-- Realtime: al recrear la tabla hay que volver a publicarla.
+alter publication supabase_realtime add table public.puntuaciones_gymkana;
+alter publication supabase_realtime add table public.rutas_gymkana;
+
+-- ---------------------------------------------------------------------
+-- 3. RLS
+--    Lectura abierta (igual que hoy: equipos/marcador_general se leen
+--    sin sesión desde /visor). Toda escritura pasa por las funciones
+--    de abajo (security definer) — no se exponen policies de UPDATE
+--    directas para que nadie pueda mandar resultado_a/resultado_b
+--    arbitrarios desde el cliente.
+-- ---------------------------------------------------------------------
+alter table public.rutas_gymkana enable row level security;
+alter table public.puntuaciones_gymkana enable row level security;
+
+drop policy if exists "rutas_gymkana_select_publico" on public.rutas_gymkana;
+create policy "rutas_gymkana_select_publico"
+  on public.rutas_gymkana for select
+  using (true);
+
+drop policy if exists "puntuaciones_gymkana_select_publico" on public.puntuaciones_gymkana;
+create policy "puntuaciones_gymkana_select_publico"
+  on public.puntuaciones_gymkana for select
+  using (true);
+
+-- Nota: no hay policies de insert/update/delete a propósito. Las
+-- funciones RPC de abajo son SECURITY DEFINER y hacen sus propias
+-- validaciones de rol, por lo que no necesitan (ni deben depender de)
+-- una policy de escritura abierta.
+
+-- ---------------------------------------------------------------------
+-- 4. Funciones auxiliares y RPCs
+-- ---------------------------------------------------------------------
+
+create or replace function public._resultado_inverso(p_resultado text)
+returns text
+language sql
+immutable
+as $$
+  select case p_resultado
+    when 'gano' then 'perdio'
+    when 'perdio' then 'gano'
+    else 'empato'
+  end;
+$$;
+
+-- 4.1 Generar y guardar el emparejamiento (llamada UNA vez desde el
+--     Admin). El sorteo en sí se hace en React (ver adminService.js);
+--     esta función solo persiste el resultado de forma atómica.
+create or replace function public.guardar_rutas_gymkana(p_pares jsonb)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_es_admin  boolean;
+  v_par       jsonb;
+  v_equipo_a  uuid;
+  v_equipo_b  uuid;
+  v_pareja    smallint;
+  v_orden     smallint[];
+  v_base      smallint;
+begin
+  select exists (
+    select 1 from public.perfiles where id = auth.uid() and rol = 'admin'
+  ) into v_es_admin;
+
+  if not v_es_admin then
+    raise exception 'Solo el Admin puede iniciar la Gymkana';
+  end if;
+
+  if exists (select 1 from public.rutas_gymkana) then
+    raise exception 'La Gymkana ya fue iniciada. Reinicia el evento antes de generar rutas nuevas.';
+  end if;
+
+  for v_par in select * from jsonb_array_elements(p_pares)
+  loop
+    v_pareja   := (v_par ->> 'pareja_num')::smallint;
+    v_equipo_a := (v_par -> 'equipos' ->> 0)::uuid;
+    v_equipo_b := (v_par -> 'equipos' ->> 1)::uuid;
+
+    select array_agg(value::smallint order by ordinality)
+      into v_orden
+      from jsonb_array_elements_text(v_par -> 'orden_bases') with ordinality;
+
+    insert into public.rutas_gymkana (equipo_id, rival_id, pareja_num, orden_bases)
+    values
+      (v_equipo_a, v_equipo_b, v_pareja, v_orden),
+      (v_equipo_b, v_equipo_a, v_pareja, v_orden);
+
+    foreach v_base in array v_orden loop
+      insert into public.puntuaciones_gymkana (base_id, equipo_a_id, equipo_b_id)
+      values (v_base, v_equipo_a, v_equipo_b);
+    end loop;
+  end loop;
+end;
+$$;
+
+revoke all on function public.guardar_rutas_gymkana(jsonb) from public;
+grant execute on function public.guardar_rutas_gymkana(jsonb) to authenticated;
+
+-- 4.2 Sellar resultado: "el primero que guarda, sella para ambos".
+create or replace function public.sellar_resultado_gymkana(
+  p_partido_id uuid,
+  p_equipo_id  uuid,
+  p_resultado  text
+)
+returns table(ok boolean, mensaje text, ya_bloqueado boolean)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_row public.puntuaciones_gymkana%rowtype;
+begin
+  if p_resultado not in ('gano', 'empato', 'perdio') then
+    raise exception 'Resultado inválido: %', p_resultado;
+  end if;
+
+  select * into v_row
+  from public.puntuaciones_gymkana
+  where id = p_partido_id
+  for update; -- fila bloqueada hasta el commit: garantiza el "first-to-mark"
+
+  if not found then
+    raise exception 'No existe ese enfrentamiento de Gymkana';
+  end if;
+
+  if v_row.finalizado then
+    return query select false, 'Este enfrentamiento ya fue calificado por el otro equipo.', true;
+    return;
+  end if;
+
+  if p_equipo_id = v_row.equipo_a_id then
+    update public.puntuaciones_gymkana
+      set resultado_a = p_resultado,
+          resultado_b = public._resultado_inverso(p_resultado),
+          finalizado = true,
+          registrado_por = auth.uid(),
+          actualizado_en = now()
+      where id = p_partido_id;
+  elsif p_equipo_id = v_row.equipo_b_id then
+    update public.puntuaciones_gymkana
+      set resultado_b = p_resultado,
+          resultado_a = public._resultado_inverso(p_resultado),
+          finalizado = true,
+          registrado_por = auth.uid(),
+          actualizado_en = now()
+      where id = p_partido_id;
+  else
+    raise exception 'Ese equipo no participa en este enfrentamiento';
+  end if;
+
+  return query select true, 'Resultado registrado y sellado para ambos equipos.', false;
+end;
+$$;
+
+revoke all on function public.sellar_resultado_gymkana(uuid, uuid, text) from public;
+grant execute on function public.sellar_resultado_gymkana(uuid, uuid, text) to authenticated;
+
+-- 4.3 Reportar error/alerta (solo sobre una base ya sellada).
+create or replace function public.reportar_alerta_gymkana(p_partido_id uuid)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+begin
+  update public.puntuaciones_gymkana
+    set requiere_auditoria = true
+    where id = p_partido_id
+      and finalizado = true;
+
+  if not found then
+    raise exception 'Solo se puede reportar una alerta sobre una base ya calificada.';
+  end if;
+end;
+$$;
+
+revoke all on function public.reportar_alerta_gymkana(uuid) from public;
+grant execute on function public.reportar_alerta_gymkana(uuid) to authenticated;
+
+-- 4.4 Admin: sobrescribir el resultado de una base en auditoría.
+create or replace function public.sobrescribir_resultado_gymkana(
+  p_partido_id  uuid,
+  p_resultado_a text,
+  p_resultado_b text
+)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_es_admin boolean;
+begin
+  select exists (
+    select 1 from public.perfiles where id = auth.uid() and rol = 'admin'
+  ) into v_es_admin;
+
+  if not v_es_admin then
+    raise exception 'Solo el Admin puede sobrescribir un resultado';
+  end if;
+
+  if p_resultado_a not in ('gano', 'empato', 'perdio')
+     or p_resultado_b not in ('gano', 'empato', 'perdio') then
+    raise exception 'Resultado inválido';
+  end if;
+
+  update public.puntuaciones_gymkana
+    set resultado_a = p_resultado_a,
+        resultado_b = p_resultado_b,
+        finalizado = true,
+        requiere_auditoria = false,
+        registrado_por = auth.uid(),
+        actualizado_en = now()
+    where id = p_partido_id;
+
+  if not found then
+    raise exception 'No existe ese enfrentamiento de Gymkana';
+  end if;
+end;
+$$;
+
+revoke all on function public.sobrescribir_resultado_gymkana(uuid, text, text) from public;
+grant execute on function public.sobrescribir_resultado_gymkana(uuid, text, text) to authenticated;
+
+-- 4.5 Funciones viejas del modelo anterior (llegada libre / auto-calificación
+--     independiente). Ya no aplican con rutas emparejadas.
+drop function if exists public.marcar_llegada_gymkana(uuid, integer);
+drop function if exists public.registrar_evaluacion_gymkana(uuid, integer, text);
+
+-- ---------------------------------------------------------------------
+-- 5. marcador_general — reconstrucción de total_gymkana.
+--    ⚠️ AJUSTA total_torneo / total_tesoro / total_ajustes si tu
+--    definición original (ver pg_get_viewdef del paso previo) no
+--    coincide exactamente con lo de abajo.
+-- ---------------------------------------------------------------------
+create or replace view public.marcador_general as
+with puntos_gymkana as (
+  select equipo_id, sum(pts) as total_gymkana
+  from (
+    select equipo_a_id as equipo_id,
+           case resultado_a when 'gano' then 3 when 'empato' then 1 else 0 end as pts
+    from public.puntuaciones_gymkana
+    where finalizado
+    union all
+    select equipo_b_id as equipo_id,
+           case resultado_b when 'gano' then 3 when 'empato' then 1 else 0 end as pts
+    from public.puntuaciones_gymkana
+    where finalizado
+  ) t
+  group by equipo_id
+),
+puntos_torneo as (
+  select equipo_id, sum(pts) as total_torneo
+  from (
+    select equipo_a_id as equipo_id,
+           case resultado_a when 'gano' then 3 when 'empato' then 1 else 0 end as pts
+    from public.partidos_torneo
+    where finalizado
+    union all
+    select equipo_b_id as equipo_id,
+           case resultado_b when 'gano' then 3 when 'empato' then 1 else 0 end as pts
+    from public.partidos_torneo
+    where finalizado
+  ) t
+  group by equipo_id
+),
+puntos_tesoro as (
+  select equipo_id, sum(puntos_evaluacion) as total_tesoro
+  from public.puntuaciones_tesoro
+  where puntos_evaluacion is not null
+  group by equipo_id
+),
+puntos_ajustes as (
+  select equipo_id, sum(puntos_extra) as total_ajustes
+  from public.ajustes_admin
+  group by equipo_id
+)
+select
+  e.id as equipo_id,
+  e.nombre,
+  e.color_hex,
+  coalesce(g.total_gymkana, 0) as total_gymkana,
+  coalesce(t.total_tesoro, 0) as total_tesoro,
+  coalesce(o.total_torneo, 0) as total_torneo,
+  coalesce(a.total_ajustes, 0) as total_ajustes,
+  coalesce(g.total_gymkana, 0) + coalesce(t.total_tesoro, 0)
+    + coalesce(o.total_torneo, 0) + coalesce(a.total_ajustes, 0) as puntos_generales
+from public.equipos e
+left join puntos_gymkana g on g.equipo_id = e.id
+left join puntos_torneo o on o.equipo_id = e.id
+left join puntos_tesoro t on t.equipo_id = e.id
+left join puntos_ajustes a on a.equipo_id = e.id;
+
+-- ---------------------------------------------------------------------
+-- 6. reiniciar_evento()
+--    ⚠️ No tenemos el cuerpo original (probablemente ya borraba
+--    puntuaciones_gymkana y partidos_torneo). Agrega manualmente esta
+--    línea dentro de esa función para que también limpie las rutas:
+--
+--      delete from public.rutas_gymkana;
+--
+--    (el `delete from public.puntuaciones_gymkana;` que ya exista sigue
+--    funcionando igual, solo cambió la forma de las columnas).
+-- ---------------------------------------------------------------------
+
+commit;
+</file>
+
+<file path=".gitignore">
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+</file>
+
+<file path=".oxlintrc.json">
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["react", "oxc"],
+  "rules": {
+    "react/rules-of-hooks": "error",
+    "react/only-export-components": ["warn", { "allowConstantExport": true }]
+  }
+}
+</file>
+
+<file path="package.json">
+{
+  "name": "rally-app",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "oxlint",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.114.0",
+    "lucide-react": "^1.39.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "react-router-dom": "^7.18.3"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
+    "@vitejs/plugin-react": "^6.1.0",
+    "autoprefixer": "^10.5.4",
+    "oxlint": "^1.79.0",
+    "postcss": "^8.5.26",
+    "tailwindcss": "^3.4.19",
+    "vite": "^8.2.2"
+  }
+}
+</file>
+
+<file path="postcss.config.js">
+export default {
+  plugins: {
+    tailwindcss: {},
+    autoprefixer: {},
+  },
+}
+</file>
+
+<file path="README.md">
+# React + Vite
+
+This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+
+Currently, two official plugins are available:
+
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+
+## React Compiler
+
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+
+## Expanding the Oxlint configuration
+
+If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+</file>
+
+<file path="vercel.json">
+{
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
+</file>
+
+<file path="vite.config.js">
+import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite'
+
+// https://vite.dev/config/
+export default defineConfig({
+  plugins: [react()],
+})
+</file>
+
+<file path="src/components/admin/AjustesForm.jsx">
+import { useState } from 'react';
+import { Loader2 } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
+import { useToast } from '../../context/ToastContext';
+import { crearAjuste } from '../../services/adminService';
+
+export default function AjustesForm({ equipos, historial, onCambio }) {
+  const { session } = useAuth();
+  const { showToast } = useToast();
+
+  const [equipoId, setEquipoId] = useState('');
+  const [puntos, setPuntos] = useState('');
+  const [motivo, setMotivo] = useState('');
+  const [guardando, setGuardando] = useState(false);
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    if (!equipoId || !motivo.trim() || puntos === '') {
+      showToast('Completa equipo, puntos y motivo', 'error');
+      return;
+    }
+    setGuardando(true);
+    try {
+      await crearAjuste(equipoId, Number(puntos), motivo.trim(), session.user.id);
+      showToast('Ajuste registrado', 'success');
+      setPuntos('');
+      setMotivo('');
+      onCambio();
+    } catch (err) {
+      showToast(err.message ?? 'No se pudo registrar el ajuste', 'error');
+    } finally {
+      setGuardando(false);
+    }
+  }
+
+  return (
+    <div className="space-y-6">
+      <form onSubmit={handleSubmit} className="glass-card p-4 space-y-3">
+        <h2 className="font-semibold text-slate-200">Nuevo ajuste manual</h2>
+
+        <select
+          value={equipoId}
+          onChange={(e) => setEquipoId(e.target.value)}
+          className="field [&>option]:bg-slate-900"
+        >
+          <option value="">Selecciona un equipo</option>
+          {equipos.map((eq) => (
+            <option key={eq.id} value={eq.id}>
+              {eq.nombre}
+            </option>
+          ))}
+        </select>
+
+        <input
+          type="number"
+          value={puntos}
+          onChange={(e) => setPuntos(e.target.value)}
+          placeholder="Puntos (positivo o negativo, ej: -2 o 5)"
+          className="field"
+        />
+
+        <textarea
+          value={motivo}
+          onChange={(e) => setMotivo(e.target.value)}
+          placeholder="Motivo del ajuste"
+          rows={2}
+          className="field resize-none"
+        />
+
+        <button type="submit" disabled={guardando} className="btn-primary px-4">
+          {guardando && <Loader2 className="animate-spin" size={18} />}
+          Registrar ajuste
+        </button>
+      </form>
+
+      <div className="space-y-2">
+        <h3 className="font-semibold text-slate-200 text-sm">Historial de ajustes</h3>
+        {historial.length === 0 ? (
+          <p className="text-sm text-slate-400">Aún no hay ajustes registrados.</p>
+        ) : (
+          <div className="space-y-2">
+            {historial.map((a) => (
+              <div key={a.id} className="glass-row p-3 text-sm flex justify-between">
+                <div>
+                  <span className="font-medium" style={{ color: a.equipos?.color_hex }}>
+                    {a.equipos?.nombre}
+                  </span>
+                  <p className="text-slate-400">{a.motivo}</p>
+                </div>
+                <span className={`font-bold ${a.puntos_extra >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                  {a.puntos_extra >= 0 ? '+' : ''}
+                  {a.puntos_extra}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="src/components/admin/EquiposCRUD.jsx">
+import { useState } from 'react';
+import { Plus, Pencil, Trash2, Loader2, X } from 'lucide-react';
+import { useToast } from '../../context/ToastContext';
+import { crearEquipo, actualizarEquipo, eliminarEquipo } from '../../services/adminService';
+
+const MAX_EQUIPOS = 4;
+
+export default function EquiposCRUD({ equipos, onCambio }) {
+  const { showToast } = useToast();
+  const [editando, setEditando] = useState(null); // null | 'nuevo' | equipo
+  const [nombre, setNombre] = useState('');
+  const [colorHex, setColorHex] = useState('#6366F1');
+  const [guardando, setGuardando] = useState(false);
+
+  function abrirNuevo() {
+    setEditando('nuevo');
+    setNombre('');
+    setColorHex('#6366F1');
+  }
+
+  function abrirEditar(equipo) {
+    setEditando(equipo);
+    setNombre(equipo.nombre);
+    setColorHex(equipo.color_hex);
+  }
+
+  function cerrar() {
+    setEditando(null);
+  }
+
+  async function handleGuardar(e) {
+    e.preventDefault();
+    setGuardando(true);
+    try {
+      if (editando === 'nuevo') {
+        await crearEquipo(nombre.trim(), colorHex);
+        showToast('Equipo creado', 'success');
+      } else {
+        await actualizarEquipo(editando.id, { nombre: nombre.trim(), colorHex });
+        showToast('Equipo actualizado', 'success');
+      }
+      cerrar();
+      onCambio();
+    } catch (err) {
+      showToast(err.message ?? 'No se pudo guardar el equipo', 'error');
+    } finally {
+      setGuardando(false);
+    }
+  }
+
+  async function handleEliminar(equipo) {
+    if (!window.confirm(`¿Eliminar "${equipo.nombre}"? Esto borra también sus puntuaciones.`)) {
+      return;
+    }
+    try {
+      await eliminarEquipo(equipo.id);
+      showToast('Equipo eliminado', 'success');
+      onCambio();
+    } catch (err) {
+      showToast(err.message ?? 'No se pudo eliminar el equipo', 'error');
+    }
+  }
+
+  const puedeCrear = equipos.length < MAX_EQUIPOS;
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <h2 className="font-semibold text-slate-200">
+          Equipos <span className="text-slate-500">({equipos.length}/{MAX_EQUIPOS})</span>
+        </h2>
+        <button onClick={abrirNuevo} disabled={!puedeCrear} className="btn-primary !px-3 !py-2 text-sm">
+          <Plus size={16} /> Nuevo equipo
+        </button>
+      </div>
+
+      {!puedeCrear && (
+        <p className="text-xs text-amber-300 bg-amber-500/10 border border-amber-500/25 rounded-xl px-3 py-2">
+          Ya existen los 4 equipos del evento. Elimina uno para poder crear otro.
+        </p>
+      )}
+
+      <div className="grid gap-3">
+        {equipos.map((equipo) => (
+          <div
+            key={equipo.id}
+            className="glass-card-hover flex items-center justify-between p-4"
+            style={{ borderColor: `${equipo.color_hex}55` }}
+          >
+            <div className="flex items-center gap-3">
+              <span
+                className="w-6 h-6 rounded-full"
+                style={{ backgroundColor: equipo.color_hex, boxShadow: `0 0 10px ${equipo.color_hex}` }}
+              />
+              <span className="font-semibold text-slate-100">{equipo.nombre}</span>
+            </div>
+            <div className="flex gap-1">
+              <button onClick={() => abrirEditar(equipo)} className="btn-ghost !px-2">
+                <Pencil size={16} />
+              </button>
+              <button onClick={() => handleEliminar(equipo)} className="btn-ghost !px-2 hover:!text-red-400">
+                <Trash2 size={16} />
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {editando && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-40 px-4">
+          <form onSubmit={handleGuardar} className="glass-card w-full max-w-sm p-6 space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="font-bold text-white">
+                {editando === 'nuevo' ? 'Nuevo equipo' : 'Editar equipo'}
+              </h3>
+              <button type="button" onClick={cerrar} className="text-slate-500 hover:text-slate-200">
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="field-label">Nombre</label>
+              <input
+                required
+                value={nombre}
+                onChange={(e) => setNombre(e.target.value)}
+                className="field"
+                placeholder="Equipo Rojo"
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="field-label">Color</label>
+              <div className="flex items-center gap-3">
+                <input
+                  type="color"
+                  value={colorHex}
+                  onChange={(e) => setColorHex(e.target.value)}
+                  className="w-12 h-10 rounded-lg cursor-pointer bg-transparent border border-white/10"
+                />
+                <input
+                  value={colorHex}
+                  onChange={(e) => setColorHex(e.target.value)}
+                  className="field flex-1 font-mono text-sm"
+                />
+              </div>
+            </div>
+
+            <button type="submit" disabled={guardando} className="btn-primary w-full">
+              {guardando && <Loader2 className="animate-spin" size={18} />}
+              Guardar
+            </button>
+          </form>
+        </div>
+      )}
+    </div>
+  );
+}
+</file>
+
+<file path="src/components/admin/ReiniciarEvento.jsx">
+import { useState } from 'react';
+import { AlertOctagon, Loader2, X } from 'lucide-react';
+import { useToast } from '../../context/ToastContext';
+import { reiniciarEvento } from '../../services/adminService';
+
+export default function ReiniciarEvento({ onCambio }) {
+  const { showToast } = useToast();
+  const [paso, setPaso] = useState(0); // 0 = cerrado, 1 = primera confirmacion, 2 = segunda confirmacion
+  const [textoConfirmacion, setTextoConfirmacion] = useState('');
+  const [procesando, setProcesando] = useState(false);
+
+  function cerrar() {
+    setPaso(0);
+    setTextoConfirmacion('');
+  }
+
+  async function handleConfirmarFinal() {
+    setProcesando(true);
+    try {
+      await reiniciarEvento();
+      showToast('Evento reiniciado. Puntuaciones y partidos borrados.', 'success');
+      cerrar();
+      onCambio();
+    } catch (err) {
+      showToast(err.message ?? 'No se pudo reiniciar el evento', 'error');
+    } finally {
+      setProcesando(false);
+    }
+  }
+
+  return (
+    <div className="rounded-2xl border border-red-500/25 bg-red-500/[0.05] backdrop-blur-xl p-5 space-y-3">
+      <div className="flex items-center gap-2 text-red-300 font-bold">
+        <AlertOctagon size={20} />
+        Zona de peligro
+      </div>
+      <p className="text-sm text-red-300/80">
+        Reiniciar el evento borra TODAS las puntuaciones de Gymkana, Tesoro y los partidos del
+        Torneo, y también el historial de ajustes manuales y de alertas de Gymkana. Los
+        equipos y los usuarios se conservan.
+      </p>
+      <button onClick={() => setPaso(1)} className="btn-danger !px-4 !py-2 text-sm">
+        Reiniciar Evento
+      </button>
+
+      {paso > 0 && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 px-4">
+          <div className="glass-card w-full max-w-sm p-6 space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="font-bold text-red-300">
+                {paso === 1 ? '¿Reiniciar el evento?' : 'Última confirmación'}
+              </h3>
+              <button onClick={cerrar} className="text-slate-500 hover:text-slate-200">
+                <X size={20} />
+              </button>
+            </div>
+
+            {paso === 1 && (
+              <>
+                <p className="text-sm text-slate-400">
+                  Esta acción es irreversible. Se borrarán todas las puntuaciones y partidos
+                  registrados hasta ahora.
+                </p>
+                <button onClick={() => setPaso(2)} className="btn-danger w-full">
+                  Sí, entiendo, continuar
+                </button>
+              </>
+            )}
+
+            {paso === 2 && (
+              <>
+                <p className="text-sm text-slate-400">
+                  Escribe <span className="font-mono font-bold text-slate-200">REINICIAR</span> para confirmar
+                  definitivamente.
+                </p>
+                <input
+                  value={textoConfirmacion}
+                  onChange={(e) => setTextoConfirmacion(e.target.value)}
+                  className="field font-mono"
+                  placeholder="REINICIAR"
+                />
+                <button
+                  onClick={handleConfirmarFinal}
+                  disabled={textoConfirmacion !== 'REINICIAR' || procesando}
+                  className="btn-danger w-full"
+                >
+                  {procesando && <Loader2 className="animate-spin" size={18} />}
+                  Reiniciar definitivamente
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+</file>
+
+<file path="src/components/admin/TablaMarcador.jsx">
+export default function TablaMarcador({ equipos }) {
+  if (equipos.length === 0) {
+    return <p className="text-sm text-slate-400">Aún no hay equipos creados.</p>;
+  }
+
+  return (
+    <div className="overflow-x-auto glass-card">
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="text-slate-500 text-left text-xs uppercase tracking-wide">
+            <th className="px-4 py-3">Equipo</th>
+            <th className="px-4 py-3 text-right">Gymkana</th>
+            <th className="px-4 py-3 text-right">Tesoro</th>
+            <th className="px-4 py-3 text-right">Torneo</th>
+            <th className="px-4 py-3 text-right">Ajustes</th>
+            <th className="px-4 py-3 text-right font-bold">Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {equipos.map((e) => (
+            <tr key={e.equipo_id} className="border-t border-white/10 hover:bg-white/[0.03] transition-colors">
+              <td className="px-4 py-3 font-medium text-slate-200">
+                <span
+                  className="inline-block w-2.5 h-2.5 rounded-full mr-2 align-middle"
+                  style={{ backgroundColor: e.color_hex, boxShadow: `0 0 8px ${e.color_hex}` }}
+                />
+                {e.nombre}
+              </td>
+              <td className="px-4 py-3 text-right text-slate-400">{e.total_gymkana}</td>
+              <td className="px-4 py-3 text-right text-slate-400">{e.total_tesoro}</td>
+              <td className="px-4 py-3 text-right text-slate-400">{e.total_torneo}</td>
+              <td className="px-4 py-3 text-right text-slate-400">{e.total_ajustes}</td>
+              <td className="px-4 py-3 text-right font-bold accent-gradient-text">
+                {e.puntos_generales}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+</file>
+
+<file path="src/components/tesoro/BaseTesoroCard.jsx">
+import { useState } from 'react';
+import { CheckCircle2, Circle, Loader2 } from 'lucide-react';
+
+export default function BaseTesoroCard({
+  baseId,
+  registro,
+  equipoColor,
+  onMarcarLlegada,
+  onCalificar,
+}) {
+  const [cargando, setCargando] = useState(false);
+
+  const yaLlego = !!registro;
+  const yaCalificada = registro?.puntos_evaluacion != null;
+
+  async function handleLlegada() {
+    setCargando(true);
+    try {
+      await onMarcarLlegada(baseId);
+    } finally {
+      setCargando(false);
+    }
+  }
+
+  async function handleCalificar(puntos) {
+    setCargando(true);
+    try {
+      await onCalificar(baseId, puntos);
+    } finally {
+      setCargando(false);
+    }
+  }
+
+  return (
+    <div
+      className="rounded-2xl border backdrop-blur-xl p-4 bg-white/[0.04] space-y-3 transition-colors"
+      style={{ borderColor: yaCalificada ? 'rgba(255,255,255,0.1)' : `${equipoColor}80` }}
+    >
+      <span className="font-semibold text-white">Base {baseId}</span>
+
+      {!yaLlego && (
+        <button
+          onClick={handleLlegada}
+          disabled={cargando}
+          className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-semibold text-white disabled:opacity-60 shadow-lg"
+          style={{ backgroundColor: equipoColor, boxShadow: `0 8px 24px -8px ${equipoColor}` }}
+        >
+          {cargando ? <Loader2 className="animate-spin" size={18} /> : <Circle size={18} />}
+          Marcar Llegada
+        </button>
+      )}
+
+      {yaLlego && !yaCalificada && (
+        <div className="space-y-1.5">
+          <p className="text-xs text-slate-400">Califica el desempeño en esta base:</p>
+          <div className="grid grid-cols-3 gap-2">
+            {[1, 2, 3].map((p) => (
+              <button
+                key={p}
+                onClick={() => handleCalificar(p)}
+                disabled={cargando}
+                className="py-3 rounded-xl font-bold text-white bg-gradient-to-r from-indigo-500 to-violet-500 disabled:opacity-60"
+              >
+                {p} pt{p > 1 ? 's' : ''}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {yaCalificada && (
+        <div className="flex items-center gap-2 flex-wrap">
+          <CheckCircle2 size={18} className="text-emerald-400" />
+          <span className="text-sm font-semibold px-3 py-1 rounded-full bg-indigo-500/15 text-indigo-300 border border-indigo-500/25">
+            {registro.puntos_totales} pts totales
+          </span>
+          <span className="text-sm text-slate-500">· Base ya calificada</span>
+        </div>
+      )}
+    </div>
+  );
+}
+</file>
+
+<file path="src/components/tesoro/ProgresoTesoro.jsx">
+export default function ProgresoTesoro({ completadas, total }) {
+  const porcentaje = total === 0 ? 0 : Math.round((completadas / total) * 100);
+
+  return (
+    <div className="glass-card p-4 space-y-2">
+      <div className="flex justify-between text-sm font-medium text-slate-300">
+        <span>Bases completadas</span>
+        <span>
+          {completadas}/{total}
+        </span>
+      </div>
+      <div className="w-full h-2.5 bg-white/10 rounded-full overflow-hidden">
+        <div
+          className="h-full bg-gradient-to-r from-indigo-500 to-violet-500 shadow-glow transition-all duration-500"
+          style={{ width: `${porcentaje}%` }}
+        />
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="src/components/torneo/PartidoCard.jsx">
+import { useState } from 'react';
+import { Lock, Loader2 } from 'lucide-react';
+
+const ETIQUETA_RESULTADO = {
+  gano: 'Ganó',
+  empato: 'Empató',
+  perdio: 'Perdió',
+  pendiente: 'Pendiente',
+};
+
+export default function PartidoCard({ partido, equipoA, equipoB, esAdmin, onFinalizar }) {
+  const [cargando, setCargando] = useState(false);
+
+  const bloqueado = partido.finalizado && !esAdmin;
+
+  async function handleSeleccion(ganador) {
+    setCargando(true);
+    try {
+      await onFinalizar(partido.id, ganador);
+    } finally {
+      setCargando(false);
+    }
+  }
+
+  if (!equipoA || !equipoB) {
+    return null;
+  }
+
+  return (
+    <div className="glass-card p-4 space-y-3">
+      <div className="flex items-center justify-between text-xs text-slate-500">
+        <span>Partido {partido.partido_num}</span>
+        {partido.finalizado && (
+          <span className="flex items-center gap-1">
+            <Lock size={12} /> Finalizado
+          </span>
+        )}
+      </div>
+
+      <div className="flex items-center justify-between text-center">
+        <div className="flex-1">
+          <span
+            className="inline-block w-3 h-3 rounded-full mr-1 align-middle"
+            style={{ backgroundColor: equipoA.color_hex, boxShadow: `0 0 8px ${equipoA.color_hex}` }}
+          />
+          <span className="font-semibold text-slate-100">{equipoA.nombre}</span>
+          {partido.finalizado && (
+            <p className="text-xs text-slate-500">{ETIQUETA_RESULTADO[partido.resultado_a]}</p>
+          )}
+        </div>
+        <span className="text-slate-600 font-bold px-2">vs</span>
+        <div className="flex-1">
+          <span className="font-semibold text-slate-100">{equipoB.nombre}</span>
+          <span
+            className="inline-block w-3 h-3 rounded-full ml-1 align-middle"
+            style={{ backgroundColor: equipoB.color_hex, boxShadow: `0 0 8px ${equipoB.color_hex}` }}
+          />
+          {partido.finalizado && (
+            <p className="text-xs text-slate-500">{ETIQUETA_RESULTADO[partido.resultado_b]}</p>
+          )}
+        </div>
+      </div>
+
+      {bloqueado ? (
+        <p className="text-center text-xs text-slate-500 bg-white/[0.03] border border-white/10 rounded-xl py-2">
+          Este partido ya fue calificado. Solo el Admin puede editarlo.
+        </p>
+      ) : (
+        <div className="grid grid-cols-3 gap-2">
+          <button
+            onClick={() => handleSeleccion('equipo_a')}
+            disabled={cargando}
+            className="py-2.5 rounded-xl text-sm font-semibold text-white disabled:opacity-60 shadow-lg"
+            style={{ backgroundColor: equipoA.color_hex, boxShadow: `0 8px 20px -8px ${equipoA.color_hex}` }}
+          >
+            {cargando ? <Loader2 className="animate-spin mx-auto" size={16} /> : `Ganó ${equipoA.nombre}`}
+          </button>
+          <button
+            onClick={() => handleSeleccion('empate')}
+            disabled={cargando}
+            className="py-2.5 rounded-xl text-sm font-semibold text-slate-200 bg-white/10 border border-white/10 hover:bg-white/[0.14] disabled:opacity-60"
+          >
+            Empate
+          </button>
+          <button
+            onClick={() => handleSeleccion('equipo_b')}
+            disabled={cargando}
+            className="py-2.5 rounded-xl text-sm font-semibold text-white disabled:opacity-60 shadow-lg"
+            style={{ backgroundColor: equipoB.color_hex, boxShadow: `0 8px 20px -8px ${equipoB.color_hex}` }}
+          >
+            {cargando ? <Loader2 className="animate-spin mx-auto" size={16} /> : `Ganó ${equipoB.nombre}`}
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+</file>
+
+<file path="src/components/visor/TablaPosicionesVisor.jsx">
+const MEDALLAS = ['🥇', '🥈', '🥉', '4º'];
+
+export default function TablaPosicionesVisor({ equipos }) {
+  if (equipos.length === 0) {
+    return <p className="text-center text-slate-500 py-10">Aún no hay equipos registrados.</p>;
+  }
+
+  return (
+    <div className="space-y-3">
+      {equipos.map((e, i) => (
+        <div
+          key={e.equipo_id}
+          className="animate-fade-up rounded-2xl p-4 sm:p-6 flex items-center gap-4 sm:gap-6 backdrop-blur-xl border transition-transform hover:-translate-y-0.5"
+          style={{
+            animationDelay: `${i * 70}ms`,
+            backgroundColor: `${e.color_hex}12`,
+            borderColor: `${e.color_hex}55`,
+            boxShadow: i === 0 ? `0 0 40px -12px ${e.color_hex}` : undefined,
+          }}
+        >
+          <span className="text-3xl sm:text-5xl font-black w-14 sm:w-20 text-center shrink-0">
+            {MEDALLAS[i] ?? `${i + 1}º`}
+          </span>
+
+          <div className="flex-1 min-w-0">
+            <p className="text-xl sm:text-3xl font-black text-white truncate">{e.nombre}</p>
+            <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs sm:text-sm text-slate-400 mt-1">
+              <span>Gymkana: {e.total_gymkana}</span>
+              <span>Tesoro: {e.total_tesoro}</span>
+              <span>Torneo: {e.total_torneo}</span>
+              <span>Ajustes: {e.total_ajustes}</span>
+            </div>
+          </div>
+
+          <span
+            className="text-3xl sm:text-5xl font-black shrink-0"
+            style={{ color: e.color_hex, textShadow: `0 0 30px ${e.color_hex}80` }}
+          >
+            {e.puntos_generales}
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+}
+</file>
+
+<file path="src/components/visor/TrackerUbicacion.jsx">
+import { MapPin } from 'lucide-react';
+
+export default function TrackerUbicacion({ equipos, ubicaciones }) {
+  return (
+    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      {equipos.map((e) => {
+        const ubicacion = ubicaciones[e.equipo_id];
+        return (
+          <div
+            key={e.equipo_id}
+            className="glass-card p-3 sm:p-4 text-center border-t-2"
+            style={{ borderTopColor: e.color_hex }}
+          >
+            <p className="font-bold text-slate-100 text-sm sm:text-base truncate">{e.nombre}</p>
+            <div className="flex items-center justify-center gap-1 mt-2 text-slate-400">
+              <MapPin size={14} />
+              {ubicacion ? (
+                <span className="text-xs sm:text-sm">
+                  {ubicacion.modulo} · Base {ubicacion.base_id}
+                </span>
+              ) : (
+                <span className="text-xs sm:text-sm">Sin iniciar</span>
+              )}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+</file>
+
+<file path="src/context/ToastContext.jsx">
+import { createContext, useCallback, useContext, useState } from 'react';
+
+const ToastContext = createContext(undefined);
+
+let idCounter = 0;
+
+const ESTILOS = {
+  success: 'bg-emerald-500/95 shadow-emerald-950/50',
+  error: 'bg-red-500/95 shadow-red-950/50',
+  warning: 'bg-amber-500/95 shadow-amber-950/50',
+  info: 'bg-slate-800/95 shadow-black/50',
+};
+
+export function ToastProvider({ children }) {
+  const [toasts, setToasts] = useState([]);
+
+  const remove = useCallback((id) => {
+    setToasts((prev) => prev.filter((t) => t.id !== id));
+  }, []);
+
+  const showToast = useCallback(
+    (mensaje, tipo = 'info', duracionMs = 4500) => {
+      const id = ++idCounter;
+      setToasts((prev) => [...prev, { id, mensaje, tipo }]);
+      setTimeout(() => remove(id), duracionMs);
+    },
+    [remove]
+  );
+
+  return (
+    <ToastContext.Provider value={{ showToast }}>
+      {children}
+      <div className="fixed bottom-4 left-1/2 -translate-x-1/2 sm:left-auto sm:right-4 sm:translate-x-0 z-50 flex flex-col gap-2 w-[calc(100%-2rem)] max-w-sm">
+        {toasts.map((t) => (
+          <div
+            key={t.id}
+            className={`rounded-xl backdrop-blur-xl border border-white/10 shadow-lg px-4 py-3 text-sm font-medium text-white ${ESTILOS[t.tipo] ?? ESTILOS.info}`}
+          >
+            {t.mensaje}
+          </div>
+        ))}
+      </div>
+    </ToastContext.Provider>
+  );
+}
+
+export function useToast() {
+  const ctx = useContext(ToastContext);
+  if (!ctx) throw new Error('useToast debe usarse dentro de <ToastProvider>');
+  return ctx;
+}
+</file>
+
+<file path="src/routes/AppRoutes.jsx">
+import { Routes, Route, Navigate } from 'react-router-dom';
+import ProtectedRoute from './ProtectedRoute';
+import AppLayout from '../components/layout/AppLayout';
+
+import Home from '../pages/Home';
+import Login from '../pages/Login';
+import GymkanaPage from '../pages/GymkanaPage';
+import TesoroPage from '../pages/TesoroPage';
+import TorneoPage from '../pages/TorneoPage';
+import AdminPage from '../pages/AdminPage';
+import VisorPage from '../pages/VisorPage';
+
+export default function AppRoutes() {
+  return (
+    <Routes>
+      {/* AppLayout pone el Header (logo + sesion) en TODAS las paginas */}
+      <Route element={<AppLayout />}>
+        {/* Pagina principal publica, con botones a cada actividad */}
+        <Route path="/" element={<Home />} />
+
+        {/* Publica, sin autenticacion */}
+        <Route path="/visor" element={<VisorPage />} />
+
+        <Route path="/login" element={<Login />} />
+
+        <Route
+          path="/gymkana"
+          element={
+            <ProtectedRoute roles={['staff_gymkana', 'admin']}>
+              <GymkanaPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/tesoro"
+          element={
+            <ProtectedRoute roles={['staff_tesoro', 'admin']}>
+              <TesoroPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/torneo"
+          element={
+            <ProtectedRoute roles={['arbitro', 'admin']}>
+              <TorneoPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute roles={['admin']}>
+              <AdminPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Route>
+    </Routes>
+  );
+}
+</file>
+
+<file path="src/routes/ProtectedRoute.jsx">
+import { Navigate } from 'react-router-dom';
+import { Loader2 } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+
+/**
+ * Envuelve una página que requiere sesión iniciada y, opcionalmente,
+ * uno de los roles permitidos.
+ *
+ * Uso:
+ *   <ProtectedRoute roles={['admin']}><AdminPage /></ProtectedRoute>
+ *   <ProtectedRoute roles={['staff_gymkana', 'admin']}><GymkanaPage /></ProtectedRoute>
+ */
+export default function ProtectedRoute({ children, roles }) {
+  const { session, perfil, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="animate-spin text-indigo-400" size={32} />
+      </div>
+    );
+  }
+
+  if (!session) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (!perfil) {
+    // Usuario autenticado pero sin rol asignado en `perfiles` todavía
+    return (
+      <div className="min-h-screen flex items-center justify-center px-4 text-center">
+        <p className="glass-card px-6 py-5 text-slate-300 max-w-sm">
+          Tu cuenta aún no tiene un rol asignado. Contacta al Admin del evento.
+        </p>
+      </div>
+    );
+  }
+
+  if (roles && !roles.includes(perfil.rol)) {
+    return <Navigate to="/" replace />;
+  }
+
+  return children;
+}
+</file>
+
+<file path="src/services/gymkanaService.js">
+import { supabase } from './supabaseClient';
+
+/**
+ * Trae la ruta fija del equipo (rival + orden de bases) y el estado de
+ * cada enfrentamiento de esa ruta, y devuelve el partido "actual"
+ * (el primero de la ruta que aún no está finalizado).
+ *
+ * Devuelve null si la Gymkana todavía no fue iniciada por el Admin.
+ */
+export async function obtenerEstadoGymkana(equipoId) {
+  const { data: ruta, error: errorRuta } = await supabase
+    .from('rutas_gymkana')
+    .select('equipo_id, rival_id, pareja_num, orden_bases, rival:rival_id(id, nombre, color_hex)')
+    .eq('equipo_id', equipoId)
+    .maybeSingle();
+
+  if (errorRuta) throw errorRuta;
+  if (!ruta) return null;
+
+  const { data: partidos, error: errorPartidos } = await supabase
+    .from('puntuaciones_gymkana')
+    .select('*')
+    .in('base_id', ruta.orden_bases)
+    .or(`equipo_a_id.eq.${equipoId},equipo_b_id.eq.${equipoId}`);
+
+  if (errorPartidos) throw errorPartidos;
+
+  // Ordenamos los partidos según el recorrido propio del equipo, no por base_id.
+  const partidosPorBase = new Map(partidos.map((p) => [p.base_id, p]));
+  const recorrido = ruta.orden_bases.map((baseId) => partidosPorBase.get(baseId));
+
+  const actualIndex = recorrido.findIndex((p) => p && !p.finalizado);
+  const actual = actualIndex === -1 ? null : recorrido[actualIndex];
+
+  return {
+    rival: ruta.rival,
+    parejaNum: ruta.pareja_num,
+    ordenBases: ruta.orden_bases,
+    recorrido, // en el orden que le toca a este equipo
+    actual, // partido pendiente de calificar (o null si ya terminó las 6 bases)
+    actualIndex,
+    completadas: recorrido.filter((p) => p?.finalizado).length,
+  };
+}
+
+/**
+ * El Animador marca el resultado desde su propia perspectiva
+ * ('gano' | 'empato' | 'perdio'). El backend calcula el resultado
+ * inverso para el rival y sella el enfrentamiento para ambos.
+ */
+export async function sellarResultadoGymkana(partidoId, equipoId, resultado) {
+  const { data, error } = await supabase.rpc('sellar_resultado_gymkana', {
+    p_partido_id: partidoId,
+    p_equipo_id: equipoId,
+    p_resultado: resultado,
+  });
+  if (error) throw error;
+  return data?.[0];
+}
+
+/** Reporta un error/alerta sobre una base ya sellada, para que el Admin la revise. */
+export async function reportarAlertaGymkana(partidoId) {
+  const { error } = await supabase.rpc('reportar_alerta_gymkana', {
+    p_partido_id: partidoId,
+  });
+  if (error) throw error;
+}
+
+/**
+ * Se suscribe a cambios en puntuaciones_gymkana. La tabla es pequeña
+ * (2 parejas x 6 bases = 12 filas en todo el evento), así que no hace
+ * falta filtrar por equipo: cualquier cambio recarga el estado del
+ * equipo seleccionado en la pantalla.
+ */
+export function suscribirseGymkana(onChange) {
+  const channel = supabase
+    .channel('gymkana-puntuaciones')
+    .on(
+      'postgres_changes',
+      { event: '*', schema: 'public', table: 'puntuaciones_gymkana' },
+      onChange
+    )
+    .subscribe();
+
+  return () => {
+    supabase.removeChannel(channel);
+  };
+}
+</file>
+
+<file path="src/services/visorService.js">
+import { supabase } from './supabaseClient';
+
+export async function obtenerMarcadorGeneral() {
+  const { data, error } = await supabase
+    .from('marcador_general')
+    .select('*')
+    .order('puntos_generales', { ascending: false });
+  if (error) throw error;
+  return data;
+}
+
+/**
+ * Devuelve, por equipo, "en qué base está" ahora mismo, combinando:
+ *  - Tesoro: la última base a la que llegó (por fecha de llegada).
+ *  - Gymkana: la base pendiente según su ruta fija (rutas_gymkana +
+ *    puntuaciones_gymkana), ya que ese módulo ya no registra "llegadas"
+ *    sueltas sino enfrentamientos emparejados.
+ * Entre ambos módulos, gana el que tenga el evento más reciente.
+ */
+export async function obtenerUbicaciones() {
+  const [rutasRes, gymkanaRes, tesoroRes] = await Promise.all([
+    supabase.from('rutas_gymkana').select('equipo_id, orden_bases, creado_en'),
+    supabase.from('puntuaciones_gymkana').select('base_id, equipo_a_id, equipo_b_id, finalizado, actualizado_en'),
+    supabase.from('puntuaciones_tesoro').select('equipo_id, base_id, fecha'),
+  ]);
+
+  if (rutasRes.error) throw rutasRes.error;
+  if (gymkanaRes.error) throw gymkanaRes.error;
+  if (tesoroRes.error) throw tesoroRes.error;
+
+  const ultimaPorEquipo = {};
+
+  for (const r of tesoroRes.data) {
+    const actual = ultimaPorEquipo[r.equipo_id];
+    if (!actual || new Date(r.fecha) > new Date(actual.fecha)) {
+      ultimaPorEquipo[r.equipo_id] = { equipo_id: r.equipo_id, base_id: r.base_id, fecha: r.fecha, modulo: 'Tesoro' };
+    }
+  }
+
+  for (const ruta of rutasRes.data) {
+    const partidosEquipo = gymkanaRes.data.filter(
+      (p) => p.equipo_a_id === ruta.equipo_id || p.equipo_b_id === ruta.equipo_id
+    );
+    const porBase = new Map(partidosEquipo.map((p) => [p.base_id, p]));
+    const recorrido = ruta.orden_bases.map((baseId) => porBase.get(baseId));
+
+    const pendiente = recorrido.find((p) => p && !p.finalizado);
+    const baseActual = pendiente ? pendiente.base_id : ruta.orden_bases[ruta.orden_bases.length - 1];
+
+    const ultimoFinalizado = partidosEquipo
+      .filter((p) => p.finalizado)
+      .sort((a, b) => new Date(b.actualizado_en) - new Date(a.actualizado_en))[0];
+    const fecha = ultimoFinalizado?.actualizado_en ?? ruta.creado_en;
+
+    const actual = ultimaPorEquipo[ruta.equipo_id];
+    if (!actual || new Date(fecha) > new Date(actual.fecha)) {
+      ultimaPorEquipo[ruta.equipo_id] = { equipo_id: ruta.equipo_id, base_id: baseActual, fecha, modulo: 'Gymkana' };
+    }
+  }
+
+  return ultimaPorEquipo;
+}
+
+export function suscribirseVisor(onChange) {
+  const channel = supabase
+    .channel('visor-general')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'rutas_gymkana' }, onChange)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'puntuaciones_gymkana' }, onChange)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'puntuaciones_tesoro' }, onChange)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'partidos_torneo' }, onChange)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'ajustes_admin' }, onChange)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'equipos' }, onChange)
+    .subscribe();
+
+  return () => {
+    supabase.removeChannel(channel);
+  };
+}
+</file>
+
+<file path="src/components/admin/AlertasGymkana.jsx">
+import { useState } from 'react';
+import { AlertTriangle, CheckCircle2, Loader2 } from 'lucide-react';
+import { useToast } from '../../context/ToastContext';
+import { sobrescribirResultadoGymkana } from '../../services/adminService';
+
+const OPCIONES = [
+  { valor: 'gano', texto: 'Ganó' },
+  { valor: 'empato', texto: 'Empató' },
+  { valor: 'perdio', texto: 'Perdió' },
+];
+
+export default function AlertasGymkana({ alertas, onCambio }) {
+  const { showToast } = useToast();
+  const [resolviendoId, setResolviendoId] = useState(null);
+  const [seleccion, setSeleccion] = useState({});
+
+  function elegir(alertaId, lado, valor) {
+    setSeleccion((prev) => ({
+      ...prev,
+      [alertaId]: { ...prev[alertaId], [lado]: valor },
+    }));
+  }
+
+  async function handleResolver(alerta) {
+    const sel = seleccion[alerta.id] ?? {};
+    const resultadoA = sel.a ?? alerta.resultado_a ?? 'gano';
+    const resultadoB = sel.b ?? alerta.resultado_b ?? 'perdio';
+
+    setResolviendoId(alerta.id);
+    try {
+      await sobrescribirResultadoGymkana(alerta.id, resultadoA, resultadoB);
+      showToast('Resultado sobrescrito', 'success');
+      onCambio();
+    } catch (err) {
+      showToast(err.message ?? 'No se pudo sobrescribir el resultado', 'error');
+    } finally {
+      setResolviendoId(null);
+    }
+  }
+
+  if (alertas.length === 0) {
+    return (
+      <p className="text-sm text-slate-400 glass-card p-4">
+        No hay alertas registradas en Gymkana. 🎉
+      </p>
+    );
+  }
+
+  return (
+    <div className="space-y-3">
+      {alertas.map((a) => {
+        const sel = seleccion[a.id] ?? {};
+        const pendiente = a.requiere_auditoria;
+        return (
+          <div
+            key={a.id}
+            className={`rounded-2xl border backdrop-blur-xl p-4 space-y-3 ${
+              pendiente
+                ? 'border-red-500/25 bg-red-500/[0.05]'
+                : 'border-emerald-500/20 bg-emerald-500/[0.04]'
+            }`}
+          >
+            <div
+              className={`flex items-center justify-between gap-2 text-sm font-semibold ${
+                pendiente ? 'text-red-300' : 'text-emerald-300'
+              }`}
+            >
+              <span className="flex items-center gap-2">
+                {pendiente ? <AlertTriangle size={16} /> : <CheckCircle2 size={16} />}
+                Base {a.base_id} — {a.equipo_a?.nombre} vs {a.equipo_b?.nombre}
+              </span>
+              <span
+                className={`text-xs font-medium px-2 py-0.5 rounded-full ${
+                  pendiente
+                    ? 'bg-red-500/15 text-red-300'
+                    : 'bg-emerald-500/15 text-emerald-300'
+                }`}
+              >
+                {pendiente ? 'Pendiente' : 'Resuelta'}
+              </span>
+            </div>
+
+            {[
+              { equipo: a.equipo_a, lado: 'a', actual: a.resultado_a },
+              { equipo: a.equipo_b, lado: 'b', actual: a.resultado_b },
+            ].map(({ equipo, lado, actual }) => (
+              <div key={lado} className="space-y-1.5">
+                <p className="text-xs text-slate-400">
+                  <span
+                    className="inline-block w-2 h-2 rounded-full mr-1 align-middle"
+                    style={{ backgroundColor: equipo?.color_hex }}
+                  />
+                  {equipo?.nombre} — resultado actual: {actual ?? 'sin definir'}
+                </p>
+                <div className="grid grid-cols-3 gap-2">
+                  {OPCIONES.map((op) => (
+                    <button
+                      key={op.valor}
+                      onClick={() => elegir(a.id, lado, op.valor)}
+                      className={`py-2 rounded-lg text-sm font-semibold border transition-colors ${
+                        (sel[lado] ?? actual) === op.valor
+                          ? 'border-indigo-400/60 bg-indigo-500/15 text-indigo-200'
+                          : 'border-white/10 text-slate-400 hover:border-white/20'
+                      }`}
+                    >
+                      {op.texto}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ))}
+
+            <button
+              onClick={() => handleResolver(a)}
+              disabled={resolviendoId === a.id}
+              className="btn-primary w-full"
+            >
+              {resolviendoId === a.id && <Loader2 className="animate-spin" size={16} />}
+              {pendiente ? 'Confirmar resultado final' : 'Corregir de nuevo'}
+            </button>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+</file>
+
+<file path="src/components/admin/IniciarGymkanaPanel.jsx">
+import { useState } from 'react';
+import { Shuffle, Loader2, MapPin } from 'lucide-react';
+import { useToast } from '../../context/ToastContext';
+import { iniciarGymkana } from '../../services/adminService';
+import PartidoGymkanaRow from './PartidoGymkanaRow';
+
+export default function IniciarGymkanaPanel({ equipos, rutas, partidos, gymkanaIniciada, onCambio }) {
+  const { showToast } = useToast();
+  const [iniciando, setIniciando] = useState(false);
+
+  async function handleIniciar() {
+    setIniciando(true);
+    try {
+      await iniciarGymkana(equipos);
+      showToast('Gymkana iniciada: parejas y rutas generadas', 'success');
+      onCambio();
+    } catch (err) {
+      showToast(err.message ?? 'No se pudo iniciar la Gymkana', 'error');
+    } finally {
+      setIniciando(false);
+    }
+  }
+
+  if (!gymkanaIniciada) {
+    return (
+      <div className="glass-card p-8 text-center space-y-4">
+        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500/20 to-violet-500/20 border border-white/10 text-violet-300">
+          <Shuffle size={22} />
+        </div>
+        <p className="text-sm text-slate-400 max-w-sm mx-auto">
+          Aún no se ha iniciado la Gymkana. Al presionar el botón se sortean 2 parejas fijas
+          entre los 4 equipos y se asigna a cada una un recorrido de 6 bases que no se cruza.
+        </p>
+        <button
+          onClick={handleIniciar}
+          disabled={iniciando || equipos.length !== 4}
+          className="btn-primary mx-auto"
+        >
+          {iniciando ? <Loader2 className="animate-spin" size={18} /> : <Shuffle size={18} />}
+          Iniciar Gymkana
+        </button>
+        {equipos.length !== 4 && (
+          <p className="text-xs text-amber-300">
+            Se necesitan exactamente 4 equipos creados (hay {equipos.length}).
+          </p>
+        )}
+      </div>
+    );
+  }
+
+  const parejas = [1, 2].map((num) => rutas.filter((r) => r.pareja_num === num));
+  const parejaPorEquipo = new Map(rutas.map((r) => [r.equipo_id, r.pareja_num]));
+
+  return (
+    <div className="space-y-3">
+      {parejas.map((pareja, i) => {
+        const parejaNum = i + 1;
+        const partidosPareja = (partidos ?? []).filter(
+          (p) => parejaPorEquipo.get(p.equipo_a?.id) === parejaNum
+        );
+
+        return (
+          <div key={i} className="glass-card p-4 space-y-3">
+            <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
+              Pareja {parejaNum}
+            </p>
+            <div className="flex items-center gap-2 text-sm font-semibold text-slate-100 flex-wrap">
+              {pareja.map((r, idx) => (
+                <span key={r.equipo_id} className="flex items-center gap-1.5">
+                  <span
+                    className="inline-block w-2.5 h-2.5 rounded-full"
+                    style={{ backgroundColor: r.equipo?.color_hex, boxShadow: `0 0 8px ${r.equipo?.color_hex}` }}
+                  />
+                  {r.equipo?.nombre}
+                  {idx === 0 && <span className="text-slate-600 font-normal px-1">vs</span>}
+                </span>
+              ))}
+            </div>
+            <p className="flex items-center gap-1.5 text-xs text-slate-500">
+              <MapPin size={12} />
+              {pareja[0]?.orden_bases.map((b, idx) => (
+                <span key={idx} className="flex items-center gap-1.5">
+                  {idx > 0 && <span className="text-slate-700">→</span>}
+                  <span className="inline-flex items-center justify-center w-5 h-5 rounded-md bg-white/[0.06] border border-white/10 text-slate-300">
+                    {b}
+                  </span>
+                </span>
+              ))}
+            </p>
+
+            {partidosPareja.length > 0 && (
+              <div className="space-y-2 pt-1">
+                {partidosPareja.map((p) => (
+                  <PartidoGymkanaRow key={p.id} partido={p} onCambio={onCambio} />
+                ))}
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+</file>
+
+<file path="src/components/gymkana/EquipoSelector.jsx">
+export default function EquipoSelector({ equipos, equipoSeleccionado, onSeleccionar }) {
+  if (equipos.length === 0) {
+    return (
+      <p className="text-center text-slate-400 text-sm py-6">
+        Aún no hay equipos creados. Pide al Admin que los configure.
+      </p>
+    );
+  }
+
+  return (
+    <div className="grid grid-cols-2 gap-3">
+      {equipos.map((equipo) => {
+        const activo = equipo.id === equipoSeleccionado?.id;
+        return (
+          <button
+            key={equipo.id}
+            onClick={() => onSeleccionar(equipo)}
+            className="rounded-2xl p-4 text-left border-2 font-semibold text-slate-100 transition-all duration-300 ease-in-out hover:scale-105 backdrop-blur-xl"
+            style={{
+              borderColor: activo ? equipo.color_hex : 'rgba(255,255,255,0.1)',
+              backgroundColor: activo ? `${equipo.color_hex}1f` : 'rgba(255,255,255,0.03)',
+              boxShadow: activo ? `0 0 24px -4px ${equipo.color_hex}66` : 'none',
+            }}
+          >
+            <span
+              className="inline-block w-3 h-3 rounded-full mr-2 align-middle"
+              style={{ backgroundColor: equipo.color_hex, boxShadow: `0 0 8px ${equipo.color_hex}` }}
+            />
+            {equipo.nombre}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+</file>
+
+<file path="src/components/gymkana/PartidoGymkanaActual.jsx">
+import { useState } from 'react';
+import { CheckCircle2, Lock, AlertTriangle, Loader2, PartyPopper } from 'lucide-react';
+
+const ETIQUETAS_RESULTADO = {
+  gano: { texto: 'Ganó', clase: 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30' },
+  empato: { texto: 'Empató', clase: 'bg-amber-500/15 text-amber-300 border border-amber-500/30' },
+  perdio: { texto: 'Perdió', clase: 'bg-white/10 text-slate-300 border border-white/10' },
+};
+
+/**
+ * Muestra la base que le toca ahora mismo al equipo, contra quién
+ * compite, y el estado de esa base:
+ *  - abierta: botones Ganó / Empató / Perdió.
+ *  - sellada por el rival mientras esta pantalla estaba en pausa:
+ *    mensaje + "Reportar Error / Alerta".
+ *  - alerta ya reportada: esperando al Admin.
+ */
+export default function PartidoGymkanaActual({
+  equipoId,
+  equipoColor,
+  rival,
+  estado, // resultado de obtenerEstadoGymkana()
+  onCalificar,
+  onReportarAlerta,
+}) {
+  const [cargando, setCargando] = useState(false);
+
+  if (!estado) {
+    return (
+      <div className="glass-card border-dashed p-6 text-center text-sm text-slate-400">
+        La Gymkana todavía no ha sido iniciada por el Admin. Espera a que se generen las rutas.
+      </div>
+    );
+  }
+
+  if (!estado.actual) {
+    return (
+      <div className="rounded-2xl border border-emerald-500/25 bg-emerald-500/[0.06] backdrop-blur-xl p-6 text-center space-y-2">
+        <PartyPopper className="mx-auto text-emerald-400" size={28} />
+        <p className="font-semibold text-emerald-300">¡Recorrido completo!</p>
+        <p className="text-sm text-emerald-400/80">Este equipo ya calificó sus 6 bases.</p>
+      </div>
+    );
+  }
+
+  const partido = estado.actual;
+  const miLado = partido.equipo_a_id === equipoId ? 'a' : 'b';
+  const bloqueado = partido.finalizado;
+
+  async function handleCalificar(resultado) {
+    setCargando(true);
+    try {
+      await onCalificar(partido.id, resultado);
+    } finally {
+      setCargando(false);
+    }
+  }
+
+  async function handleAlerta() {
+    setCargando(true);
+    try {
+      await onReportarAlerta(partido.id);
+    } finally {
+      setCargando(false);
+    }
+  }
+
+  const miResultado = miLado === 'a' ? partido.resultado_a : partido.resultado_b;
+
+  return (
+    <div
+      className="rounded-2xl border backdrop-blur-xl p-4 bg-white/[0.04] space-y-3 transition-colors"
+      style={{ borderColor: bloqueado ? 'rgba(255,255,255,0.1)' : `${equipoColor}80` }}
+    >
+      <div className="flex items-center justify-between">
+        <span className="font-semibold text-white">
+          Base {partido.base_id} · {estado.actualIndex + 1} de 6
+        </span>
+        <span className="text-sm text-slate-400">
+          vs{' '}
+          <span className="font-semibold" style={{ color: rival?.color_hex }}>
+            {rival?.nombre}
+          </span>
+        </span>
+      </div>
+
+      {!bloqueado && (
+        <div className="grid grid-cols-3 gap-2">
+          <button
+            onClick={() => handleCalificar('gano')}
+            disabled={cargando}
+            className="py-3 rounded-xl font-semibold text-white bg-gradient-to-b from-emerald-500 to-emerald-600 shadow-lg shadow-emerald-950/50 disabled:opacity-60"
+          >
+            {cargando ? <Loader2 className="animate-spin mx-auto" size={18} /> : 'Ganó'}
+          </button>
+          <button
+            onClick={() => handleCalificar('empato')}
+            disabled={cargando}
+            className="py-3 rounded-xl font-semibold text-white bg-gradient-to-b from-amber-500 to-amber-600 shadow-lg shadow-amber-950/50 disabled:opacity-60"
+          >
+            Empató
+          </button>
+          <button
+            onClick={() => handleCalificar('perdio')}
+            disabled={cargando}
+            className="py-3 rounded-xl font-semibold text-slate-200 bg-white/10 border border-white/10 hover:bg-white/[0.14] disabled:opacity-60"
+          >
+            Perdió
+          </button>
+        </div>
+      )}
+
+      {bloqueado && !partido.requiere_auditoria && (
+        <div className="space-y-2">
+          <div className="flex items-center gap-2 flex-wrap">
+            <CheckCircle2 size={18} className="text-emerald-400" />
+            <span className={`text-sm font-semibold px-3 py-1 rounded-full ${ETIQUETAS_RESULTADO[miResultado]?.clase}`}>
+              {ETIQUETAS_RESULTADO[miResultado]?.texto}
+            </span>
+            <span className="flex items-center gap-1 text-xs text-slate-500">
+              <Lock size={12} /> Base ya calificada
+            </span>
+          </div>
+          <button onClick={handleAlerta} disabled={cargando} className="btn-danger w-full !bg-none !bg-red-500/10 !text-red-300 border border-red-500/25 !shadow-none hover:!bg-red-500/20">
+            {cargando ? <Loader2 className="animate-spin" size={16} /> : <AlertTriangle size={16} />}
+            Reportar Error / Alerta
+          </button>
+        </div>
+      )}
+
+      {partido.requiere_auditoria && (
+        <div className="flex items-center gap-2 text-sm text-red-300 bg-red-500/10 border border-red-500/25 rounded-xl px-3 py-2.5">
+          <AlertTriangle size={16} />
+          Alerta enviada al Admin. Esperando resolución.
+        </div>
+      )}
+    </div>
+  );
+}
+
+/**
+ * Historial completo de las 6 bases del recorrido del equipo:
+ *  - completadas (antes de la base actual): resultado + botón de
+ *    alerta (o "alerta enviada" si ya se reportó una).
+ *  - la base actual: se omite acá, ya la muestra PartidoGymkanaActual.
+ *  - futuras: bloqueadas, solo como referencia del recorrido.
+ */
+export function HistorialGymkana({ equipoId, recorrido, actualIndex, onReportarAlerta }) {
+  const [cargandoId, setCargandoId] = useState(null);
+
+  async function handleAlerta(partidoId) {
+    setCargandoId(partidoId);
+    try {
+      await onReportarAlerta(partidoId);
+    } finally {
+      setCargandoId(null);
+    }
+  }
+
+  return (
+    <div className="space-y-2">
+      <h3 className="text-sm font-semibold text-slate-400">Historial de bases</h3>
+      {recorrido.map((partido, i) => {
+        if (!partido || i === actualIndex) return null;
+
+        const esFutura = actualIndex !== -1 ? i > actualIndex : !partido.finalizado;
+        const miLado = partido.equipo_a_id === equipoId ? 'a' : 'b';
+        const miResultado = miLado === 'a' ? partido.resultado_a : partido.resultado_b;
+
+        if (esFutura) {
+          return (
+            <div
+              key={partido.id}
+              className="flex items-center justify-between rounded-xl border border-white/5 bg-white/[0.015] px-4 py-2.5 text-sm text-slate-600"
+            >
+              <span>Base {partido.base_id}</span>
+              <span className="flex items-center gap-1 text-xs">
+                <Lock size={12} /> Pendiente
+              </span>
+            </div>
+          );
+        }
+
+        return (
+          <div key={partido.id} className="glass-row px-4 py-3 space-y-2">
+            <div className="flex items-center justify-between flex-wrap gap-2">
+              <span className="text-sm font-medium text-slate-200">Base {partido.base_id}</span>
+              <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${ETIQUETAS_RESULTADO[miResultado]?.clase}`}>
+                {ETIQUETAS_RESULTADO[miResultado]?.texto}
+              </span>
+            </div>
+
+            {partido.requiere_auditoria ? (
+              <p className="flex items-center gap-1.5 text-xs text-red-300">
+                <AlertTriangle size={12} /> Alerta enviada al Admin
+              </p>
+            ) : (
+              <button
+                onClick={() => handleAlerta(partido.id)}
+                disabled={cargandoId === partido.id}
+                className="flex items-center gap-1.5 text-xs font-medium text-red-300/80 hover:text-red-300 disabled:opacity-60"
+              >
+                {cargandoId === partido.id ? (
+                  <Loader2 className="animate-spin" size={12} />
+                ) : (
+                  <AlertTriangle size={12} />
+                )}
+                Reportar Error / Alerta
+              </button>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+</file>
+
+<file path="src/index.css">
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply text-white antialiased font-sans;
+    background-color: #053866; /* color predominante, y respaldo si bg.png no carga */
+    background-image: url('/bg.png');
+    background-size: cover;
+    background-position: top center; /* ancla el 10% superior: nunca se recorta arriba */
+    background-repeat: no-repeat;
+    background-attachment: fixed; /* la imagen no se mueve al hacer scroll */
+    min-height: 100vh;
+  }
+
+  h1, h2, h3 {
+    @apply font-display;
+  }
+
+  ::selection {
+    @apply bg-brand-brown/50 text-white;
+  }
+}
+
+@layer components {
+  /* ---------- Superficies ---------- */
+  .glass-header {
+    @apply sticky top-0 z-20 bg-gradient-to-b from-brand-brown/85 via-brand-brown/35 to-transparent transition-all duration-300;
+  }
+
+  .glass-card {
+    @apply rounded-2xl border border-white/10 bg-brand-navy/30 backdrop-blur-xl shadow-2xl shadow-black/40;
+  }
+
+  .glass-card-hover {
+    @apply glass-card transition-all duration-300 ease-in-out hover:border-brand-brown/40 hover:bg-brand-navy/45 hover:shadow-black/60 hover:scale-[1.02];
+  }
+
+  .glass-row {
+    @apply rounded-xl border border-white/10 bg-brand-navy/30 transition-all duration-300 ease-in-out;
+  }
+
+  /* ---------- Botones ---------- */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-brand-brown to-amber-800 px-4 py-2.5 font-semibold text-white shadow-xl shadow-black/50 transition-all duration-300 ease-in-out hover:scale-105 hover:from-amber-800 hover:to-brand-brown hover:shadow-2xl hover:shadow-brand-brown/40 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100 disabled:hover:shadow-none;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-brand-brown/30 bg-white/[0.04] px-4 py-2.5 font-semibold text-slate-200 transition-all duration-300 ease-in-out hover:scale-105 hover:border-brand-brown/60 hover:bg-brand-brown/10 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100;
+  }
+
+  .btn-danger {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-red-500 to-rose-500 px-4 py-2.5 font-semibold text-white shadow-lg shadow-red-950/60 transition-all duration-300 ease-in-out hover:scale-105 hover:from-red-400 hover:to-rose-400 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm font-medium text-slate-300 transition-all duration-300 ease-in-out hover:text-white hover:bg-brand-brown/20 hover:scale-105;
+  }
+
+  /* ---------- Formularios ---------- */
+  .field {
+    @apply w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2.5 text-slate-100 placeholder:text-slate-500 outline-none transition-all duration-300 ease-in-out focus:border-brand-brown/60 focus:ring-2 focus:ring-brand-brown/25;
+  }
+
+  .field-label {
+    @apply text-sm font-medium text-slate-300;
+  }
+
+  /* ---------- Textos ---------- */
+  .heading-gradient {
+    @apply bg-gradient-to-r from-white via-slate-100 to-slate-300 bg-clip-text text-transparent;
+  }
+
+  .accent-gradient-text {
+    @apply bg-gradient-to-r from-brand-brown to-amber-600 bg-clip-text text-transparent;
+  }
+
+  /* ---------- Chips / badges ---------- */
+  .badge {
+    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold;
+  }
+
+  .tab-pill {
+    @apply relative px-3.5 py-3 text-sm font-medium whitespace-nowrap transition-all duration-300 ease-in-out;
+  }
+}
+
+/* ---------- Scrollbar ---------- */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(115, 63, 45, 0.4);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(115, 63, 45, 0.6);
+}
+</file>
+
+<file path="index.html">
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/icon.png" />
+    <link rel="apple-touch-icon" href="/icon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#020617" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Manrope:wght@700;800&display=swap"
+      rel="stylesheet"
+    />
+    <title>Interoratorios 2026</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
+</file>
+
+<file path="tailwind.config.js">
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: ['./index.html', './src/**/*.{js,jsx}'],
+  theme: {
+    extend: {
+      colors: {
+        brand: {
+          navy: '#053866', // fondo predominante de toda la app
+          brown: '#733f2d', // acento secundario ("café"): usar con moderación
+        },
+      },
+      fontFamily: {
+        sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        display: ['Manrope', 'Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+      },
+      keyframes: {
+        fadeUp: {
+          '0%': { opacity: 0, transform: 'translateY(14px)' },
+          '100%': { opacity: 1, transform: 'translateY(0)' },
+        },
+        glowPulse: {
+          '0%, 100%': { opacity: 1 },
+          '50%': { opacity: 0.55 },
+        },
+      },
+      animation: {
+        'fade-up': 'fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both',
+        'glow-pulse': 'glowPulse 2.4s ease-in-out infinite',
+      },
+      boxShadow: {
+        glow: '0 0 40px -8px rgba(99, 102, 241, 0.45)',
+        'glow-lg': '0 0 60px -10px rgba(99, 102, 241, 0.5)',
+        card: '0 8px 30px -6px rgba(0, 0, 0, 0.5)',
+      },
+    },
+  },
+  plugins: [],
+};
+</file>
+
+<file path="src/pages/Home.jsx">
+import { Link } from 'react-router-dom';
+import { Flag, Map, Trophy, Radio } from 'lucide-react';
+
+const ACTIVIDADES = [
+  { to: '/gymkana', icon: Flag, nombre: 'Gymkana', desc: '6 bases, rutas emparejadas' },
+  { to: '/tesoro', icon: Map, nombre: 'Búsqueda del Tesoro', desc: '10 bases por equipo' },
+  { to: '/torneo', icon: Trophy, nombre: 'Torneo', desc: 'Partidos entre los 4 equipos' },
+];
+
+export default function Home() {
+  return (
+    <main className="min-h-[calc(100vh-64px)] flex flex-col items-center justify-center text-center px-4 py-12">
+        <img
+          src="/widelogo.png"
+          alt="Interoratorios 2026"
+          className="w-full max-w-md object-contain mb-3 animate-fade-up"
+        />
+        <p className="text-slate-400 text-base sm:text-lg mb-12 animate-fade-up [animation-delay:80ms]">
+          Elige una actividad para comenzar
+        </p>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-3xl mb-12">
+          {ACTIVIDADES.map(({ to, icon: Icon, nombre, desc }, i) => (
+            <Link
+              key={to}
+              to={to}
+              style={{ animationDelay: `${140 + i * 80}ms` }}
+              className="glass-card-hover animate-fade-up group flex flex-col items-center gap-3 px-6 py-8 hover:-translate-y-1"
+            >
+              <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-brown/25 to-amber-700/20 border border-white/10 text-amber-200 group-hover:from-brand-brown group-hover:to-amber-800 group-hover:text-white transition-all">
+                <Icon size={26} />
+              </span>
+              <span className="font-semibold text-white text-lg">{nombre}</span>
+              <span className="text-xs text-slate-500">{desc}</span>
+            </Link>
+          ))}
+        </div>
+
+        <Link
+          to="/visor"
+          className="animate-fade-up [animation-delay:380ms] inline-flex items-center gap-2.5 rounded-full bg-gradient-to-r from-red-500 to-rose-500 px-7 py-3.5 font-bold text-white shadow-lg shadow-red-950/60 transition-all hover:scale-[1.03] hover:shadow-red-500/30"
+        >
+          <Radio size={18} className="animate-glow-pulse" />
+          Ver Transmisión en Vivo
+        </Link>
+    </main>
+  );
+}
+</file>
+
+<file path="src/pages/Login.jsx">
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Loader2, LogIn } from 'lucide-react';
+import { useAuth, RUTA_POR_ROL } from '../context/AuthContext';
+
+export default function Login() {
+  const { login, session, perfil, loading } = useAuth();
+  const navigate = useNavigate();
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [enviando, setEnviando] = useState(false);
+  const [error, setError] = useState('');
+
+  // Si ya hay sesión y perfil cargado, redirige automáticamente a su módulo
+  useEffect(() => {
+    if (!loading && session && perfil) {
+      navigate(RUTA_POR_ROL[perfil.rol] ?? '/', { replace: true });
+    }
+  }, [loading, session, perfil, navigate]);
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setError('');
+    setEnviando(true);
+    try {
+      await login(email, password);
+      // La redirección ocurre en el useEffect de arriba cuando el perfil cargue
+    } catch (err) {
+      setError('Correo o contraseña incorrectos.');
+    } finally {
+      setEnviando(false);
+    }
+  }
+
+  return (
+    <div className="relative min-h-screen flex items-center justify-center px-4 overflow-hidden">
+      {/* Resplandor café decorativo detrás de la tarjeta */}
+      <div className="pointer-events-none absolute h-72 w-72 sm:h-96 sm:w-96 rounded-full bg-brand-brown/30 blur-[100px]" />
+
+      <form
+        onSubmit={handleSubmit}
+        className="relative w-full max-w-sm p-8 space-y-6 rounded-2xl border border-brand-brown/40 bg-gradient-to-b from-brand-brown/20 via-brand-navy/50 to-brand-navy/70 backdrop-blur-2xl shadow-2xl shadow-black/60 transition-all duration-300 ease-in-out hover:border-brand-brown/60 animate-fade-up"
+      >
+        <div className="text-center space-y-2">
+          <img
+            src="/widelogo.png"
+            alt="Interoratorios 2026"
+            className="w-full max-w-[220px] object-contain mx-auto mb-1 drop-shadow-2xl"
+          />
+          <p className="text-sm text-slate-300">Inicia sesión para continuar</p>
+        </div>
+
+        {error && (
+          <div className="text-sm text-red-300 bg-red-500/10 border border-red-500/25 rounded-xl px-3 py-2.5">
+            {error}
+          </div>
+        )}
+
+        <div className="space-y-1.5">
+          <label className="field-label">Correo</label>
+          <input
+            type="email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="field"
+            placeholder="tucorreo@rally.com"
+          />
+        </div>
+
+        <div className="space-y-1.5">
+          <label className="field-label">Contraseña</label>
+          <input
+            type="password"
+            required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="field"
+            placeholder="••••••••"
+          />
+        </div>
+
+        <button type="submit" disabled={enviando} className="btn-primary w-full py-3">
+          {enviando ? <Loader2 className="animate-spin" size={20} /> : <LogIn size={20} />}
+          {enviando ? 'Ingresando...' : 'Ingresar'}
+        </button>
+      </form>
+    </div>
+  );
+}
+</file>
+
+<file path="src/pages/TesoroPage.jsx">
+import { useEffect, useState, useCallback } from 'react';
+import { Loader2 } from 'lucide-react';
+import { useToast } from '../context/ToastContext';
+import { listarEquipos } from '../services/equiposService';
+import {
+  BASES_TESORO,
+  obtenerPuntuacionesTesoro,
+  marcarLlegadaTesoro,
+  calificarBaseTesoro,
+  suscribirseTesoro,
+} from '../services/tesoroService';
+import EquipoSelector from '../components/gymkana/EquipoSelector';
+import ProgresoTesoro from '../components/tesoro/ProgresoTesoro';
+import BaseTesoroCard from '../components/tesoro/BaseTesoroCard';
+
+export default function TesoroPage() {
+  const { showToast } = useToast();
+
+  const [equipos, setEquipos] = useState([]);
+  const [equipoSeleccionado, setEquipoSeleccionado] = useState(null);
+  const [registros, setRegistros] = useState([]);
+  const [cargandoEquipos, setCargandoEquipos] = useState(true);
+  const [cargandoRegistros, setCargandoRegistros] = useState(false);
+
+  useEffect(() => {
+    listarEquipos()
+      .then(setEquipos)
+      .catch(() => showToast('No se pudieron cargar los equipos', 'error'))
+      .finally(() => setCargandoEquipos(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const cargarRegistros = useCallback((equipoId) => {
+    setCargandoRegistros(true);
+    obtenerPuntuacionesTesoro(equipoId)
+      .then(setRegistros)
+      .catch(() => showToast('No se pudieron cargar las bases', 'error'))
+      .finally(() => setCargandoRegistros(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (!equipoSeleccionado) return;
+    cargarRegistros(equipoSeleccionado.id);
+    const unsubscribe = suscribirseTesoro(equipoSeleccionado.id, () =>
+      cargarRegistros(equipoSeleccionado.id)
+    );
+    return unsubscribe;
+  }, [equipoSeleccionado, cargarRegistros]);
+
+  async function handleMarcarLlegada(baseId) {
+    try {
+      const resultado = await marcarLlegadaTesoro(equipoSeleccionado.id, baseId);
+      showToast(resultado?.mensaje ?? 'Llegada registrada', resultado?.ok ? 'success' : 'warning');
+      cargarRegistros(equipoSeleccionado.id);
+    } catch (err) {
+      showToast(err.message ?? 'Error al registrar la llegada', 'error');
+    }
+  }
+
+  async function handleCalificar(baseId, puntos) {
+    try {
+      const resultado = await calificarBaseTesoro(equipoSeleccionado.id, baseId, puntos);
+      showToast(resultado?.mensaje ?? 'Calificación registrada', resultado?.ok ? 'success' : 'warning');
+      cargarRegistros(equipoSeleccionado.id);
+    } catch (err) {
+      showToast(err.message ?? 'Error al calificar la base', 'error');
+    }
+  }
+
+  function registroDeBase(baseId) {
+    return registros.find((r) => r.base_id === baseId) ?? null;
+  }
+
+  const completadas = registros.filter((r) => r.puntos_evaluacion != null).length;
+
+  return (
+    <main className="max-w-2xl mx-auto px-4 py-6 space-y-6">
+      <h1 className="sr-only">Staff Búsqueda del Tesoro</h1>
+
+        {cargandoEquipos ? (
+          <div className="flex justify-center py-10">
+            <Loader2 className="animate-spin text-indigo-400" size={28} />
+          </div>
+        ) : (
+          <EquipoSelector
+            equipos={equipos}
+            equipoSeleccionado={equipoSeleccionado}
+            onSeleccionar={setEquipoSeleccionado}
+          />
+        )}
+
+        {equipoSeleccionado && (
+          <section className="space-y-3">
+            <h2 className="font-semibold text-slate-200">
+              Bases — {equipoSeleccionado.nombre}
+            </h2>
+
+            {!cargandoRegistros && (
+              <ProgresoTesoro completadas={completadas} total={BASES_TESORO.length} />
+            )}
+
+            {cargandoRegistros ? (
+              <div className="flex justify-center py-10">
+                <Loader2 className="animate-spin text-indigo-400" size={28} />
+              </div>
+            ) : (
+              BASES_TESORO.map((baseId) => (
+                <BaseTesoroCard
+                  key={baseId}
+                  baseId={baseId}
+                  registro={registroDeBase(baseId)}
+                  equipoColor={equipoSeleccionado.color_hex}
+                  onMarcarLlegada={handleMarcarLlegada}
+                  onCalificar={handleCalificar}
+                />
+              ))
+            )}
+          </section>
+        )}
+      </main>
+  );
+}
+</file>
+
+<file path="src/pages/TorneoPage.jsx">
+import { useCallback, useEffect, useState } from 'react';
+import { Loader2, Shuffle } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
+import { listarEquipos } from '../services/equiposService';
+import {
+  listarPartidos,
+  generarPartidos,
+  finalizarPartido,
+  suscribirsePartidos,
+} from '../services/torneoService';
+import PartidoCard from '../components/torneo/PartidoCard';
+
+export default function TorneoPage() {
+  const { perfil } = useAuth();
+  const { showToast } = useToast();
+  const esAdmin = perfil?.rol === 'admin';
+
+  const [equipos, setEquipos] = useState([]);
+  const [partidos, setPartidos] = useState([]);
+  const [cargando, setCargando] = useState(true);
+  const [generando, setGenerando] = useState(false);
+
+  const cargarTodo = useCallback(() => {
+    setCargando(true);
+    Promise.all([listarEquipos(), listarPartidos()])
+      .then(([e, p]) => {
+        setEquipos(e);
+        setPartidos(p);
+      })
+      .catch(() => showToast('No se pudo cargar la información del torneo', 'error'))
+      .finally(() => setCargando(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    cargarTodo();
+    const unsubscribe = suscribirsePartidos(cargarTodo);
+    return unsubscribe;
+  }, [cargarTodo]);
+
+  async function handleGenerar() {
+    setGenerando(true);
+    try {
+      await generarPartidos();
+      showToast('Partidos generados', 'success');
+      cargarTodo();
+    } catch (err) {
+      showToast(err.message ?? 'No se pudieron generar los partidos', 'error');
+    } finally {
+      setGenerando(false);
+    }
+  }
+
+  async function handleFinalizar(partidoId, ganador) {
+    try {
+      const resultado = await finalizarPartido(partidoId, ganador);
+      showToast(resultado?.mensaje ?? 'Resultado registrado', resultado?.ok === false ? 'warning' : 'success');
+      cargarTodo();
+    } catch (err) {
+      showToast(err.message ?? 'Error al registrar el resultado', 'error');
+    }
+  }
+
+  function equipoPorId(id) {
+    return equipos.find((e) => e.id === id);
+  }
+
+  return (
+    <main className="max-w-2xl mx-auto px-4 py-6 space-y-4">
+      <h1 className="sr-only">Árbitros del Torneo</h1>
+
+        {cargando ? (
+          <div className="flex justify-center py-16">
+            <Loader2 className="animate-spin text-indigo-400" size={28} />
+          </div>
+        ) : partidos.length === 0 ? (
+          <div className="text-center space-y-3 glass-card p-6">
+            <p className="text-slate-400 text-sm">
+              Aún no se han generado los partidos del torneo.
+            </p>
+            {esAdmin ? (
+              <button
+                onClick={handleGenerar}
+                disabled={generando || equipos.length !== 4}
+                className="btn-primary mx-auto"
+              >
+                {generando ? <Loader2 className="animate-spin" size={18} /> : <Shuffle size={18} />}
+                Generar los 6 partidos
+              </button>
+            ) : (
+              <p className="text-xs text-slate-500">Pide al Admin que los genere.</p>
+            )}
+            {equipos.length !== 4 && (
+              <p className="text-xs text-amber-300">
+                Se necesitan exactamente 4 equipos creados (hay {equipos.length}).
+              </p>
+            )}
+          </div>
+        ) : (
+          partidos.map((p) => (
+            <PartidoCard
+              key={p.id}
+              partido={p}
+              equipoA={equipoPorId(p.equipo_a_id)}
+              equipoB={equipoPorId(p.equipo_b_id)}
+              esAdmin={esAdmin}
+              onFinalizar={handleFinalizar}
+            />
+          ))
+        )}
+      </main>
+  );
+}
+</file>
+
+<file path="src/pages/VisorPage.jsx">
+import { useCallback, useEffect, useState } from 'react';
+import { Loader2, Radio } from 'lucide-react';
+import { obtenerMarcadorGeneral, obtenerUbicaciones, suscribirseVisor } from '../services/visorService';
+import TablaPosicionesVisor from '../components/visor/TablaPosicionesVisor';
+import TrackerUbicacion from '../components/visor/TrackerUbicacion';
+
+export default function VisorPage() {
+  const [marcador, setMarcador] = useState([]);
+  const [ubicaciones, setUbicaciones] = useState({});
+  const [cargando, setCargando] = useState(true);
+
+  const cargarTodo = useCallback(() => {
+    Promise.all([obtenerMarcadorGeneral(), obtenerUbicaciones()])
+      .then(([m, u]) => {
+        setMarcador(m);
+        setUbicaciones(u);
+      })
+      .catch((err) => console.error('Error cargando el visor:', err.message))
+      .finally(() => setCargando(false));
+  }, []);
+
+  useEffect(() => {
+    cargarTodo();
+    const unsubscribe = suscribirseVisor(cargarTodo);
+    return unsubscribe;
+  }, [cargarTodo]);
+
+  return (
+    <div className="p-4 sm:p-8">
+      <div className="flex items-center justify-end mb-6 max-w-4xl mx-auto">
+        <span className="flex items-center gap-2 text-sm sm:text-base font-semibold text-red-300 bg-red-500/10 border border-red-500/25 rounded-full px-3 py-1.5">
+          <Radio size={14} className="animate-glow-pulse" />
+          En vivo
+        </span>
+      </div>
+
+      {cargando ? (
+        <div className="flex justify-center py-24">
+          <Loader2 className="animate-spin text-indigo-400" size={40} />
+        </div>
+      ) : (
+        <div className="space-y-8 max-w-4xl mx-auto">
+          <TablaPosicionesVisor equipos={marcador} />
+
+          <div>
+            <h2 className="text-lg sm:text-2xl font-bold text-slate-100 mb-3">
+              Ubicación actual
+            </h2>
+            <TrackerUbicacion equipos={marcador} ubicaciones={ubicaciones} />
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+</file>
+
+<file path="src/services/adminService.js">
+import { supabase } from './supabaseClient';
+
+// ---------- Marcador / resumen ----------
+export async function obtenerMarcadorGeneral() {
+  const { data, error } = await supabase
+    .from('marcador_general')
+    .select('*')
+    .order('puntos_generales', { ascending: false });
+  if (error) throw error;
+  return data;
+}
+
+// ---------- Equipos (CRUD) ----------
+export async function crearEquipo(nombre, colorHex) {
+  const { error } = await supabase
+    .from('equipos')
+    .insert({ nombre, color_hex: colorHex });
+  if (error) throw error;
+}
+
+export async function actualizarEquipo(id, { nombre, colorHex }) {
+  const { error } = await supabase
+    .from('equipos')
+    .update({ nombre, color_hex: colorHex })
+    .eq('id', id);
+  if (error) throw error;
+}
+
+export async function eliminarEquipo(id) {
+  const { error } = await supabase.from('equipos').delete().eq('id', id);
+  if (error) throw error;
+}
+
+// ---------- Ajustes manuales ----------
+export async function crearAjuste(equipoId, puntosExtra, motivo, creadoPor) {
+  const { error } = await supabase.from('ajustes_admin').insert({
+    equipo_id: equipoId,
+    puntos_extra: puntosExtra,
+    motivo,
+    creado_por: creadoPor,
+  });
+  if (error) throw error;
+}
+
+export async function listarAjustes() {
+  const { data, error } = await supabase
+    .from('ajustes_admin')
+    .select('id, puntos_extra, motivo, fecha, equipos(nombre, color_hex)')
+    .order('fecha', { ascending: false });
+  if (error) throw error;
+  return data;
+}
+
+// ---------- Gymkana: rutas y emparejamiento ----------
+
+/** true si el Admin ya presionó "Iniciar Gymkana" (existen rutas guardadas). */
+export async function gymkanaEstaIniciada() {
+  const { count, error } = await supabase
+    .from('rutas_gymkana')
+    .select('equipo_id', { count: 'exact', head: true });
+  if (error) throw error;
+  return (count ?? 0) > 0;
+}
+
+export async function listarRutasGymkana() {
+  const { data, error } = await supabase
+    .from('rutas_gymkana')
+    .select('equipo_id, pareja_num, orden_bases, equipo:equipo_id(id, nombre, color_hex), rival:rival_id(id, nombre, color_hex)')
+    .order('pareja_num', { ascending: true });
+  if (error) throw error;
+  return data;
+}
+
+/**
+ * Sortea los 4 equipos en 2 parejas fijas y les asigna un recorrido de
+ * bases que no se cruza (la pareja 2 arranca donde la pareja 1 termina
+ * la primera mitad, y viceversa). El sorteo se hace acá, en el
+ * cliente; el guardado en Supabase es una sola llamada atómica
+ * (guardar_rutas_gymkana) para que las 4 rutas + los 12 enfrentamientos
+ * queden creados juntos o no se cree nada.
+ */
+export async function iniciarGymkana(equipos) {
+  if (equipos.length !== 4) {
+    throw new Error(`Se necesitan exactamente 4 equipos para iniciar la Gymkana (hay ${equipos.length}).`);
+  }
+
+  // Fisher-Yates
+  const barajados = [...equipos];
+  for (let i = barajados.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [barajados[i], barajados[j]] = [barajados[j], barajados[i]];
+  }
+
+  const BASES = [1, 2, 3, 4, 5, 6];
+  const mitad = BASES.length / 2; // 3
+  const ordenPareja1 = BASES;
+  const ordenPareja2 = [...BASES.slice(mitad), ...BASES.slice(0, mitad)]; // [4,5,6,1,2,3]
+
+  const pares = [
+    {
+      pareja_num: 1,
+      equipos: [barajados[0].id, barajados[1].id],
+      orden_bases: ordenPareja1,
+    },
+    {
+      pareja_num: 2,
+      equipos: [barajados[2].id, barajados[3].id],
+      orden_bases: ordenPareja2,
+    },
+  ];
+
+  const { error } = await supabase.rpc('guardar_rutas_gymkana', { p_pares: pares });
+  if (error) throw error;
+
+  return pares.map((p) => ({
+    parejaNum: p.pareja_num,
+    equipos: p.equipos.map((id) => equipos.find((e) => e.id === id)),
+    ordenBases: p.orden_bases,
+  }));
+}
+
+/** Todos los enfrentamientos de Gymkana (para que el Admin pueda editar cualquiera, no solo los marcados en alerta). */
+export async function listarPartidosGymkana() {
+  const { data, error } = await supabase
+    .from('puntuaciones_gymkana')
+    .select(
+      'id, base_id, resultado_a, resultado_b, finalizado, requiere_auditoria, equipo_a:equipo_a_id(id, nombre, color_hex), equipo_b:equipo_b_id(id, nombre, color_hex)'
+    )
+    .order('base_id', { ascending: true });
+  if (error) throw error;
+  return data;
+}
+
+// ---------- Gymkana: alertas / auditoría ----------
+// Trae TANTO las pendientes como las ya resueltas (historial). Solo
+// se limpian con "Reiniciar Evento". Pendientes primero, luego las
+// resueltas más recientes.
+export async function listarAlertasGymkana() {
+  const { data, error } = await supabase
+    .from('puntuaciones_gymkana')
+    .select(
+      'id, base_id, resultado_a, resultado_b, requiere_auditoria, auditoria_reportada_en, auditoria_resuelta_en, equipo_a:equipo_a_id(id, nombre, color_hex), equipo_b:equipo_b_id(id, nombre, color_hex)'
+    )
+    .not('auditoria_reportada_en', 'is', null)
+    .order('requiere_auditoria', { ascending: false })
+    .order('auditoria_reportada_en', { ascending: false });
+  if (error) throw error;
+  return data;
+}
+
+export async function sobrescribirResultadoGymkana(partidoId, resultadoA, resultadoB) {
+  const { error } = await supabase.rpc('sobrescribir_resultado_gymkana', {
+    p_partido_id: partidoId,
+    p_resultado_a: resultadoA,
+    p_resultado_b: resultadoB,
+  });
+  if (error) throw error;
+}
+
+// ---------- Reiniciar evento ----------
+export async function reiniciarEvento() {
+  const { error } = await supabase.rpc('reiniciar_evento');
+  if (error) throw error;
+}
+</file>
+
+<file path="src/pages/AdminPage.jsx">
+import { useCallback, useEffect, useState } from 'react';
+import { Loader2 } from 'lucide-react';
+import { useToast } from '../context/ToastContext';
+import { listarEquipos } from '../services/equiposService';
+import {
+  obtenerMarcadorGeneral,
+  listarAjustes,
+  gymkanaEstaIniciada,
+  listarRutasGymkana,
+  listarPartidosGymkana,
+  listarAlertasGymkana,
+} from '../services/adminService';
+import TablaMarcador from '../components/admin/TablaMarcador';
+import EquiposCRUD from '../components/admin/EquiposCRUD';
+import AjustesForm from '../components/admin/AjustesForm';
+import IniciarGymkanaPanel from '../components/admin/IniciarGymkanaPanel';
+import AlertasGymkana from '../components/admin/AlertasGymkana';
+import ReiniciarEvento from '../components/admin/ReiniciarEvento';
+
+const TABS = [
+  { id: 'resumen', label: 'Resumen' },
+  { id: 'equipos', label: 'Equipos' },
+  { id: 'ajustes', label: 'Ajustes' },
+  { id: 'gymkana', label: 'Gymkana' },
+  { id: 'alertas', label: 'Alertas' },
+  { id: 'peligro', label: 'Reiniciar' },
+];
+
+export default function AdminPage() {
+  const { showToast } = useToast();
+
+  const [tab, setTab] = useState('resumen');
+  const [cargando, setCargando] = useState(true);
+  const [marcador, setMarcador] = useState([]);
+  const [equipos, setEquipos] = useState([]);
+  const [ajustes, setAjustes] = useState([]);
+  const [gymkanaIniciada, setGymkanaIniciada] = useState(false);
+  const [rutasGymkana, setRutasGymkana] = useState([]);
+  const [partidosGymkana, setPartidosGymkana] = useState([]);
+  const [alertas, setAlertas] = useState([]);
+
+  const cargarTodo = useCallback(async () => {
+    setCargando(true);
+
+    const [m, e, a, iniciada, alertasData] = await Promise.allSettled([
+      obtenerMarcadorGeneral(),
+      listarEquipos(),
+      listarAjustes(),
+      gymkanaEstaIniciada(),
+      listarAlertasGymkana(),
+    ]);
+
+    if (m.status === 'fulfilled') setMarcador(m.value);
+    if (e.status === 'fulfilled') setEquipos(e.value);
+    if (a.status === 'fulfilled') setAjustes(a.value);
+    if (alertasData.status === 'fulfilled') setAlertas(alertasData.value);
+
+    if (iniciada.status === 'fulfilled') {
+      setGymkanaIniciada(iniciada.value);
+      if (iniciada.value) {
+        try {
+          const [rutasData, partidosData] = await Promise.all([
+            listarRutasGymkana(),
+            listarPartidosGymkana(),
+          ]);
+          setRutasGymkana(rutasData);
+          setPartidosGymkana(partidosData);
+        } catch {
+          showToast('No se pudieron cargar las rutas de Gymkana', 'error');
+        }
+      } else {
+        setRutasGymkana([]);
+        setPartidosGymkana([]);
+      }
+    }
+
+    const fallidas = [m, e, a, iniciada, alertasData].filter((r) => r.status === 'rejected');
+    if (fallidas.length > 0) {
+      console.error('Fallos al cargar Admin:', fallidas.map((r) => r.reason));
+      const esGymkanaFaltante = fallidas.some((r) =>
+        ['42703', 'PGRST205', '42P01'].includes(r.reason?.code)
+      );
+      showToast(
+        esGymkanaFaltante
+          ? 'Falta correr el SQL de Gymkana en Supabase (rutas_gymkana / puntuaciones_gymkana)'
+          : 'No se pudo cargar parte de la información del Admin',
+        'error'
+      );
+    }
+
+    setCargando(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    cargarTodo();
+  }, [cargarTodo]);
+
+  const alertasPendientes = alertas.filter((a) => a.requiere_auditoria).length;
+
+  return (
+    <>
+      <h1 className="sr-only">Admin</h1>
+
+      <nav className="sticky top-[112px] sm:top-[136px] z-10 border-b border-white/10 bg-brand-navy/70 backdrop-blur-xl shadow-xl shadow-black/30 transition-all duration-300 overflow-x-auto">
+        <div className="flex px-4 gap-1">
+          {TABS.map((t) => (
+            <button
+              key={t.id}
+              onClick={() => setTab(t.id)}
+              className={`tab-pill ${
+                tab === t.id ? 'text-white' : 'text-slate-500 hover:text-slate-300'
+              }`}
+            >
+              {t.label}
+              {t.id === 'alertas' && alertasPendientes > 0 && (
+                <span className="ml-1.5 inline-flex items-center justify-center w-5 h-5 text-xs bg-red-500 text-white rounded-full">
+                  {alertasPendientes}
+                </span>
+              )}
+              {tab === t.id && (
+                <span className="absolute inset-x-3 -bottom-px h-0.5 rounded-full bg-brand-brown" />
+              )}
+            </button>
+          ))}
+        </div>
+      </nav>
+
+      <main className="max-w-3xl mx-auto px-4 py-6">
+        {cargando ? (
+          <div className="flex justify-center py-16">
+            <Loader2 className="animate-spin text-indigo-400" size={28} />
+          </div>
+        ) : (
+          <>
+            {tab === 'resumen' && <TablaMarcador equipos={marcador} />}
+            {tab === 'equipos' && <EquiposCRUD equipos={equipos} onCambio={cargarTodo} />}
+            {tab === 'ajustes' && (
+              <AjustesForm equipos={equipos} historial={ajustes} onCambio={cargarTodo} />
+            )}
+            {tab === 'gymkana' && (
+              <IniciarGymkanaPanel
+                equipos={equipos}
+                rutas={rutasGymkana}
+                partidos={partidosGymkana}
+                gymkanaIniciada={gymkanaIniciada}
+                onCambio={cargarTodo}
+              />
+            )}
+            {tab === 'alertas' && <AlertasGymkana alertas={alertas} onCambio={cargarTodo} />}
+            {tab === 'peligro' && <ReiniciarEvento onCambio={cargarTodo} />}
+          </>
+        )}
+      </main>
+    </>
+  );
+}
+</file>
+
+<file path="src/pages/GymkanaPage.jsx">
+import { useEffect, useState, useCallback } from 'react';
+import { Loader2, MapPin } from 'lucide-react';
+import { useToast } from '../context/ToastContext';
+import { listarEquipos } from '../services/equiposService';
+import {
+  obtenerEstadoGymkana,
+  sellarResultadoGymkana,
+  reportarAlertaGymkana,
+  suscribirseGymkana,
+} from '../services/gymkanaService';
+import EquipoSelector from '../components/gymkana/EquipoSelector';
+import PartidoGymkanaActual, { HistorialGymkana } from '../components/gymkana/PartidoGymkanaActual';
+
+export default function GymkanaPage() {
+  const { showToast } = useToast();
+
+  const [equipos, setEquipos] = useState([]);
+  const [equipoSeleccionado, setEquipoSeleccionado] = useState(null);
+  const [estado, setEstado] = useState(null);
+  const [cargandoEquipos, setCargandoEquipos] = useState(true);
+  const [cargandoEstado, setCargandoEstado] = useState(false);
+
+  useEffect(() => {
+    listarEquipos()
+      .then(setEquipos)
+      .catch(() => showToast('No se pudieron cargar los equipos', 'error'))
+      .finally(() => setCargandoEquipos(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const cargarEstado = useCallback((equipoId) => {
+    setCargandoEstado(true);
+    obtenerEstadoGymkana(equipoId)
+      .then(setEstado)
+      .catch(() => showToast('No se pudo cargar la ruta de este equipo', 'error'))
+      .finally(() => setCargandoEstado(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (!equipoSeleccionado) return;
+    cargarEstado(equipoSeleccionado.id);
+    const unsubscribe = suscribirseGymkana(() => cargarEstado(equipoSeleccionado.id));
+    return unsubscribe;
+  }, [equipoSeleccionado, cargarEstado]);
+
+  async function handleCalificar(partidoId, resultado) {
+    try {
+      const resultadoRpc = await sellarResultadoGymkana(partidoId, equipoSeleccionado.id, resultado);
+      showToast(
+        resultadoRpc?.mensaje ?? 'Resultado registrado',
+        resultadoRpc?.ya_bloqueado ? 'warning' : 'success'
+      );
+      cargarEstado(equipoSeleccionado.id);
+    } catch (err) {
+      showToast(err.message ?? 'Error al registrar el resultado', 'error');
+    }
+  }
+
+  async function handleReportarAlerta(partidoId) {
+    try {
+      await reportarAlertaGymkana(partidoId);
+      showToast('Alerta enviada al Admin', 'warning');
+      cargarEstado(equipoSeleccionado.id);
+    } catch (err) {
+      showToast(err.message ?? 'No se pudo reportar la alerta', 'error');
+    }
+  }
+
+  return (
+    <main className="max-w-2xl mx-auto px-4 py-6 space-y-6">
+      <h1 className="sr-only">Staff Gymkana</h1>
+
+        {cargandoEquipos ? (
+          <div className="flex justify-center py-10">
+            <Loader2 className="animate-spin text-indigo-400" size={28} />
+          </div>
+        ) : (
+          <EquipoSelector
+            equipos={equipos}
+            equipoSeleccionado={equipoSeleccionado}
+            onSeleccionar={setEquipoSeleccionado}
+          />
+        )}
+
+        {equipoSeleccionado && (
+          <section className="space-y-4">
+            <h2 className="font-semibold text-slate-200">
+              Ruta — {equipoSeleccionado.nombre}
+            </h2>
+
+            {cargandoEstado ? (
+              <div className="flex justify-center py-10">
+                <Loader2 className="animate-spin text-indigo-400" size={28} />
+              </div>
+            ) : (
+              <>
+                {estado?.actual && (
+                  <div className="rounded-2xl bg-gradient-to-r from-indigo-500 to-violet-500 p-5 flex items-center gap-4 shadow-glow-lg animate-fade-up">
+                    <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white/15 text-white animate-glow-pulse">
+                      <MapPin size={28} />
+                    </span>
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-wide text-white/80">
+                        Dirígete a la
+                      </p>
+                      <p className="text-3xl font-black text-white leading-tight">
+                        Base {estado.actual.base_id}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                <PartidoGymkanaActual
+                  equipoId={equipoSeleccionado.id}
+                  equipoColor={equipoSeleccionado.color_hex}
+                  rival={estado?.rival}
+                  estado={estado}
+                  onCalificar={handleCalificar}
+                  onReportarAlerta={handleReportarAlerta}
+                />
+
+                {estado && (
+                  <HistorialGymkana
+                    equipoId={equipoSeleccionado.id}
+                    recorrido={estado.recorrido}
+                    actualIndex={estado.actualIndex}
+                    onReportarAlerta={handleReportarAlerta}
+                  />
+                )}
+              </>
+            )}
+          </section>
+        )}
+      </main>
+  );
+}
+</file>
+
+</files>
