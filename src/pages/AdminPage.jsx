@@ -1,4 +1,6 @@
 import RotacionColoresAdmin from '../components/admin/RotacionColoresAdmin';
+import ConfiguracionUIPanel from '../components/admin/ConfiguracionUIPanel';
+import GestionEquiposTorneo from '../components/admin/GestionEquiposTorneo';
 import { useCallback, useEffect, useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import { useToast } from '../context/ToastContext';
@@ -20,9 +22,11 @@ import ReiniciarEvento from '../components/admin/ReiniciarEvento';
 
 const TABS = [
   { id: 'resumen', label: 'Resumen' },
+  { id: 'main', label: 'Main Page' },
   { id: 'equipos', label: 'Equipos' },
   { id: 'ajustes', label: 'Ajustes' },
   { id: 'gymkana', label: 'Gymkana' },
+  { id: 'torneo', label: 'Torneo' },
   { id: 'alertas', label: 'Alertas' },
   { id: 'peligro', label: 'Reiniciar' },
   { id: 'colores', label: 'Rotación' },
@@ -136,6 +140,8 @@ export default function AdminPage() {
         ) : (
           <>
             {tab === 'colores' && <RotacionColoresAdmin />}
+            {tab === 'main' && <ConfiguracionUIPanel />}
+            {tab === 'torneo' && <GestionEquiposTorneo />}
             {tab === 'resumen' && <TablaMarcador equipos={marcador} />}
             {tab === 'equipos' && <EquiposCRUD equipos={equipos} onCambio={cargarTodo} />}
             {tab === 'ajustes' && (

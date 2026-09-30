@@ -10,6 +10,8 @@ import TorneoPage from '../pages/TorneoPage';
 import AdminPage from '../pages/AdminPage';
 import VisorPage from '../pages/VisorPage';
 import ColoresPage from '../pages/ColoresPage';
+import ActividadesPage from '../pages/ActividadesPage';
+import CronogramaPage from '../pages/CronogramaPage';
 
 export default function AppRoutes() {
   return (
@@ -22,6 +24,8 @@ export default function AppRoutes() {
         {/* Publicas, sin autenticacion */}
         <Route path="/visor" element={<VisorPage />} />
         <Route path="/colores" element={<ColoresPage />} />
+        <Route path="/actividades" element={<ActividadesPage />} />
+        <Route path="/cronograma" element={<CronogramaPage />} />
 
         <Route path="/login" element={<Login />} />
 
