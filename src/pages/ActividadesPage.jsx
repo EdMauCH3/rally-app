@@ -5,7 +5,6 @@ const ACTIVIDADES = [
   { to: '/gymkana', icon: Flag, nombre: 'Gymkana', desc: 'Rutas emparejadas por base' },
   { to: '/tesoro', icon: Map, nombre: 'Búsqueda del Tesoro', desc: '10 bases por equipo' },
   { to: '/torneo', icon: Trophy, nombre: 'Torneo', desc: 'Partidos entre equipos' },
-  { to: '/visor', icon: Radio, nombre: 'Live Transmission', desc: 'Marcador en vivo' },
 ];
 
 export default function ActividadesPage() {
@@ -18,7 +17,7 @@ export default function ActividadesPage() {
         Elige a dónde quieres ir
       </p>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-2xl">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-2xl">
         {ACTIVIDADES.map(({ to, icon: Icon, nombre, desc }, i) => (
           <Link
             key={to}
@@ -34,6 +33,15 @@ export default function ActividadesPage() {
           </Link>
         ))}
       </div>
+
+      {/* Live Transmission separado, con el estilo rojo llamativo original */}
+      <Link
+        to="/visor"
+        className="mt-10 flex items-center gap-3 rounded-full bg-gradient-to-r from-red-600 to-rose-600 px-8 py-4 text-white font-bold text-lg shadow-2xl shadow-red-950/60 transition-all duration-300 ease-in-out hover:scale-105 hover:from-red-500 hover:to-rose-500 animate-fade-up [animation-delay:380ms]"
+      >
+        <Radio size={22} className="animate-pulse" />
+        Live Transmission
+      </Link>
     </main>
   );
 }

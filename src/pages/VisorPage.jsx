@@ -1,19 +1,34 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Loader2, Radio } from 'lucide-react';
-import { obtenerMarcadorGeneral, obtenerUbicaciones, suscribirseVisor } from '../services/visorService';
+import {
+  obtenerMarcadorGeneral,
+  obtenerTorneoPosiciones,
+  obtenerUbicacionesGymkana,
+  obtenerUbicacionesTesoro,
+  suscribirseVisor,
+} from '../services/visorService';
 import TablaPosicionesVisor from '../components/visor/TablaPosicionesVisor';
 import TrackerUbicacion from '../components/visor/TrackerUbicacion';
 
 export default function VisorPage() {
   const [marcador, setMarcador] = useState([]);
-  const [ubicaciones, setUbicaciones] = useState({});
+  const [exclusivosTorneo, setExclusivosTorneo] = useState([]);
+  const [ubicacionesGymkana, setUbicacionesGymkana] = useState([]);
+  const [ubicacionesTesoro, setUbicacionesTesoro] = useState([]);
   const [cargando, setCargando] = useState(true);
 
   const cargarTodo = useCallback(() => {
-    Promise.all([obtenerMarcadorGeneral(), obtenerUbicaciones()])
-      .then(([m, u]) => {
+    Promise.all([
+      obtenerMarcadorGeneral(),
+      obtenerTorneoPosiciones(),
+      obtenerUbicacionesGymkana(),
+      obtenerUbicacionesTesoro(),
+    ])
+      .then(([m, torneo, ug, ut]) => {
         setMarcador(m);
-        setUbicaciones(u);
+        setExclusivosTorneo(torneo.filter((t) => t.es_exclusivo));
+        setUbicacionesGymkana(ug);
+        setUbicacionesTesoro(ut);
       })
       .catch((err) => console.error('Error cargando el visor:', err.message))
       .finally(() => setCargando(false));
@@ -36,17 +51,21 @@ export default function VisorPage() {
 
       {cargando ? (
         <div className="flex justify-center py-24">
-          <Loader2 className="animate-spin text-indigo-400" size={40} />
+          <Loader2 className="animate-spin text-white" size={40} />
         </div>
       ) : (
-        <div className="space-y-8 max-w-4xl mx-auto">
-          <TablaPosicionesVisor equipos={marcador} />
+        <div className="space-y-10 max-w-4xl mx-auto">
+          <TablaPosicionesVisor generales={marcador} exclusivos={exclusivosTorneo} />
 
           <div>
-            <h2 className="text-lg sm:text-2xl font-bold text-slate-100 mb-3">
-              Ubicación actual
+            <h2 className="text-lg sm:text-2xl font-bold text-white mb-3 text-center sm:text-left">
+              ¿Dónde están los equipos?
             </h2>
-            <TrackerUbicacion equipos={marcador} ubicaciones={ubicaciones} />
+            <TrackerUbicacion
+              equiposGenerales={marcador}
+              ubicacionesGymkana={ubicacionesGymkana}
+              ubicacionesTesoro={ubicacionesTesoro}
+            />
           </div>
         </div>
       )}
