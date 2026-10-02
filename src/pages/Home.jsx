@@ -1,10 +1,24 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Sun, Moon, CalendarClock, Loader2 } from 'lucide-react';
+import { Sunrise, Sun, CalendarClock, ClipboardCheck, Loader2 } from 'lucide-react';
 import {
   obtenerConfiguracionApp,
   suscribirseConfiguracionApp,
 } from '../services/configuracionAppService';
+import ModalBienvenida from '../components/home/ModalBienvenida';
+
+const VIDEO_EVALUACION_URL = 'https://www.youtube.com/watch?v=zC0JJGgnf9g';
+
+// Si falla la lectura de configuracion_app, mejor mostrar de mas que
+// dejar a alguien sin poder navegar (excepto el video, que se queda
+// apagado por seguridad si no sabemos el estado real).
+const CONFIG_DEFECTO = {
+  mostrar_manana: true,
+  mostrar_tarde: true,
+  mostrar_cronograma: true,
+  mostrar_evaluacion: true,
+  mostrar_video_bienvenida: false,
+};
 
 export default function Home() {
   const [config, setConfig] = useState(null);
@@ -13,7 +27,7 @@ export default function Home() {
   const cargar = useCallback(() => {
     obtenerConfiguracionApp()
       .then(setConfig)
-      .catch(() => setConfig({ mostrar_manana: true, mostrar_tarde: true })) // fallback seguro
+      .catch(() => setConfig(CONFIG_DEFECTO))
       .finally(() => setCargando(false));
   }, []);
 
@@ -37,17 +51,17 @@ export default function Home() {
       {cargando ? (
         <Loader2 className="animate-spin text-white" size={32} />
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-3xl">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 w-full max-w-3xl">
           {config.mostrar_manana && (
             <Link
               to="/colores"
-              className="glass-card-hover animate-fade-up group flex flex-col items-center gap-3 px-6 py-8 hover:-translate-y-1"
+              className="glass-card-hover animate-fade-up group flex flex-col items-center gap-4 px-6 py-10 hover:-translate-y-1"
             >
-              <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-500/25 to-amber-700/20 border border-white/10 text-amber-200 group-hover:from-amber-500 group-hover:to-amber-700 group-hover:text-white transition-all duration-300">
-                <Sun size={26} />
+              <span className="flex h-20 w-20 sm:h-24 sm:w-24 items-center justify-center rounded-3xl bg-gradient-to-br from-yellow-400/25 to-amber-500/20 border border-white/10 text-yellow-200 group-hover:from-yellow-400 group-hover:to-amber-500 group-hover:text-white transition-all duration-300">
+                <Sunrise size={40} />
               </span>
-              <span className="font-semibold text-white text-lg">Mañana</span>
-              <span className="text-xs text-slate-500">Formación</span>
+              <span className="font-black text-white text-2xl sm:text-3xl">Mañana</span>
+              <span className="text-sm text-slate-500">Formación</span>
             </Link>
           )}
 
@@ -55,29 +69,49 @@ export default function Home() {
             <Link
               to="/actividades"
               style={{ animationDelay: '80ms' }}
-              className="glass-card-hover animate-fade-up group flex flex-col items-center gap-3 px-6 py-8 hover:-translate-y-1"
+              className="glass-card-hover animate-fade-up group flex flex-col items-center gap-4 px-6 py-10 hover:-translate-y-1"
             >
-              <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-brown/25 to-amber-800/20 border border-white/10 text-amber-100 group-hover:from-brand-brown group-hover:to-amber-900 group-hover:text-white transition-all duration-300">
-                <Moon size={26} />
+              <span className="flex h-20 w-20 sm:h-24 sm:w-24 items-center justify-center rounded-3xl bg-gradient-to-br from-orange-500/25 to-orange-700/20 border border-white/10 text-orange-200 group-hover:from-orange-500 group-hover:to-orange-700 group-hover:text-white transition-all duration-300">
+                <Sun size={40} />
               </span>
-              <span className="font-semibold text-white text-lg">Tarde</span>
-              <span className="text-xs text-slate-500">Actividad</span>
+              <span className="font-black text-white text-2xl sm:text-3xl">Tarde</span>
+              <span className="text-sm text-slate-500">Actividad</span>
             </Link>
           )}
 
-          <Link
-            to="/cronograma"
-            style={{ animationDelay: '160ms' }}
-            className="glass-card-hover animate-fade-up group flex flex-col items-center gap-3 px-6 py-8 hover:-translate-y-1"
-          >
-            <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-navy/60 to-brand-brown/20 border border-white/10 text-slate-200 group-hover:from-brand-navy group-hover:to-brand-brown group-hover:text-white transition-all duration-300">
-              <CalendarClock size={26} />
-            </span>
-            <span className="font-semibold text-white text-lg">Cronograma</span>
-            <span className="text-xs text-slate-500">Horarios del día</span>
-          </Link>
+          {config.mostrar_cronograma && (
+            <Link
+              to="/cronograma"
+              style={{ animationDelay: '160ms' }}
+              className="glass-card-hover animate-fade-up group flex flex-col items-center gap-4 px-6 py-10 hover:-translate-y-1"
+            >
+              <span className="flex h-20 w-20 sm:h-24 sm:w-24 items-center justify-center rounded-3xl bg-gradient-to-br from-blue-600/25 to-brand-navy/50 border border-white/10 text-blue-200 group-hover:from-blue-600 group-hover:to-brand-navy group-hover:text-white transition-all duration-300">
+                <CalendarClock size={40} />
+              </span>
+              <span className="font-black text-white text-2xl sm:text-3xl">Cronograma</span>
+              <span className="text-sm text-slate-500">Horarios del día</span>
+            </Link>
+          )}
+
+          {config.mostrar_evaluacion && (
+            <a
+              href={VIDEO_EVALUACION_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ animationDelay: '240ms' }}
+              className="glass-card-hover animate-fade-up group flex flex-col items-center gap-4 px-6 py-10 hover:-translate-y-1"
+            >
+              <span className="flex h-20 w-20 sm:h-24 sm:w-24 items-center justify-center rounded-3xl bg-gradient-to-br from-emerald-500/25 to-emerald-700/20 border border-white/10 text-emerald-200 group-hover:from-emerald-500 group-hover:to-emerald-700 group-hover:text-white transition-all duration-300">
+                <ClipboardCheck size={40} />
+              </span>
+              <span className="font-black text-white text-2xl sm:text-3xl">Evaluación</span>
+              <span className="text-sm text-slate-500">Formulario del día</span>
+            </a>
+          )}
         </div>
       )}
+
+      {config?.mostrar_video_bienvenida && <ModalBienvenida />}
     </main>
   );
 }

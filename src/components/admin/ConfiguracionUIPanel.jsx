@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Loader2, Sun, Moon } from 'lucide-react';
+import { Loader2, Sun, Moon, CalendarClock, ClipboardCheck, Video } from 'lucide-react';
 import { useToast } from '../../context/ToastContext';
 import {
   obtenerConfiguracionApp,
@@ -25,6 +25,21 @@ function Switch({ activo, onChange, disabled }) {
         }`}
       />
     </button>
+  );
+}
+
+function FilaSwitch({ icono, label, campo, config, guardando, onCambiar }) {
+  return (
+    <div className="flex items-center justify-between glass-row px-4 py-3">
+      <span className="flex items-center gap-2 font-medium text-white">
+        {icono} {label}
+      </span>
+      <Switch
+        activo={config[campo]}
+        disabled={guardando}
+        onChange={(v) => onCambiar(campo, v)}
+      />
+    </div>
   );
 }
 
@@ -78,27 +93,50 @@ export default function ConfiguracionUIPanel() {
         </p>
       </div>
 
-      <div className="flex items-center justify-between glass-row px-4 py-3">
-        <span className="flex items-center gap-2 font-medium text-white">
-          <Sun size={18} className="text-amber-300" /> Mañana (Formación)
-        </span>
-        <Switch
-          activo={config.mostrar_manana}
-          disabled={guardando}
-          onChange={(v) => handleCambiar('mostrar_manana', v)}
-        />
-      </div>
+      <FilaSwitch
+        icono={<Sun size={18} className="text-amber-300" />}
+        label="Mañana (Formación)"
+        campo="mostrar_manana"
+        config={config}
+        guardando={guardando}
+        onCambiar={handleCambiar}
+      />
 
-      <div className="flex items-center justify-between glass-row px-4 py-3">
-        <span className="flex items-center gap-2 font-medium text-white">
-          <Moon size={18} className="text-indigo-300" /> Tarde (Actividad)
-        </span>
-        <Switch
-          activo={config.mostrar_tarde}
-          disabled={guardando}
-          onChange={(v) => handleCambiar('mostrar_tarde', v)}
-        />
-      </div>
+      <FilaSwitch
+        icono={<Moon size={18} className="text-orange-300" />}
+        label="Tarde (Actividad)"
+        campo="mostrar_tarde"
+        config={config}
+        guardando={guardando}
+        onCambiar={handleCambiar}
+      />
+
+      <FilaSwitch
+        icono={<CalendarClock size={18} className="text-blue-300" />}
+        label="Cronograma"
+        campo="mostrar_cronograma"
+        config={config}
+        guardando={guardando}
+        onCambiar={handleCambiar}
+      />
+
+      <FilaSwitch
+        icono={<ClipboardCheck size={18} className="text-emerald-300" />}
+        label="Formulario de Evaluación"
+        campo="mostrar_evaluacion"
+        config={config}
+        guardando={guardando}
+        onCambiar={handleCambiar}
+      />
+
+      <FilaSwitch
+        icono={<Video size={18} className="text-rose-300" />}
+        label="Video de Bienvenida (modal automático)"
+        campo="mostrar_video_bienvenida"
+        config={config}
+        guardando={guardando}
+        onCambiar={handleCambiar}
+      />
     </div>
   );
 }
