@@ -1,13 +1,18 @@
 import { Link, useLocation } from 'react-router-dom';
-import { LogOut, LogIn } from 'lucide-react';
+import { LogOut, LogIn, ShieldCheck, Users } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
 const ETIQUETAS_ROL = {
   admin: 'Admin',
+  animador: 'Animador',
   staff_gymkana: 'Staff Gymkana',
   staff_tesoro: 'Staff Tesoro',
   arbitro: 'Árbitro',
 };
+
+// Todo el staff que opera DESDE el Panel del Animador (ademas del Admin,
+// que tiene acceso a ambos paneles).
+const ROLES_PANEL_ANIMADOR = ['animador', 'staff_gymkana', 'staff_tesoro', 'arbitro'];
 
 /**
  * Header compartido por toda la app.
@@ -50,14 +55,29 @@ export default function Header() {
       </Link>
 
       {!esLogin && (
-        <div className="flex items-center gap-3 shrink-0">
-          {session ? (
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+          {session && perfil ? (
             <>
-              <span className="text-sm text-white/90 hidden sm:inline font-medium drop-shadow">
+              {perfil.rol === 'admin' && (
+                <Link to="/admin" className="btn-secondary !px-2.5 sm:!px-4">
+                  <ShieldCheck size={16} />
+                  <span className="hidden sm:inline">Admin</span>
+                </Link>
+              )}
+
+              {(perfil.rol === 'admin' || ROLES_PANEL_ANIMADOR.includes(perfil.rol)) && (
+                <Link to="/panel" className="btn-secondary !px-2.5 sm:!px-4">
+                  <Users size={16} />
+                  <span className="hidden sm:inline">Animador</span>
+                </Link>
+              )}
+
+              <span className="text-sm text-white/90 hidden md:inline font-medium drop-shadow">
                 {perfil?.nombre || ETIQUETAS_ROL[perfil?.rol] || 'Usuario'}
               </span>
               <button onClick={logout} className="btn-ghost hover:!text-red-300 hover:!bg-red-500/20">
-                <LogOut size={16} /> Cerrar sesión
+                <LogOut size={16} />
+                <span className="hidden sm:inline">Cerrar sesión</span>
               </button>
             </>
           ) : (

@@ -4,10 +4,8 @@ import AppLayout from '../components/layout/AppLayout';
 
 import Home from '../pages/Home';
 import Login from '../pages/Login';
-import GymkanaPage from '../pages/GymkanaPage';
-import TesoroPage from '../pages/TesoroPage';
-import TorneoPage from '../pages/TorneoPage';
 import AdminPage from '../pages/AdminPage';
+import PanelAnimadorPage from '../pages/PanelAnimadorPage';
 import VisorPage from '../pages/VisorPage';
 import ColoresPage from '../pages/ColoresPage';
 import ActividadesPage from '../pages/ActividadesPage';
@@ -29,38 +27,31 @@ export default function AppRoutes() {
 
         <Route path="/login" element={<Login />} />
 
-        <Route
-          path="/gymkana"
-          element={
-            <ProtectedRoute roles={['staff_gymkana', 'admin']}>
-              <GymkanaPage />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/tesoro"
-          element={
-            <ProtectedRoute roles={['staff_tesoro', 'admin']}>
-              <TesoroPage />
-            </ProtectedRoute>
-          }
-        />
-
-        <Route
-          path="/torneo"
-          element={
-            <ProtectedRoute roles={['arbitro', 'admin']}>
-              <TorneoPage />
-            </ProtectedRoute>
-          }
-        />
+        {/* Rutas antiguas de Gymkana/Tesoro/Torneo: se retiraron como
+            paginas independientes (pasan a vivir dentro del Panel del
+            Animador en la Fase 3). Mientras tanto, redirigen a la
+            pantalla de mantenimiento para no dejar un 404 ni un enlace
+            roto en lo que ya este publicado. */}
+        <Route path="/gymkana" element={<Navigate to="/cronograma" replace />} />
+        <Route path="/tesoro" element={<Navigate to="/cronograma" replace />} />
+        <Route path="/torneo" element={<Navigate to="/cronograma" replace />} />
 
         <Route
           path="/admin"
           element={
             <ProtectedRoute roles={['admin']}>
               <AdminPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/panel"
+          element={
+            <ProtectedRoute
+              roles={['admin', 'animador', 'staff_gymkana', 'staff_tesoro', 'arbitro']}
+            >
+              <PanelAnimadorPage />
             </ProtectedRoute>
           }
         />
