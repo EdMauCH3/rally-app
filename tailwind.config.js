@@ -13,6 +13,12 @@ export default {
         sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
         display: ['Manrope', 'Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
       },
+      fontSize: {
+        // Sube un poco los textos pequeños en toda la app (12px->13px,
+        // 14px->15px) sin tocar text-base/lg/xl para arriba.
+        xs: ['0.8125rem', { lineHeight: '1.25rem' }],
+        sm: ['0.9375rem', { lineHeight: '1.4rem' }],
+      },
       keyframes: {
         fadeUp: {
           '0%': { opacity: 0, transform: 'translateY(14px)' },

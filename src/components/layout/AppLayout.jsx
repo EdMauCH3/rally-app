@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router-dom';
 import Header from './Header';
 import NotificationListener from './NotificationListener';
+import Footer from './Footer';
 
 export default function AppLayout() {
   return (
@@ -10,6 +11,7 @@ export default function AppLayout() {
       <div className="flex-1 pb-10">
         <Outlet />
       </div>
+      <Footer />
     </div>
   );
 }

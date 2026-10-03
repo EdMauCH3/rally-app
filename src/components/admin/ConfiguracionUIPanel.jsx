@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Loader2, Sun, Moon, CalendarClock, ClipboardCheck, Video } from 'lucide-react';
+import { Loader2, Sun, Moon, CalendarClock, ClipboardCheck, Video, PlayCircle } from 'lucide-react';
 import { useToast } from '../../context/ToastContext';
 import {
   obtenerConfiguracionApp,
@@ -133,6 +133,15 @@ export default function ConfiguracionUIPanel() {
         icono={<Video size={18} className="text-rose-300" />}
         label="Video de Bienvenida (modal automático)"
         campo="mostrar_video_bienvenida"
+        config={config}
+        guardando={guardando}
+        onCambiar={handleCambiar}
+      />
+
+      <FilaSwitch
+        icono={<PlayCircle size={18} className="text-rose-300" />}
+        label="Botón manual para ver el video"
+        campo="mostrar_boton_video"
         config={config}
         guardando={guardando}
         onCambiar={handleCambiar}

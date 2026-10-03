@@ -1,10 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Loader2, Plus, Trash2, CheckSquare, Square } from 'lucide-react';
+import { Loader2, Plus, Trash2 } from 'lucide-react';
 import { useToast } from '../../context/ToastContext';
 import {
-  listarEquiposGenerales,
   listarRosterTorneo,
-  agregarEquipoGeneralATorneo,
   crearEquipoExclusivoTorneo,
   quitarEquipoDelTorneo,
   suscribirseRosterTorneo,
@@ -14,7 +12,6 @@ const COLOR_DEFAULT = '#733f2d';
 
 export default function GestionEquiposTorneo() {
   const { showToast } = useToast();
-  const [generales, setGenerales] = useState([]);
   const [roster, setRoster] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [procesandoId, setProcesandoId] = useState(null);
@@ -24,11 +21,8 @@ export default function GestionEquiposTorneo() {
   const [creando, setCreando] = useState(false);
 
   const cargar = useCallback(() => {
-    Promise.all([listarEquiposGenerales(), listarRosterTorneo()])
-      .then(([g, r]) => {
-        setGenerales(g);
-        setRoster(r);
-      })
+    listarRosterTorneo()
+      .then(setRoster)
       .catch(() => showToast('No se pudo cargar la gestión de equipos del Torneo', 'error'))
       .finally(() => setCargando(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -39,29 +33,6 @@ export default function GestionEquiposTorneo() {
     const unsubscribe = suscribirseRosterTorneo(cargar);
     return unsubscribe;
   }, [cargar]);
-
-  function filaRosterDeGeneral(equipoGeneralId) {
-    return roster.find((r) => r.equipo_general_id === equipoGeneralId) ?? null;
-  }
-
-  async function handleToggleGeneral(equipoGeneral) {
-    const filaExistente = filaRosterDeGeneral(equipoGeneral.id);
-    setProcesandoId(equipoGeneral.id);
-    try {
-      if (filaExistente) {
-        await quitarEquipoDelTorneo(filaExistente.id);
-        showToast(`${equipoGeneral.nombre} salió del Torneo`, 'success');
-      } else {
-        await agregarEquipoGeneralATorneo(equipoGeneral.id);
-        showToast(`${equipoGeneral.nombre} entró al Torneo`, 'success');
-      }
-      cargar();
-    } catch (err) {
-      showToast(err.message ?? 'No se pudo actualizar', 'error');
-    } finally {
-      setProcesandoId(null);
-    }
-  }
 
   async function handleCrearExclusivo(e) {
     e.preventDefault();
@@ -109,46 +80,10 @@ export default function GestionEquiposTorneo() {
 
   return (
     <div className="space-y-6 max-w-2xl">
-      <div className="glass-card p-5 space-y-3">
-        <div>
-          <h2 className="font-semibold text-white">Equipos Generales en el Torneo</h2>
-          <p className="text-sm text-slate-400 mt-1">
-            Los que actives aquí también suman al Gran Total del rally.
-          </p>
-        </div>
-
-        <div className="space-y-2">
-          {generales.length === 0 && (
-            <p className="text-sm text-slate-500">Aún no hay equipos generales creados.</p>
-          )}
-          {generales.map((eq) => {
-            const enRoster = !!filaRosterDeGeneral(eq.id);
-            const procesando = procesandoId === eq.id;
-            return (
-              <button
-                key={eq.id}
-                onClick={() => handleToggleGeneral(eq)}
-                disabled={procesando}
-                className="w-full flex items-center justify-between glass-row px-4 py-3 transition-all duration-300 ease-in-out hover:border-brand-brown/40 disabled:opacity-50"
-              >
-                <span className="flex items-center gap-3">
-                  <span
-                    className="w-3 h-3 rounded-full shrink-0"
-                    style={{ backgroundColor: eq.color_hex }}
-                  />
-                  <span className="font-medium text-white">{eq.nombre}</span>
-                </span>
-                {procesando ? (
-                  <Loader2 className="animate-spin text-white" size={18} />
-                ) : enRoster ? (
-                  <CheckSquare className="text-brand-brown" size={20} />
-                ) : (
-                  <Square className="text-slate-500" size={20} />
-                )}
-              </button>
-            );
-          })}
-        </div>
+      <div className="glass-card p-4 text-sm text-slate-400">
+        Los 4 colores asignados a Torneo (uno por Macro-Equipo) entran aquí automáticamente —
+        configúralos desde la pestaña <strong className="text-white">Equipos</strong>. Esta
+        sección es solo para equipos exclusivos del Torneo, ajenos a cualquier Macro-Equipo.
       </div>
 
       <div className="glass-card p-5 space-y-4">

@@ -10,6 +10,9 @@ import VisorPage from '../pages/VisorPage';
 import ColoresPage from '../pages/ColoresPage';
 import ActividadesPage from '../pages/ActividadesPage';
 import CronogramaPage from '../pages/CronogramaPage';
+import GymkanaPublicoPage from '../pages/GymkanaPublicoPage';
+import TesoroPublicoPage from '../pages/TesoroPublicoPage';
+import TorneoPublicoPage from '../pages/TorneoPublicoPage';
 
 export default function AppRoutes() {
   return (
@@ -27,14 +30,12 @@ export default function AppRoutes() {
 
         <Route path="/login" element={<Login />} />
 
-        {/* Rutas antiguas de Gymkana/Tesoro/Torneo: se retiraron como
-            paginas independientes (pasan a vivir dentro del Panel del
-            Animador en la Fase 3). Mientras tanto, redirigen a la
-            pantalla de mantenimiento para no dejar un 404 ni un enlace
-            roto en lo que ya este publicado. */}
-        <Route path="/gymkana" element={<Navigate to="/cronograma" replace />} />
-        <Route path="/tesoro" element={<Navigate to="/cronograma" replace />} />
-        <Route path="/torneo" element={<Navigate to="/cronograma" replace />} />
+        {/* Publicas, de solo lectura: cualquiera elige su equipo y ve su
+            estado, sin poder modificar nada (eso solo se hace desde
+            /panel). Reemplazan el redirect provisional de la Fase 1. */}
+        <Route path="/gymkana" element={<GymkanaPublicoPage />} />
+        <Route path="/tesoro" element={<TesoroPublicoPage />} />
+        <Route path="/torneo" element={<TorneoPublicoPage />} />
 
         <Route
           path="/admin"

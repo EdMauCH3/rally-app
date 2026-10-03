@@ -2,6 +2,7 @@ import RotacionColoresAdmin from '../components/admin/RotacionColoresAdmin';
 import ConfiguracionUIPanel from '../components/admin/ConfiguracionUIPanel';
 import GestionEquiposTorneo from '../components/admin/GestionEquiposTorneo';
 import NotificacionesAdminPanel from '../components/admin/NotificacionesAdminPanel';
+import AlertasAnimadorAdminPanel from '../components/admin/AlertasAnimadorAdminPanel';
 import { useCallback, useEffect, useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import { useToast } from '../context/ToastContext';
@@ -14,8 +15,15 @@ import {
   listarPartidosGymkana,
   listarAlertasGymkana,
 } from '../services/adminService';
+import {
+  listarAlertasAnimador,
+  suscribirseAlertasAnimador,
+} from '../services/alertasAnimadorService';
+import { listarSubEquiposColorPorActividad } from '../services/subEquiposColorService';
 import TablaMarcador from '../components/admin/TablaMarcador';
 import EquiposCRUD from '../components/admin/EquiposCRUD';
+import GestionSubEquiposColor from '../components/admin/GestionSubEquiposColor';
+import ControlInicioActividades from '../components/admin/ControlInicioActividades';
 import AjustesForm from '../components/admin/AjustesForm';
 import IniciarGymkanaPanel from '../components/admin/IniciarGymkanaPanel';
 import AlertasGymkana from '../components/admin/AlertasGymkana';
@@ -30,6 +38,7 @@ const TABS = [
   { id: 'torneo', label: 'Torneo' },
   { id: 'notificaciones', label: 'Notificaciones' },
   { id: 'alertas', label: 'Alertas' },
+  { id: 'alertas-animador', label: 'Alertas Animadores' },
   { id: 'peligro', label: 'Reiniciar' },
   { id: 'colores', label: 'Rotación' },
 ];
@@ -46,22 +55,29 @@ export default function AdminPage() {
   const [rutasGymkana, setRutasGymkana] = useState([]);
   const [partidosGymkana, setPartidosGymkana] = useState([]);
   const [alertas, setAlertas] = useState([]);
+  const [alertasAnimador, setAlertasAnimador] = useState([]);
+  const [coloresGymkana, setColoresGymkana] = useState([]);
 
   const cargarTodo = useCallback(async () => {
     setCargando(true);
 
-    const [m, e, a, iniciada, alertasData] = await Promise.allSettled([
-      obtenerMarcadorGeneral(),
-      listarEquipos(),
-      listarAjustes(),
-      gymkanaEstaIniciada(),
-      listarAlertasGymkana(),
-    ]);
+    const [m, e, a, iniciada, alertasData, alertasAnimadorData, coloresGymkanaData] =
+      await Promise.allSettled([
+        obtenerMarcadorGeneral(),
+        listarEquipos(),
+        listarAjustes(),
+        gymkanaEstaIniciada(),
+        listarAlertasGymkana(),
+        listarAlertasAnimador(),
+        listarSubEquiposColorPorActividad('gymkana'),
+      ]);
 
     if (m.status === 'fulfilled') setMarcador(m.value);
     if (e.status === 'fulfilled') setEquipos(e.value);
     if (a.status === 'fulfilled') setAjustes(a.value);
     if (alertasData.status === 'fulfilled') setAlertas(alertasData.value);
+    if (alertasAnimadorData.status === 'fulfilled') setAlertasAnimador(alertasAnimadorData.value);
+    if (coloresGymkanaData.status === 'fulfilled') setColoresGymkana(coloresGymkanaData.value);
 
     if (iniciada.status === 'fulfilled') {
       setGymkanaIniciada(iniciada.value);
@@ -102,9 +118,12 @@ export default function AdminPage() {
 
   useEffect(() => {
     cargarTodo();
+    const unsubscribe = suscribirseAlertasAnimador(cargarTodo);
+    return unsubscribe;
   }, [cargarTodo]);
 
   const alertasPendientes = alertas.filter((a) => a.requiere_auditoria).length;
+  const alertasAnimadorPendientes = alertasAnimador.filter((a) => !a.atendida).length;
 
   return (
     <>
@@ -126,6 +145,11 @@ export default function AdminPage() {
                   {alertasPendientes}
                 </span>
               )}
+              {t.id === 'alertas-animador' && alertasAnimadorPendientes > 0 && (
+                <span className="ml-1.5 inline-flex items-center justify-center w-5 h-5 text-xs bg-orange-500 text-white rounded-full">
+                  {alertasAnimadorPendientes}
+                </span>
+              )}
               {tab === t.id && (
                 <span className="absolute inset-x-3 -bottom-px h-0.5 rounded-full bg-brand-brown" />
               )}
@@ -145,14 +169,21 @@ export default function AdminPage() {
             {tab === 'main' && <ConfiguracionUIPanel />}
             {tab === 'torneo' && <GestionEquiposTorneo />}
             {tab === 'notificaciones' && <NotificacionesAdminPanel />}
+            {tab === 'alertas-animador' && <AlertasAnimadorAdminPanel />}
             {tab === 'resumen' && <TablaMarcador equipos={marcador} />}
-            {tab === 'equipos' && <EquiposCRUD equipos={equipos} onCambio={cargarTodo} />}
+            {tab === 'equipos' && (
+              <div className="space-y-6">
+                <ControlInicioActividades />
+                <EquiposCRUD equipos={equipos} onCambio={cargarTodo} />
+                <GestionSubEquiposColor macroEquipos={equipos} />
+              </div>
+            )}
             {tab === 'ajustes' && (
               <AjustesForm equipos={equipos} historial={ajustes} onCambio={cargarTodo} />
             )}
             {tab === 'gymkana' && (
               <IniciarGymkanaPanel
-                equipos={equipos}
+                equipos={coloresGymkana}
                 rutas={rutasGymkana}
                 partidos={partidosGymkana}
                 gymkanaIniciada={gymkanaIniciada}

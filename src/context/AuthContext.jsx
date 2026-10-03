@@ -3,12 +3,16 @@ import { supabase } from '../services/supabaseClient';
 
 const AuthContext = createContext(undefined);
 
-// Mapa rol -> ruta de inicio para redirección tras login
+// Mapa rol -> ruta de inicio para redirección tras login.
+// Todos entran al Panel del Animador; el Admin llega a /admin con su
+// propio botón en el Header cuando lo necesite, no automáticamente al
+// iniciar sesión.
 export const RUTA_POR_ROL = {
-  admin: '/admin',
-  staff_gymkana: '/gymkana',
-  staff_tesoro: '/tesoro',
-  arbitro: '/torneo',
+  admin: '/panel',
+  animador: '/panel',
+  staff_gymkana: '/panel',
+  staff_tesoro: '/panel',
+  arbitro: '/panel',
 };
 
 export function AuthProvider({ children }) {

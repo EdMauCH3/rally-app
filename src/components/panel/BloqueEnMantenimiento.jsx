@@ -2,7 +2,7 @@ import { Wrench, Sparkles } from 'lucide-react';
 
 export default function BloqueEnMantenimiento({ titulo, descripcion }) {
   return (
-    <div className="flex flex-col items-center gap-6 text-center py-12 animate-fade-up">
+    <div className="max-w-2xl mx-auto flex flex-col items-center gap-6 text-center py-12 animate-fade-up">
       <div className="relative flex items-center justify-center">
         <Sparkles
           className="absolute -top-5 -left-8 text-amber-300 animate-pulse"

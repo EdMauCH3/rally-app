@@ -41,7 +41,8 @@ export default function IniciarGymkanaPanel({ equipos, rutas, partidos, gymkanaI
         </button>
         {equipos.length !== 4 && (
           <p className="text-xs text-amber-300">
-            Se necesitan exactamente 4 equipos creados (hay {equipos.length}).
+            Faltan colores de Gymkana por asignar (hay {equipos.length}/4). Ve a la pestaña{' '}
+            <strong>Equipos</strong> y asígnale un color de Gymkana a cada Macro-Equipo.
           </p>
         )}
       </div>

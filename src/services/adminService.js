@@ -13,21 +13,21 @@ export async function obtenerMarcadorGeneral() {
 // ---------- Equipos (CRUD) ----------
 export async function crearEquipo(nombre, colorHex) {
   const { error } = await supabase
-    .from('equipos')
+    .from('macro_equipos')
     .insert({ nombre, color_hex: colorHex });
   if (error) throw error;
 }
 
 export async function actualizarEquipo(id, { nombre, colorHex }) {
   const { error } = await supabase
-    .from('equipos')
+    .from('macro_equipos')
     .update({ nombre, color_hex: colorHex })
     .eq('id', id);
   if (error) throw error;
 }
 
 export async function eliminarEquipo(id) {
-  const { error } = await supabase.from('equipos').delete().eq('id', id);
+  const { error } = await supabase.from('macro_equipos').delete().eq('id', id);
   if (error) throw error;
 }
 
@@ -45,7 +45,7 @@ export async function crearAjuste(equipoId, puntosExtra, motivo, creadoPor) {
 export async function listarAjustes() {
   const { data, error } = await supabase
     .from('ajustes_admin')
-    .select('id, puntos_extra, motivo, fecha, equipos(nombre, color_hex)')
+    .select('id, puntos_extra, motivo, fecha, equipos:macro_equipos(nombre, color_hex)')
     .order('fecha', { ascending: false });
   if (error) throw error;
   return data;
@@ -65,7 +65,7 @@ export async function gymkanaEstaIniciada() {
 export async function listarRutasGymkana() {
   const { data, error } = await supabase
     .from('rutas_gymkana')
-    .select('equipo_id, pareja_num, orden_bases, equipo:equipo_id(id, nombre, color_hex), rival:rival_id(id, nombre, color_hex)')
+    .select('equipo_id, pareja_num, orden_bases, equipo:equipo_id(id, nombre:color_nombre, color_hex), rival:rival_id(id, nombre:color_nombre, color_hex)')
     .order('pareja_num', { ascending: true });
   if (error) throw error;
   return data;
@@ -124,7 +124,7 @@ export async function listarPartidosGymkana() {
   const { data, error } = await supabase
     .from('puntuaciones_gymkana')
     .select(
-      'id, base_id, resultado_a, resultado_b, finalizado, requiere_auditoria, equipo_a:equipo_a_id(id, nombre, color_hex), equipo_b:equipo_b_id(id, nombre, color_hex)'
+      'id, base_id, resultado_a, resultado_b, finalizado, requiere_auditoria, equipo_a:equipo_a_id(id, nombre:color_nombre, color_hex), equipo_b:equipo_b_id(id, nombre:color_nombre, color_hex)'
     )
     .order('base_id', { ascending: true });
   if (error) throw error;
@@ -139,7 +139,7 @@ export async function listarAlertasGymkana() {
   const { data, error } = await supabase
     .from('puntuaciones_gymkana')
     .select(
-      'id, base_id, resultado_a, resultado_b, requiere_auditoria, auditoria_reportada_en, auditoria_resuelta_en, equipo_a:equipo_a_id(id, nombre, color_hex), equipo_b:equipo_b_id(id, nombre, color_hex)'
+      'id, base_id, resultado_a, resultado_b, requiere_auditoria, auditoria_reportada_en, auditoria_resuelta_en, equipo_a:equipo_a_id(id, nombre:color_nombre, color_hex), equipo_b:equipo_b_id(id, nombre:color_nombre, color_hex)'
     )
     .not('auditoria_reportada_en', 'is', null)
     .order('requiere_auditoria', { ascending: false })

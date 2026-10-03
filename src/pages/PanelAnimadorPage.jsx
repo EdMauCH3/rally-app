@@ -67,7 +67,7 @@ export default function PanelAnimadorPage() {
         </div>
       </nav>
 
-      <main className="max-w-3xl mx-auto px-4 py-6">
+      <main className="px-4 py-6">
         {tabActivo === 'comisiones' && <BloqueComisiones />}
         {tabActivo === 'actividades' && <BloqueActividades rol={perfil?.rol} />}
         {tabActivo === 'cronograma' && <BloqueCronograma />}

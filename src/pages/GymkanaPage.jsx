@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { Loader2, MapPin } from 'lucide-react';
 import { useToast } from '../context/ToastContext';
-import { listarEquipos } from '../services/equiposService';
+import { listarSubEquiposColorPorActividad } from '../services/subEquiposColorService';
 import {
   obtenerEstadoGymkana,
   sellarResultadoGymkana,
@@ -21,9 +21,9 @@ export default function GymkanaPage() {
   const [cargandoEstado, setCargandoEstado] = useState(false);
 
   useEffect(() => {
-    listarEquipos()
+    listarSubEquiposColorPorActividad('gymkana')
       .then(setEquipos)
-      .catch(() => showToast('No se pudieron cargar los equipos', 'error'))
+      .catch(() => showToast('No se pudieron cargar los colores de Gymkana', 'error'))
       .finally(() => setCargandoEquipos(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

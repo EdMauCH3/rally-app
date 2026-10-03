@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Sunrise, Sun, CalendarClock, ClipboardCheck, Loader2 } from 'lucide-react';
+import { Sunrise, Sun, CalendarClock, ClipboardCheck, Loader2, PlayCircle } from 'lucide-react';
 import {
   obtenerConfiguracionApp,
   suscribirseConfiguracionApp,
@@ -18,15 +18,27 @@ const CONFIG_DEFECTO = {
   mostrar_cronograma: true,
   mostrar_evaluacion: true,
   mostrar_video_bienvenida: false,
+  mostrar_boton_video: true,
 };
 
 export default function Home() {
   const [config, setConfig] = useState(null);
   const [cargando, setCargando] = useState(true);
+  const [modalVideoAbierto, setModalVideoAbierto] = useState(false);
+  const autoAperturaHecha = useRef(false);
 
   const cargar = useCallback(() => {
     obtenerConfiguracionApp()
-      .then(setConfig)
+      .then((data) => {
+        setConfig(data);
+        // Auto-abre el video SOLO la primera vez que detectamos el flag
+        // en true, para no reabrirlo de golpe si cambia algo más en la
+        // configuración mientras el usuario ya lo cerró.
+        if (data.mostrar_video_bienvenida && !autoAperturaHecha.current) {
+          setModalVideoAbierto(true);
+          autoAperturaHecha.current = true;
+        }
+      })
       .catch(() => setConfig(CONFIG_DEFECTO))
       .finally(() => setCargando(false));
   }, []);
@@ -111,7 +123,20 @@ export default function Home() {
         </div>
       )}
 
-      {config?.mostrar_video_bienvenida && <ModalBienvenida />}
+      {!cargando && config?.mostrar_boton_video && (
+        <button
+          onClick={() => setModalVideoAbierto(true)}
+          className="mt-10 w-full max-w-xs flex items-center justify-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-xs font-medium text-slate-400 hover:text-slate-200 hover:bg-white/[0.06] transition-all duration-300"
+        >
+          <PlayCircle size={15} />
+          Ver video de bienvenida
+        </button>
+      )}
+
+      <ModalBienvenida
+        abierto={modalVideoAbierto}
+        onCerrar={() => setModalVideoAbierto(false)}
+      />
     </main>
   );
 }

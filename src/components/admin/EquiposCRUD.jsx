@@ -42,7 +42,7 @@ export default function EquiposCRUD({ equipos, onCambio }) {
       cerrar();
       onCambio();
     } catch (err) {
-      showToast(err.message ?? 'No se pudo guardar el equipo', 'error');
+      showToast(err.message ?? 'No se pudo guardar el Macro-Equipo', 'error');
     } finally {
       setGuardando(false);
     }
@@ -57,7 +57,7 @@ export default function EquiposCRUD({ equipos, onCambio }) {
       showToast('Equipo eliminado', 'success');
       onCambio();
     } catch (err) {
-      showToast(err.message ?? 'No se pudo eliminar el equipo', 'error');
+      showToast(err.message ?? 'No se pudo eliminar el Macro-Equipo', 'error');
     }
   }
 
@@ -67,16 +67,16 @@ export default function EquiposCRUD({ equipos, onCambio }) {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h2 className="font-semibold text-slate-200">
-          Equipos <span className="text-slate-500">({equipos.length}/{MAX_EQUIPOS})</span>
+          Macro-Equipos <span className="text-slate-500">({equipos.length}/{MAX_EQUIPOS})</span>
         </h2>
         <button onClick={abrirNuevo} disabled={!puedeCrear} className="btn-primary !px-3 !py-2 text-sm">
-          <Plus size={16} /> Nuevo equipo
+          <Plus size={16} /> Nuevo Macro-Equipo
         </button>
       </div>
 
       {!puedeCrear && (
         <p className="text-xs text-amber-300 bg-amber-500/10 border border-amber-500/25 rounded-xl px-3 py-2">
-          Ya existen los 4 equipos del evento. Elimina uno para poder crear otro.
+          Ya existen los 4 Macro-Equipos del evento. Elimina uno para poder crear otro.
         </p>
       )}
 
@@ -111,7 +111,7 @@ export default function EquiposCRUD({ equipos, onCambio }) {
           <form onSubmit={handleGuardar} className="glass-card w-full max-w-sm p-6 space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="font-bold text-white">
-                {editando === 'nuevo' ? 'Nuevo equipo' : 'Editar equipo'}
+                {editando === 'nuevo' ? 'Nuevo Macro-Equipo' : 'Editar equipo'}
               </h3>
               <button type="button" onClick={cerrar} className="text-slate-500 hover:text-slate-200">
                 <X size={20} />

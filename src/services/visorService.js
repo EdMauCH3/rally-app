@@ -44,7 +44,8 @@ export function suscribirseVisor(onChange) {
     .on('postgres_changes', { event: '*', schema: 'public', table: 'partidos_torneo' }, onChange)
     .on('postgres_changes', { event: '*', schema: 'public', table: 'equipos_torneo' }, onChange)
     .on('postgres_changes', { event: '*', schema: 'public', table: 'ajustes_admin' }, onChange)
-    .on('postgres_changes', { event: '*', schema: 'public', table: 'equipos' }, onChange)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'macro_equipos' }, onChange)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'sub_equipos_color' }, onChange)
     .subscribe();
 
   return () => {

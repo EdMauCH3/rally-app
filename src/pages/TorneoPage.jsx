@@ -6,6 +6,8 @@ import {
   listarPartidos,
   generarPartidos,
   finalizarPartido,
+  marcarPartidoEnJuego,
+  marcarPartidoTerminado,
   listarRosterTorneo,
   suscribirsePartidos,
   suscribirseRosterTorneo,
@@ -70,6 +72,24 @@ export default function TorneoPage() {
     }
   }
 
+  async function handleMarcarEnJuego(partidoId) {
+    try {
+      await marcarPartidoEnJuego(partidoId);
+      cargarTodo();
+    } catch (err) {
+      showToast(err.message ?? 'No se pudo marcar el partido en juego', 'error');
+    }
+  }
+
+  async function handleMarcarTerminado(partidoId) {
+    try {
+      await marcarPartidoTerminado(partidoId);
+      cargarTodo();
+    } catch (err) {
+      showToast(err.message ?? 'No se pudo marcar el partido terminado', 'error');
+    }
+  }
+
   // El roster (equipos_torneo) es la fuente de verdad para nombre/color,
   // no la tabla general "equipos" (partidos_torneo.equipo_a_id/b_id
   // apuntan a equipos_torneo desde la Fase 1 de la reestructuracion).
@@ -118,6 +138,8 @@ export default function TorneoPage() {
             equipoB={equipoPorId(p.equipo_b_id)}
             esAdmin={esAdmin}
             onFinalizar={handleFinalizar}
+            onMarcarEnJuego={handleMarcarEnJuego}
+            onMarcarTerminado={handleMarcarTerminado}
           />
         ))
       )}

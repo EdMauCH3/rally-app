@@ -14,6 +14,20 @@ export async function generarPartidos() {
   if (error) throw error;
 }
 
+export async function marcarPartidoEnJuego(partidoId) {
+  const { error } = await supabase.rpc('marcar_partido_en_juego', {
+    p_partido_id: partidoId,
+  });
+  if (error) throw error;
+}
+
+export async function marcarPartidoTerminado(partidoId) {
+  const { error } = await supabase.rpc('marcar_partido_terminado', {
+    p_partido_id: partidoId,
+  });
+  if (error) throw error;
+}
+
 export async function finalizarPartido(partidoId, ganador) {
   const { data, error } = await supabase.rpc('finalizar_partido', {
     p_partido_id: partidoId,
@@ -42,15 +56,6 @@ export function suscribirsePartidos(onChange) {
 // Roster de equipos del Torneo (generales seleccionados + exclusivos)
 // ============================================
 
-export async function listarEquiposGenerales() {
-  const { data, error } = await supabase
-    .from('equipos')
-    .select('id, nombre, color_hex')
-    .order('nombre', { ascending: true });
-  if (error) throw error;
-  return data;
-}
-
 export async function listarRosterTorneo() {
   const { data, error } = await supabase
     .from('v_equipos_torneo')
@@ -58,13 +63,6 @@ export async function listarRosterTorneo() {
     .order('creado_en', { ascending: true });
   if (error) throw error;
   return data;
-}
-
-export async function agregarEquipoGeneralATorneo(equipoGeneralId) {
-  const { error } = await supabase
-    .from('equipos_torneo')
-    .insert({ equipo_general_id: equipoGeneralId, es_exclusivo: false });
-  if (error) throw error;
 }
 
 export async function crearEquipoExclusivoTorneo(nombre, colorHex) {

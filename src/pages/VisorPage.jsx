@@ -7,6 +7,7 @@ import {
   obtenerUbicacionesTesoro,
   suscribirseVisor,
 } from '../services/visorService';
+import { listarSubEquiposColor } from '../services/subEquiposColorService';
 import TablaPosicionesVisor from '../components/visor/TablaPosicionesVisor';
 import TrackerUbicacion from '../components/visor/TrackerUbicacion';
 
@@ -23,12 +24,23 @@ export default function VisorPage() {
       obtenerTorneoPosiciones(),
       obtenerUbicacionesGymkana(),
       obtenerUbicacionesTesoro(),
+      listarSubEquiposColor(),
     ])
-      .then(([m, torneo, ug, ut]) => {
+      .then(([m, torneo, ug, ut, colores]) => {
+        // ug/ut traen equipo_id = id del COLOR (sub_equipos_color); como
+        // el Visor solo muestra Macro-Equipos, se resuelve cada color a
+        // su macro_equipo_id antes de pasarlo al tracker.
+        const macroDeColor = new Map(colores.map((c) => [c.id, c.macro_equipo_id]));
+        const porMacroEquipo = (ubicaciones) =>
+          ubicaciones.map((u) => ({
+            ...u,
+            equipo_id: macroDeColor.get(u.equipo_id) ?? u.equipo_id,
+          }));
+
         setMarcador(m);
         setExclusivosTorneo(torneo.filter((t) => t.es_exclusivo));
-        setUbicacionesGymkana(ug);
-        setUbicacionesTesoro(ut);
+        setUbicacionesGymkana(porMacroEquipo(ug));
+        setUbicacionesTesoro(porMacroEquipo(ut));
       })
       .catch((err) => console.error('Error cargando el visor:', err.message))
       .finally(() => setCargando(false));

@@ -1,18 +1,20 @@
-import { useState } from 'react';
 import { X } from 'lucide-react';
 
 const VIDEO_ID = 'zC0JJGgnf9g';
 
-export default function ModalBienvenida() {
-  const [abierto, setAbierto] = useState(true);
-
+/**
+ * Controlado desde afuera (Home.jsx) con `abierto`/`onCerrar`, para que
+ * lo pueda disparar tanto el popup automático al cargar la página como
+ * el botón manual del fondo, con la misma instancia del componente.
+ */
+export default function ModalBienvenida({ abierto, onCerrar }) {
   if (!abierto) return null;
 
   return (
     <div className="fixed inset-0 z-[120] flex items-center justify-center p-3 sm:p-6 bg-black/85 backdrop-blur-sm animate-fade-up">
       <div className="relative w-full max-w-3xl bg-brand-navy/95 border border-white/10 rounded-3xl shadow-2xl shadow-black/70 p-4 sm:p-6 space-y-4">
         <button
-          onClick={() => setAbierto(false)}
+          onClick={onCerrar}
           className="absolute -top-3 -right-3 sm:top-4 sm:right-4 flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20 transition-all duration-300"
           aria-label="Cerrar"
         >
@@ -34,7 +36,7 @@ export default function ModalBienvenida() {
           />
         </div>
 
-        <button onClick={() => setAbierto(false)} className="btn-primary w-full !py-4 !text-lg">
+        <button onClick={onCerrar} className="btn-primary w-full !py-4 !text-lg">
           Cerrar
         </button>
       </div>

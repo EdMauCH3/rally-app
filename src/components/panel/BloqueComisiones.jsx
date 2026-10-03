@@ -4,7 +4,7 @@ const COMISIONES = ['Logística', 'Económica', 'Animación', 'Formación'];
 
 export default function BloqueComisiones() {
   return (
-    <div className="space-y-8">
+    <div className="max-w-2xl mx-auto space-y-8">
       <BloqueEnMantenimiento
         titulo="Comisiones en construcción"
         descripcion="Muy pronto aquí encontrarás el contenido de cada comisión."

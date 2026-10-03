@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Lock, Loader2 } from 'lucide-react';
+import { Lock, Loader2, Radio, Square } from 'lucide-react';
 
 const ETIQUETA_RESULTADO = {
   gano: 'Ganó',
@@ -8,8 +8,17 @@ const ETIQUETA_RESULTADO = {
   pendiente: 'Pendiente',
 };
 
-export default function PartidoCard({ partido, equipoA, equipoB, esAdmin, onFinalizar }) {
+export default function PartidoCard({
+  partido,
+  equipoA,
+  equipoB,
+  esAdmin,
+  onFinalizar,
+  onMarcarEnJuego,
+  onMarcarTerminado,
+}) {
   const [cargando, setCargando] = useState(false);
+  const [cargandoEnJuego, setCargandoEnJuego] = useState(false);
 
   const bloqueado = partido.finalizado && !esAdmin;
 
@@ -22,19 +31,40 @@ export default function PartidoCard({ partido, equipoA, equipoB, esAdmin, onFina
     }
   }
 
+  async function handleToggleEnJuego() {
+    setCargandoEnJuego(true);
+    try {
+      if (partido.en_juego) {
+        await onMarcarTerminado(partido.id);
+      } else {
+        await onMarcarEnJuego(partido.id);
+      }
+    } finally {
+      setCargandoEnJuego(false);
+    }
+  }
+
   if (!equipoA || !equipoB) {
     return null;
   }
 
   return (
-    <div className="glass-card p-4 space-y-3">
+    <div
+      className={`glass-card p-4 space-y-3 transition-all duration-300 ${
+        partido.en_juego ? 'border-red-500/50 shadow-red-950/40' : ''
+      }`}
+    >
       <div className="flex items-center justify-between text-xs text-slate-500">
         <span>Partido {partido.partido_num}</span>
-        {partido.finalizado && (
+        {partido.finalizado ? (
           <span className="flex items-center gap-1">
             <Lock size={12} /> Finalizado
           </span>
-        )}
+        ) : partido.en_juego ? (
+          <span className="flex items-center gap-1 text-red-300 font-semibold animate-pulse">
+            <Radio size={12} /> EN VIVO
+          </span>
+        ) : null}
       </div>
 
       <div className="flex items-center justify-between text-center">
@@ -60,6 +90,27 @@ export default function PartidoCard({ partido, equipoA, equipoB, esAdmin, onFina
           )}
         </div>
       </div>
+
+      {!partido.finalizado && (
+        <button
+          onClick={handleToggleEnJuego}
+          disabled={cargandoEnJuego}
+          className={`w-full flex items-center justify-center gap-2 py-2 rounded-xl text-sm font-semibold transition-all duration-300 disabled:opacity-60 ${
+            partido.en_juego
+              ? 'bg-red-500/15 border border-red-500/40 text-red-300 hover:bg-red-500/25'
+              : 'bg-white/5 border border-white/10 text-slate-300 hover:bg-white/10'
+          }`}
+        >
+          {cargandoEnJuego ? (
+            <Loader2 className="animate-spin" size={14} />
+          ) : partido.en_juego ? (
+            <Square size={14} />
+          ) : (
+            <Radio size={14} />
+          )}
+          {partido.en_juego ? 'Partido terminado' : 'Partido en juego'}
+        </button>
+      )}
 
       {bloqueado ? (
         <p className="text-center text-xs text-slate-500 bg-white/[0.03] border border-white/10 rounded-xl py-2">

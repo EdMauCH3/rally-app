@@ -10,7 +10,7 @@ import { supabase } from './supabaseClient';
 export async function obtenerEstadoGymkana(equipoId) {
   const { data: ruta, error: errorRuta } = await supabase
     .from('rutas_gymkana')
-    .select('equipo_id, rival_id, pareja_num, orden_bases, rival:rival_id(id, nombre, color_hex)')
+    .select('equipo_id, rival_id, pareja_num, orden_bases, rival:rival_id(id, nombre:color_nombre, color_hex)')
     .eq('equipo_id', equipoId)
     .maybeSingle();
 
