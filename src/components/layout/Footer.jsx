@@ -1,4 +1,4 @@
-import { Instagram, Globe } from 'lucide-react';
+import { AtSign, Globe } from 'lucide-react';
 
 // TODO: reemplazar por las URLs reales cuando las tengas.
 const INSTAGRAM_URL = '#';
@@ -23,7 +23,7 @@ export default function Footer() {
             rel="noopener noreferrer"
             className="flex items-center gap-2 text-stone-300 hover:text-stone-100 transition-colors duration-300"
           >
-            <Instagram size={18} />
+            <AtSign size={18} />
             <span className="text-sm font-medium">Instagram</span>
           </a>
           <a
