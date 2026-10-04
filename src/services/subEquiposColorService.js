@@ -1,4 +1,5 @@
 import { supabase } from './supabaseClient';
+import { nombreCanalUnico } from './canalUnico';
 
 export async function listarSubEquiposColor() {
   const { data, error } = await supabase
@@ -49,7 +50,7 @@ export async function eliminarSubEquipoColor(id) {
 
 export function suscribirseSubEquiposColor(onChange) {
   const channel = supabase
-    .channel('sub-equipos-color')
+    .channel(nombreCanalUnico('sub-equipos-color'))
     .on(
       'postgres_changes',
       { event: '*', schema: 'public', table: 'sub_equipos_color' },

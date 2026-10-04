@@ -1,5 +1,14 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Loader2, Sun, Moon, CalendarClock, ClipboardCheck, Video, PlayCircle } from 'lucide-react';
+import {
+  Loader2,
+  Sun,
+  Moon,
+  CalendarClock,
+  ClipboardCheck,
+  Video,
+  PlayCircle,
+  Timer,
+} from 'lucide-react';
 import { useToast } from '../../context/ToastContext';
 import {
   obtenerConfiguracionApp,
@@ -64,6 +73,15 @@ export default function ConfiguracionUIPanel() {
   }, [cargar]);
 
   async function handleCambiar(campo, valor) {
+    if (
+      campo === 'modo_cuenta_regresiva' &&
+      valor &&
+      !window.confirm(
+        'Al encender el Modo Cuenta Regresiva, TODO el público sin sesión verá solo la pantalla de cuenta regresiva y no podrá entrar al resto de la app (el staff sí, iniciando sesión).\n\n¿Encenderlo ahora?'
+      )
+    ) {
+      return;
+    }
     setGuardando(true);
     setConfig((prev) => ({ ...prev, [campo]: valor })); // actualizacion optimista
     try {
@@ -92,6 +110,15 @@ export default function ConfiguracionUIPanel() {
           Enciende o apaga cada botón según lo que esté pasando en el evento.
         </p>
       </div>
+
+      <FilaSwitch
+        icono={<Timer size={18} className="text-amber-300" />}
+        label="Modo Cuenta Regresiva (bloquea la app al público)"
+        campo="modo_cuenta_regresiva"
+        config={config}
+        guardando={guardando}
+        onCambiar={handleCambiar}
+      />
 
       <FilaSwitch
         icono={<Sun size={18} className="text-amber-300" />}

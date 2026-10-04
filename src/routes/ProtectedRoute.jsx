@@ -13,10 +13,13 @@ import { useAuth } from '../context/AuthContext';
 export default function ProtectedRoute({ children, roles }) {
   const { session, perfil, loading } = useAuth();
 
-  if (loading) {
+  // Solo se muestra el spinner si todavía NO sabemos quién es el usuario.
+  // Si ya hay perfil, un `loading` pasajero no debe desmontar la pantalla
+  // (se perdería la pestaña, el partido abierto, etc.).
+  if (loading && !perfil) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="animate-spin text-indigo-400" size={32} />
+        <Loader2 className="animate-spin text-white" size={32} />
       </div>
     );
   }

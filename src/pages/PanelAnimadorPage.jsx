@@ -1,5 +1,5 @@
-import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useEstadoPersistente } from '../hooks/useEstadoPersistente';
 import BloqueComisiones from '../components/panel/BloqueComisiones';
 import BloqueActividades from '../components/panel/BloqueActividades';
 import BloqueCronograma from '../components/panel/BloqueCronograma';
@@ -39,7 +39,7 @@ export default function PanelAnimadorPage() {
   const { perfil } = useAuth();
   const tabsVisibles = TODOS_LOS_TABS.filter((t) => t.roles.includes(perfil?.rol));
 
-  const [tabSeleccionado, setTabSeleccionado] = useState(null);
+  const [tabSeleccionado, setTabSeleccionado] = useEstadoPersistente('rally_ui_panel_tab', null);
   const tabActivo = tabsVisibles.some((t) => t.id === tabSeleccionado)
     ? tabSeleccionado
     : tabsVisibles[0]?.id;

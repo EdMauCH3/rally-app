@@ -1,7 +1,7 @@
-import { useState } from 'react';
 import { Flag, Trophy, Map } from 'lucide-react';
+import { useEstadoPersistente } from '../../hooks/useEstadoPersistente';
 import GymkanaPage from '../../pages/GymkanaPage';
-import TorneoPage from '../../pages/TorneoPage';
+import TorneoModulo from '../torneo/TorneoModulo';
 import TesoroPage from '../../pages/TesoroPage';
 
 const MODULOS = {
@@ -15,7 +15,7 @@ const MODULOS = {
     nombre: 'Torneo',
     icon: Trophy,
     clases: 'from-violet-500 to-violet-700',
-    Componente: TorneoPage,
+    Componente: TorneoModulo,
   },
   tesoro: {
     nombre: 'Búsqueda del Tesoro',
@@ -35,7 +35,11 @@ const ACTIVIDADES_POR_ROL = {
 
 export default function BloqueActividades({ rol }) {
   const claves = ACTIVIDADES_POR_ROL[rol] ?? [];
-  const [seleccionado, setSeleccionado] = useState(claves[0]);
+  const [seleccionado, setSeleccionado] = useEstadoPersistente(
+    'rally_ui_panel_actividad',
+    claves[0],
+    (v) => claves.includes(v)
+  );
 
   if (claves.length === 0) {
     return (

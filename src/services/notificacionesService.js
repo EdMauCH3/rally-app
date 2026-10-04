@@ -1,4 +1,5 @@
 import { supabase } from './supabaseClient';
+import { nombreCanalUnico } from './canalUnico';
 
 /**
  * Para cuando un usuario carga/recarga la app mientras ya hay una
@@ -19,7 +20,7 @@ export async function obtenerNotificacionPermanenteActiva() {
 
 export function suscribirseNotificacionesGlobales({ onInsert, onUpdate }) {
   const channel = supabase
-    .channel('notificaciones-globales-listener')
+    .channel(nombreCanalUnico('notificaciones-globales-listener'))
     .on(
       'postgres_changes',
       { event: 'INSERT', schema: 'public', table: 'notificaciones_globales' },
@@ -70,7 +71,7 @@ export async function apagarNotificacionPermanente(id) {
 
 export function suscribirseHistorialNotificaciones(onChange) {
   const channel = supabase
-    .channel('notificaciones-admin-historial')
+    .channel(nombreCanalUnico('notificaciones-admin-historial'))
     .on(
       'postgres_changes',
       { event: '*', schema: 'public', table: 'notificaciones_globales' },

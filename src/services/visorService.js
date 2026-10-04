@@ -1,4 +1,5 @@
 import { supabase } from './supabaseClient';
+import { nombreCanalUnico } from './canalUnico';
 
 export async function obtenerMarcadorGeneral() {
   const { data, error } = await supabase
@@ -37,7 +38,7 @@ export async function obtenerUbicacionesTesoro() {
 
 export function suscribirseVisor(onChange) {
   const channel = supabase
-    .channel('visor-general')
+    .channel(nombreCanalUnico('visor-general'))
     .on('postgres_changes', { event: '*', schema: 'public', table: 'rutas_gymkana' }, onChange)
     .on('postgres_changes', { event: '*', schema: 'public', table: 'puntuaciones_gymkana' }, onChange)
     .on('postgres_changes', { event: '*', schema: 'public', table: 'puntuaciones_tesoro' }, onChange)

@@ -1,4 +1,5 @@
 import { supabase } from './supabaseClient';
+import { nombreCanalUnico } from './canalUnico';
 
 /**
  * Trae la ruta fija del equipo (rival + orden de bases) y el estado de
@@ -74,7 +75,7 @@ export async function reportarAlertaGymkana(partidoId) {
  */
 export function suscribirseGymkana(onChange) {
   const channel = supabase
-    .channel('gymkana-puntuaciones')
+    .channel(nombreCanalUnico('gymkana-puntuaciones'))
     .on(
       'postgres_changes',
       { event: '*', schema: 'public', table: 'puntuaciones_gymkana' },

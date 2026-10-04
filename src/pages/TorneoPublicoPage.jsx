@@ -12,11 +12,14 @@ import {
   suscribirseEstadoActividades,
 } from '../services/estadoActividadesService';
 import LetreroActividadNoIniciada from '../components/common/LetreroActividadNoIniciada';
+import TorneoPublicoPro from '../components/torneo/TorneoPublicoPro';
+import { useModoTorneoPro } from '../hooks/useModoTorneoPro';
 
 const ETIQUETA_RESULTADO = { gano: 'Ganó', empato: 'Empató', perdio: 'Perdió' };
 
 export default function TorneoPublicoPage() {
   const [iniciada, setIniciada] = useState(null);
+  const { modoPro, cargando: cargandoModo } = useModoTorneoPro();
   const [roster, setRoster] = useState([]);
   const [partidos, setPartidos] = useState([]);
   const [posiciones, setPosiciones] = useState([]);
@@ -44,7 +47,7 @@ export default function TorneoPublicoPage() {
   }, []);
 
   useEffect(() => {
-    if (!iniciada) return;
+    if (!iniciada || modoPro) return;
     cargarTodo();
     const unsubPartidos = suscribirsePartidos(cargarTodo);
     const unsubRoster = suscribirseRosterTorneo(cargarTodo);
@@ -52,18 +55,26 @@ export default function TorneoPublicoPage() {
       unsubPartidos();
       unsubRoster();
     };
-  }, [iniciada, cargarTodo]);
+  }, [iniciada, modoPro, cargarTodo]);
 
   function equipoPorId(id) {
     return roster.find((e) => e.id === id);
   }
 
-  if (iniciada === null) return null;
+  if (iniciada === null || cargandoModo) return null;
 
   if (!iniciada) {
     return (
       <main className="max-w-2xl mx-auto px-4">
         <LetreroActividadNoIniciada nombreActividad="el Torneo" />
+      </main>
+    );
+  }
+
+  if (modoPro) {
+    return (
+      <main className="max-w-3xl mx-auto px-4 py-6">
+        <TorneoPublicoPro />
       </main>
     );
   }

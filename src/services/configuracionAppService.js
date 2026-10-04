@@ -1,4 +1,5 @@
 import { supabase } from './supabaseClient';
+import { nombreCanalUnico } from './canalUnico';
 
 export async function obtenerConfiguracionApp() {
   const { data, error } = await supabase
@@ -20,7 +21,7 @@ export async function actualizarConfiguracionApp(cambios) {
 
 export function suscribirseConfiguracionApp(onChange) {
   const channel = supabase
-    .channel('configuracion-app')
+    .channel(nombreCanalUnico('configuracion-app'))
     .on(
       'postgres_changes',
       { event: '*', schema: 'public', table: 'configuracion_app' },

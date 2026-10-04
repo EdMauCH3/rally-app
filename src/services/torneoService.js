@@ -1,4 +1,5 @@
 import { supabase } from './supabaseClient';
+import { nombreCanalUnico } from './canalUnico';
 
 export async function listarPartidos() {
   const { data, error } = await supabase
@@ -39,7 +40,7 @@ export async function finalizarPartido(partidoId, ganador) {
 
 export function suscribirsePartidos(onChange) {
   const channel = supabase
-    .channel('partidos-torneo')
+    .channel(nombreCanalUnico('partidos-torneo'))
     .on(
       'postgres_changes',
       { event: '*', schema: 'public', table: 'partidos_torneo' },
@@ -93,7 +94,7 @@ export async function quitarEquipoDelTorneo(equipoTorneoId) {
 
 export function suscribirseRosterTorneo(onChange) {
   const channel = supabase
-    .channel('roster-torneo')
+    .channel(nombreCanalUnico('roster-torneo'))
     .on(
       'postgres_changes',
       { event: '*', schema: 'public', table: 'equipos_torneo' },

@@ -1,4 +1,5 @@
 import { supabase } from './supabaseClient';
+import { nombreCanalUnico } from './canalUnico';
 
 export async function obtenerConfiguracion() {
   const { data, error } = await supabase
@@ -80,7 +81,7 @@ export async function reiniciarConfiguracion() {
 
 export function suscribirseColores(onChange) {
   const channel = supabase
-    .channel('colores-admin')
+    .channel(nombreCanalUnico('colores-admin'))
     .on('postgres_changes', { event: '*', schema: 'public', table: 'colores_configuracion' }, onChange)
     .on('postgres_changes', { event: '*', schema: 'public', table: 'colores_bases' }, onChange)
     .on('postgres_changes', { event: '*', schema: 'public', table: 'colores_equipos' }, onChange)

@@ -27,9 +27,16 @@ export async function marcarAlertaAtendida(id) {
   if (error) throw error;
 }
 
+// Cada suscripción necesita su PROPIO canal: AdminPage (badge de conteo)
+// y AlertasAnimadorAdminPanel (la lista) escuchan esta tabla al mismo
+// tiempo, y Supabase no permite agregar callbacks a un canal con el
+// mismo nombre que ya esté suscrito.
+let contadorCanales = 0;
+
 export function suscribirseAlertasAnimador(onChange) {
+  contadorCanales += 1;
   const channel = supabase
-    .channel('alertas-animador')
+    .channel(`alertas-animador-${contadorCanales}`)
     .on(
       'postgres_changes',
       { event: '*', schema: 'public', table: 'alertas_animador' },

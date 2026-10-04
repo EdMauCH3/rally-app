@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
+import { useEstadoPersistente } from '../hooks/useEstadoPersistente';
 import { Loader2, MapPin } from 'lucide-react';
 import { useToast } from '../context/ToastContext';
 import { listarSubEquiposColorPorActividad } from '../services/subEquiposColorService';
@@ -15,7 +16,10 @@ export default function GymkanaPage() {
   const { showToast } = useToast();
 
   const [equipos, setEquipos] = useState([]);
-  const [equipoSeleccionado, setEquipoSeleccionado] = useState(null);
+  const [equipoSeleccionado, setEquipoSeleccionado] = useEstadoPersistente(
+    'rally_ui_gymkana_equipo',
+    null
+  );
   const [estado, setEstado] = useState(null);
   const [cargandoEquipos, setCargandoEquipos] = useState(true);
   const [cargandoEstado, setCargandoEstado] = useState(false);
@@ -27,6 +31,21 @@ export default function GymkanaPage() {
       .finally(() => setCargandoEquipos(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // El equipo recordado puede haber cambiado de color o ya no existir:
+  // se resincroniza con la lista real una vez cargada.
+  useEffect(() => {
+    if (cargandoEquipos || !equipoSeleccionado) return;
+    const vigente = equipos.find((e) => e.id === equipoSeleccionado.id);
+    if (!vigente) {
+      setEquipoSeleccionado(null);
+    } else if (
+      vigente.nombre !== equipoSeleccionado.nombre ||
+      vigente.color_hex !== equipoSeleccionado.color_hex
+    ) {
+      setEquipoSeleccionado(vigente);
+    }
+  }, [cargandoEquipos, equipos, equipoSeleccionado, setEquipoSeleccionado]);
 
   const cargarEstado = useCallback((equipoId) => {
     setCargandoEstado(true);

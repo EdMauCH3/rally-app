@@ -1,4 +1,5 @@
 import { supabase } from './supabaseClient';
+import { nombreCanalUnico } from './canalUnico';
 
 export const BASES_TESORO = Array.from({ length: 10 }, (_, i) => i + 1);
 
@@ -33,7 +34,7 @@ export async function calificarBaseTesoro(equipoId, baseId, puntos) {
 
 export function suscribirseTesoro(equipoId, onChange) {
   const channel = supabase
-    .channel(`tesoro-${equipoId}`)
+    .channel(nombreCanalUnico(`tesoro-${equipoId}`))
     .on(
       'postgres_changes',
       {

@@ -1,6 +1,7 @@
 import RotacionColoresAdmin from '../components/admin/RotacionColoresAdmin';
 import ConfiguracionUIPanel from '../components/admin/ConfiguracionUIPanel';
-import GestionEquiposTorneo from '../components/admin/GestionEquiposTorneo';
+import TorneoAdminTab from '../components/admin/TorneoAdminTab';
+import { useEstadoPersistente } from '../hooks/useEstadoPersistente';
 import NotificacionesAdminPanel from '../components/admin/NotificacionesAdminPanel';
 import AlertasAnimadorAdminPanel from '../components/admin/AlertasAnimadorAdminPanel';
 import { useCallback, useEffect, useState } from 'react';
@@ -46,7 +47,9 @@ const TABS = [
 export default function AdminPage() {
   const { showToast } = useToast();
 
-  const [tab, setTab] = useState('resumen');
+  const [tab, setTab] = useEstadoPersistente('rally_ui_admin_tab', 'resumen', (v) =>
+    TABS.some((t) => t.id === v)
+  );
   const [cargando, setCargando] = useState(true);
   const [marcador, setMarcador] = useState([]);
   const [equipos, setEquipos] = useState([]);
@@ -167,7 +170,7 @@ export default function AdminPage() {
           <>
             {tab === 'colores' && <RotacionColoresAdmin />}
             {tab === 'main' && <ConfiguracionUIPanel />}
-            {tab === 'torneo' && <GestionEquiposTorneo />}
+            {tab === 'torneo' && <TorneoAdminTab />}
             {tab === 'notificaciones' && <NotificacionesAdminPanel />}
             {tab === 'alertas-animador' && <AlertasAnimadorAdminPanel />}
             {tab === 'resumen' && <TablaMarcador equipos={marcador} />}

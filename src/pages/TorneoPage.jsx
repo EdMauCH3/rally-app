@@ -13,11 +13,13 @@ import {
   suscribirseRosterTorneo,
 } from '../services/torneoService';
 import PartidoCard from '../components/torneo/PartidoCard';
+import { useModoTorneoPro } from '../hooks/useModoTorneoPro';
 
 export default function TorneoPage() {
   const { perfil } = useAuth();
   const { showToast } = useToast();
   const esAdmin = perfil?.rol === 'admin';
+  const { modoPro } = useModoTorneoPro();
 
   const [roster, setRoster] = useState([]);
   const [partidos, setPartidos] = useState([]);
@@ -124,10 +126,19 @@ export default function TorneoPage() {
           )}
           {roster.length < 2 && (
             <p className="text-xs text-amber-400">
-              Se necesitan al menos 2 equipos en el Torneo (hay {roster.length}). Ve a Admin →
-              Torneo para agregarlos.
+              Se necesitan al menos 2 equipos en el Torneo (hay {roster.length}). Asígnale un
+              color de Torneo a cada Macro-Equipo en Admin → Equipos, o crea equipos exclusivos
+              en Admin → Torneo.
             </p>
           )}
+        </div>
+      ) : modoPro ? (
+        <div className="glass-card p-5 text-center space-y-1">
+          <p className="font-semibold text-white">Modo Torneo Pro encendido</p>
+          <p className="text-sm text-slate-400">
+            Hay {partidos.length} partidos generados. Se arbitran desde Panel del Animador →
+            Actividades → Torneo → Partidos. El historial y las correcciones están más abajo.
+          </p>
         </div>
       ) : (
         partidos.map((p) => (

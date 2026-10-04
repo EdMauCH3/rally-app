@@ -1,4 +1,5 @@
 import { supabase } from './supabaseClient';
+import { nombreCanalUnico } from './canalUnico';
 
 export async function listarEstadoActividades() {
   const { data, error } = await supabase.from('estado_actividades_tarde').select('*');
@@ -16,7 +17,7 @@ export async function actualizarEstadoActividad(actividad, iniciada) {
 
 export function suscribirseEstadoActividades(onChange) {
   const channel = supabase
-    .channel('estado-actividades-tarde')
+    .channel(nombreCanalUnico('estado-actividades-tarde'))
     .on(
       'postgres_changes',
       { event: '*', schema: 'public', table: 'estado_actividades_tarde' },
