@@ -1,4 +1,5 @@
 export const EMOJI_TIPO = { gol: '⚽', amarilla: '🟨', roja: '🟥' };
+export const ETIQUETA_TIPO = { gol: 'Gol', amarilla: 'Tarjeta amarilla', roja: 'Tarjeta roja' };
 
 /**
  * Los goles que le cuentan a un equipo en un partido. Un autogol lo
@@ -34,4 +35,18 @@ export function anotadoresAgrupados(goles) {
     grupos.get(clave).minutos.push(g.minuto);
   });
   return [...grupos.values()];
+}
+
+/**
+ * Las tarjetas (amarillas y rojas) que recibió un equipo en un partido,
+ * en orden de minuto. A diferencia de los goles, una tarjeta SIEMPRE es del
+ * equipo del jugador que la recibió.
+ */
+export function tarjetasDeEquipo(partido, equipoId, eventos) {
+  return eventos.filter(
+    (e) =>
+      e.partido_id === partido.id &&
+      (e.tipo === 'amarilla' || e.tipo === 'roja') &&
+      e.equipo_torneo_id === equipoId
+  );
 }

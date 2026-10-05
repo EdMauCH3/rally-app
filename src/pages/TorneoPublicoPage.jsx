@@ -66,7 +66,7 @@ export default function TorneoPublicoPage() {
   if (!iniciada) {
     return (
       <main className="max-w-2xl mx-auto px-4">
-        <LetreroActividadNoIniciada nombreActividad="el Torneo" />
+        <LetreroActividadNoIniciada tema="torneo" />
       </main>
     );
   }

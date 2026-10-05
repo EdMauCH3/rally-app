@@ -27,6 +27,7 @@ import GestionSubEquiposColor from '../components/admin/GestionSubEquiposColor';
 import ControlInicioActividades from '../components/admin/ControlInicioActividades';
 import AjustesForm from '../components/admin/AjustesForm';
 import IniciarGymkanaPanel from '../components/admin/IniciarGymkanaPanel';
+import GestionBasesGymkana from '../components/admin/GestionBasesGymkana';
 import AlertasGymkana from '../components/admin/AlertasGymkana';
 import ReiniciarEvento from '../components/admin/ReiniciarEvento';
 
@@ -185,13 +186,16 @@ export default function AdminPage() {
               <AjustesForm equipos={equipos} historial={ajustes} onCambio={cargarTodo} />
             )}
             {tab === 'gymkana' && (
-              <IniciarGymkanaPanel
-                equipos={coloresGymkana}
-                rutas={rutasGymkana}
-                partidos={partidosGymkana}
-                gymkanaIniciada={gymkanaIniciada}
-                onCambio={cargarTodo}
-              />
+              <div className="space-y-8">
+                <GestionBasesGymkana />
+                <IniciarGymkanaPanel
+                  equipos={coloresGymkana}
+                  rutas={rutasGymkana}
+                  partidos={partidosGymkana}
+                  gymkanaIniciada={gymkanaIniciada}
+                  onCambio={cargarTodo}
+                />
+              </div>
             )}
             {tab === 'alertas' && <AlertasGymkana alertas={alertas} onCambio={cargarTodo} />}
             {tab === 'peligro' && <ReiniciarEvento onCambio={cargarTodo} />}

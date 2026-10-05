@@ -1,21 +1,5 @@
 import { Radio } from 'lucide-react';
-import { anotadoresAgrupados, golesDeEquipo } from './utilsTorneo';
-
-function Anotadores({ partido, equipoId, eventos }) {
-  const lista = anotadoresAgrupados(golesDeEquipo(partido, equipoId, eventos));
-  if (lista.length === 0) return null;
-  return (
-    <ul className="space-y-0.5 text-sm text-slate-200">
-      {lista.map((a) => (
-        <li key={a.clave}>
-          ⚽ <span className="font-medium">{a.nombre}</span>
-          {a.autogol ? ' (a.g.)' : ''}{' '}
-          <span className="text-slate-400">{a.minutos.map((m) => `${m}'`).join(' ')}</span>
-        </li>
-      ))}
-    </ul>
-  );
-}
+import DetalleEquipoEventos from './DetalleEquipoEventos';
 
 export default function MarcadoresEnVivo({ partidos, roster, eventos }) {
   const vivos = partidos.filter((p) => p.estado === 'en_vivo' || p.estado === 'pausado');
@@ -97,8 +81,8 @@ export default function MarcadoresEnVivo({ partidos, roster, eventos }) {
             </div>
 
             <div className="mt-3 grid grid-cols-2 gap-3 text-center">
-              <Anotadores partido={p} equipoId={a.id} eventos={eventos} />
-              <Anotadores partido={p} equipoId={b.id} eventos={eventos} />
+              <DetalleEquipoEventos partido={p} equipoId={a.id} eventos={eventos} />
+              <DetalleEquipoEventos partido={p} equipoId={b.id} eventos={eventos} />
             </div>
           </div>
         );

@@ -44,7 +44,14 @@ export default function RotacionColoresAdmin() {
   }
 
   if (config?.estado === 'esperando') {
-    return <ConfiguracionRotacion onListo={cargarTodo} />;
+    return (
+      <ConfiguracionRotacion
+        config={config}
+        bases={bases}
+        equipos={equipos}
+        onListo={cargarTodo}
+      />
+    );
   }
 
   return (

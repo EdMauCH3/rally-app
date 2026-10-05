@@ -1,5 +1,7 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useEstadoPersistente } from '../hooks/useEstadoPersistente';
+import { useBasesGymkana } from '../hooks/useBasesGymkana';
+import UbicacionBase from '../components/gymkana/UbicacionBase';
 import { Loader2, MapPin } from 'lucide-react';
 import { useToast } from '../context/ToastContext';
 import { listarSubEquiposColorPorActividad } from '../services/subEquiposColorService';
@@ -13,6 +15,7 @@ import EquipoSelector from '../components/gymkana/EquipoSelector';
 import PartidoGymkanaActual, { HistorialGymkana } from '../components/gymkana/PartidoGymkanaActual';
 
 export default function GymkanaPage() {
+  const bases = useBasesGymkana();
   const { showToast } = useToast();
 
   const [equipos, setEquipos] = useState([]);
@@ -119,14 +122,10 @@ export default function GymkanaPage() {
                     <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white/15 text-white animate-glow-pulse">
                       <MapPin size={28} />
                     </span>
-                    <div>
-                      <p className="text-xs font-semibold uppercase tracking-wide text-white/80">
-                        Dirígete a la
-                      </p>
-                      <p className="text-3xl font-black text-white leading-tight">
-                        Base {estado.actual.base_id}
-                      </p>
-                    </div>
+                    <UbicacionBase
+                      numero={estado.actual.base_id}
+                      info={bases[estado.actual.base_id]}
+                    />
                   </div>
                 )}
 
@@ -141,6 +140,7 @@ export default function GymkanaPage() {
 
                 {estado && (
                   <HistorialGymkana
+                    bases={bases}
                     equipoId={equipoSeleccionado.id}
                     recorrido={estado.recorrido}
                     actualIndex={estado.actualIndex}

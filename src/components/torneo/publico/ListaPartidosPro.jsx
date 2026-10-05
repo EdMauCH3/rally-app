@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { AlertTriangle, ChevronDown } from 'lucide-react';
-import { EMOJI_TIPO } from './utilsTorneo';
+import { EMOJI_TIPO, ETIQUETA_TIPO } from './utilsTorneo';
+import DetalleEquipoEventos from './DetalleEquipoEventos';
 
 const ESTADO = {
   en_vivo: { texto: 'EN VIVO', clase: 'bg-red-500/15 text-red-300 animate-pulse' },
@@ -42,6 +43,23 @@ function Resumen({ partido, equipoA, equipoB, eventos, jugadores, roster }) {
         </div>
       )}
 
+      {delPartido.length > 0 && (
+        <div className="grid grid-cols-2 gap-3">
+          {[equipoA, equipoB].map((eq) => (
+            <div key={eq.id} className="min-w-0">
+              <p className="mb-1.5 truncate text-xs font-bold uppercase tracking-wide text-slate-400">
+                <span
+                  className="mr-1.5 inline-block h-2 w-2 rounded-full align-middle"
+                  style={{ backgroundColor: eq.color_hex }}
+                />
+                {eq.nombre}
+              </p>
+              <DetalleEquipoEventos partido={partido} equipoId={eq.id} eventos={eventos} />
+            </div>
+          ))}
+        </div>
+      )}
+
       {delPartido.length === 0 ? (
         <p className="text-sm text-slate-500">
           {partido.estado === 'pendiente'
@@ -49,7 +67,7 @@ function Resumen({ partido, equipoA, equipoB, eventos, jugadores, roster }) {
             : 'Todavía no hay goles ni tarjetas.'}
         </p>
       ) : (
-        <ol className="space-y-1.5">
+        <ol className="space-y-1.5 border-t border-white/10 pt-3">
           {delPartido.map((ev) => (
             <li key={ev.id} className="flex items-start gap-2.5 text-sm text-slate-200">
               <span className="w-8 shrink-0 pt-0.5 text-right text-xs font-bold tabular-nums text-slate-400">
@@ -57,7 +75,9 @@ function Resumen({ partido, equipoA, equipoB, eventos, jugadores, roster }) {
               </span>
               <span className="shrink-0">{EMOJI_TIPO[ev.tipo]}</span>
               <span className="min-w-0">
-                <span className="font-semibold text-white">
+                <span className="font-semibold text-white">{ETIQUETA_TIPO[ev.tipo]}</span>
+                <span className="text-slate-300">
+                  {' · '}
                   {ev.jugador_dorsal != null ? `#${ev.jugador_dorsal} ` : ''}
                   {ev.jugador_nombre ?? 'Jugador'}
                 </span>

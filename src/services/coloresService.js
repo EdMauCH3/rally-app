@@ -43,6 +43,19 @@ export async function iniciarRotacion({ bases, equipos, duracionSegundos }) {
   if (error) throw error;
 }
 
+/**
+ * Guarda la configuración como BORRADOR (sin iniciar la rotación). Permite
+ * nombres o lugares aún vacíos. Mismo formato que iniciarRotacion.
+ */
+export async function guardarBorradorRotacion({ bases, equipos, duracionSegundos }) {
+  const { error } = await supabase.rpc('guardar_borrador_rotacion_colores', {
+    p_bases: bases,
+    p_equipos: equipos,
+    p_duracion_segundos: duracionSegundos,
+  });
+  if (error) throw error;
+}
+
 export async function rotarSiguienteBase() {
   const config = await obtenerConfiguracion();
   const nuevoTiempoFin = new Date(Date.now() + config.duracion_segundos * 1000).toISOString();

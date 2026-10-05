@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Loader2, Shuffle } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import {
@@ -13,6 +13,7 @@ import {
   suscribirseRosterTorneo,
 } from '../services/torneoService';
 import PartidoCard from '../components/torneo/PartidoCard';
+import ChecklistEquiposTorneo from '../components/torneo/ChecklistEquiposTorneo';
 import { useModoTorneoPro } from '../hooks/useModoTorneoPro';
 
 export default function TorneoPage() {
@@ -48,10 +49,10 @@ export default function TorneoPage() {
     };
   }, [cargarTodo]);
 
-  async function handleGenerar() {
+  async function handleGenerar(equipoIds) {
     setGenerando(true);
     try {
-      await generarPartidos();
+      await generarPartidos(equipoIds);
       showToast('Partidos generados', 'success');
       cargarTodo();
     } catch (err) {
@@ -112,17 +113,14 @@ export default function TorneoPage() {
           <p className="text-slate-400 text-sm">
             Aún no se han generado los partidos del torneo.
           </p>
-          {esAdmin ? (
-            <button
-              onClick={handleGenerar}
-              disabled={generando || roster.length < 2}
-              className="btn-primary mx-auto disabled:opacity-50"
-            >
-              {generando ? <Loader2 className="animate-spin" size={18} /> : <Shuffle size={18} />}
-              Generar Fixture
-            </button>
+          {esAdmin && roster.length >= 2 ? (
+            <ChecklistEquiposTorneo
+              roster={roster}
+              generando={generando}
+              onGenerar={handleGenerar}
+            />
           ) : (
-            <p className="text-xs text-slate-500">Pide al Admin que los genere.</p>
+            !esAdmin && <p className="text-xs text-slate-500">Pide al Admin que los genere.</p>
           )}
           {roster.length < 2 && (
             <p className="text-xs text-amber-400">

@@ -5,6 +5,8 @@ import { listarEstadoActividades, suscribirseEstadoActividades } from '../servic
 import { obtenerEstadoGymkana, suscribirseGymkana } from '../services/gymkanaService';
 import EquipoSelector from '../components/gymkana/EquipoSelector';
 import LetreroActividadNoIniciada from '../components/common/LetreroActividadNoIniciada';
+import UbicacionBase from '../components/gymkana/UbicacionBase';
+import { useBasesGymkana } from '../hooks/useBasesGymkana';
 
 const LS_KEY = 'gymkana_equipo_seleccionado';
 
@@ -25,6 +27,7 @@ function calcularPuntos(recorrido, equipoId) {
 }
 
 export default function GymkanaPublicoPage() {
+  const bases = useBasesGymkana();
   const [iniciada, setIniciada] = useState(null); // null = aun no sabemos
   const [equipos, setEquipos] = useState([]);
   const [equipoId, setEquipoId] = useState(() => localStorage.getItem(LS_KEY));
@@ -79,7 +82,7 @@ export default function GymkanaPublicoPage() {
   if (!iniciada) {
     return (
       <main className="max-w-2xl mx-auto px-4">
-        <LetreroActividadNoIniciada nombreActividad="Gymkana" />
+        <LetreroActividadNoIniciada tema="gymkana" />
       </main>
     );
   }
@@ -107,14 +110,12 @@ export default function GymkanaPublicoPage() {
               <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white/15 text-white">
                 <MapPin size={28} />
               </span>
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-wide text-white/80">
-                  Dirígete a la
-                </p>
-                <p className="text-3xl font-black text-white leading-tight">
-                  Base {estado.actual.base_id}
-                </p>
-                <p className="text-sm text-white/80">
+              <div className="min-w-0">
+                <UbicacionBase
+                  numero={estado.actual.base_id}
+                  info={bases[estado.actual.base_id]}
+                />
+                <p className="mt-2 text-sm text-white/80">
                   contra <span className="font-bold">{estado.rival?.nombre}</span>
                 </p>
               </div>
@@ -146,7 +147,9 @@ export default function GymkanaPublicoPage() {
                   className="glass-row px-4 py-3 flex items-center justify-between"
                 >
                   <span className="text-sm font-medium text-slate-200">
-                    Base {partido.base_id} {esActual && '(actual)'}
+                    Base {partido.base_id}
+                    {bases[partido.base_id]?.lugar ? ` · ${bases[partido.base_id].lugar}` : ''}{' '}
+                    {esActual && '(actual)'}
                   </span>
                   {partido.finalizado ? (
                     <span

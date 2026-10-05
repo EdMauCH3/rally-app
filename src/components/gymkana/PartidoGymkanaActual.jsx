@@ -145,7 +145,7 @@ export default function PartidoGymkanaActual({
  *  - la base actual: se omite acá, ya la muestra PartidoGymkanaActual.
  *  - futuras: bloqueadas, solo como referencia del recorrido.
  */
-export function HistorialGymkana({ equipoId, recorrido, actualIndex, onReportarAlerta }) {
+export function HistorialGymkana({ equipoId, recorrido, actualIndex, onReportarAlerta, bases = {} }) {
   const [cargandoId, setCargandoId] = useState(null);
 
   async function handleAlerta(partidoId) {
@@ -173,7 +173,10 @@ export function HistorialGymkana({ equipoId, recorrido, actualIndex, onReportarA
               key={partido.id}
               className="flex items-center justify-between rounded-xl border border-white/5 bg-white/[0.015] px-4 py-2.5 text-sm text-slate-600"
             >
-              <span>Base {partido.base_id}</span>
+              <span>
+                Base {partido.base_id}
+                {bases[partido.base_id]?.lugar ? ` · ${bases[partido.base_id].lugar}` : ''}
+              </span>
               <span className="flex items-center gap-1 text-xs">
                 <Lock size={12} /> Pendiente
               </span>
@@ -184,7 +187,10 @@ export function HistorialGymkana({ equipoId, recorrido, actualIndex, onReportarA
         return (
           <div key={partido.id} className="glass-row px-4 py-3 space-y-2">
             <div className="flex items-center justify-between flex-wrap gap-2">
-              <span className="text-sm font-medium text-slate-200">Base {partido.base_id}</span>
+              <span className="text-sm font-medium text-slate-200">
+                Base {partido.base_id}
+                {bases[partido.base_id]?.lugar ? ` · ${bases[partido.base_id].lugar}` : ''}
+              </span>
               <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${ETIQUETAS_RESULTADO[miResultado]?.clase}`}>
                 {ETIQUETAS_RESULTADO[miResultado]?.texto}
               </span>

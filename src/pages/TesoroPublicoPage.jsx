@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Loader2, Amphora, Droplets, Compass } from 'lucide-react';
+import { Loader2, Amphora, Compass } from 'lucide-react';
+import IconoCopaVino from '../components/tesoro/IconoCopaVino';
 import { listarSubEquiposColorPorActividad } from '../services/subEquiposColorService';
 import { listarEstadoActividades, suscribirseEstadoActividades } from '../services/estadoActividadesService';
 import {
@@ -67,7 +68,7 @@ export default function TesoroPublicoPage() {
   if (!iniciada) {
     return (
       <main className="max-w-2xl mx-auto px-4">
-        <LetreroActividadNoIniciada nombreActividad="la Búsqueda del Tesoro" />
+        <LetreroActividadNoIniciada tema="tesoro" />
       </main>
     );
   }
@@ -75,7 +76,7 @@ export default function TesoroPublicoPage() {
   const equipoSeleccionado = equipos.find((e) => e.id === equipoId) ?? null;
   const llenas = registros.filter((r) => r.puntos_evaluacion != null).length;
   const porLlenar = BASES_TESORO.length - llenas;
-  const gotasDeVino = registros.reduce((t, r) => t + (r.puntos_totales ?? 0), 0);
+  const copasDeVino = registros.reduce((t, r) => t + (r.puntos_totales ?? 0), 0);
 
   function registroDeBase(baseId) {
     return registros.find((r) => r.base_id === baseId) ?? null;
@@ -114,9 +115,9 @@ export default function TesoroPublicoPage() {
               <p className="text-xs text-slate-400">Por llenar</p>
             </div>
             <div className="glass-card p-4 text-center">
-              <Droplets className="mx-auto text-rose-400 mb-1" size={22} />
-              <p className="text-2xl font-black text-white">{gotasDeVino}</p>
-              <p className="text-xs text-slate-400">Gotas de vino</p>
+              <IconoCopaVino className="mx-auto text-rose-300 mb-1" size={22} />
+              <p className="text-2xl font-black text-white">{copasDeVino}</p>
+              <p className="text-xs text-slate-400">Copas de vino</p>
             </div>
           </div>
 

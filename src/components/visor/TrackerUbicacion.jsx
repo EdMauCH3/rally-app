@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { MapPin } from 'lucide-react';
+import { useBasesGymkana } from '../../hooks/useBasesGymkana';
 
 const TABS = [
   { id: 'gymkana', label: 'Ubicación en Gymkana' },
@@ -8,6 +9,7 @@ const TABS = [
 
 export default function TrackerUbicacion({ equiposGenerales, ubicacionesGymkana, ubicacionesTesoro }) {
   const [tab, setTab] = useState('gymkana');
+  const basesGymkana = useBasesGymkana();
 
   const ubicaciones = tab === 'gymkana' ? ubicacionesGymkana : ubicacionesTesoro;
 
@@ -50,6 +52,12 @@ export default function TrackerUbicacion({ equiposGenerales, ubicacionesGymkana,
                   <span className="text-xs sm:text-sm">Sin iniciar</span>
                 )}
               </div>
+              {/* Los números de base del Tesoro son otros: el lugar solo aplica a la Gymkana */}
+              {tab === 'gymkana' && ubicacion && basesGymkana[ubicacion.base_id]?.lugar && (
+                <p className="mt-0.5 truncate text-[11px] sm:text-xs text-slate-500">
+                  {basesGymkana[ubicacion.base_id].lugar}
+                </p>
+              )}
             </div>
           );
         })}

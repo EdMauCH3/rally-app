@@ -10,8 +10,9 @@ export async function listarPartidos() {
   return data;
 }
 
-export async function generarPartidos() {
-  const { error } = await supabase.rpc('generar_partidos_torneo');
+/** equipoIds: los equipos (equipos_torneo.id) que el Admin marcó para competir. */
+export async function generarPartidos(equipoIds) {
+  const { error } = await supabase.rpc('generar_partidos_torneo', { p_equipos: equipoIds });
   if (error) throw error;
 }
 
