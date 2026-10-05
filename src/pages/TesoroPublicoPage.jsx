@@ -4,8 +4,8 @@ import IconoCopaVino from '../components/tesoro/IconoCopaVino';
 import { listarSubEquiposColorPorActividad } from '../services/subEquiposColorService';
 import { listarEstadoActividades, suscribirseEstadoActividades } from '../services/estadoActividadesService';
 import {
-  BASES_TESORO,
   obtenerPuntuacionesTesoro,
+  obtenerProgresoTesoroEquipo,
   suscribirseTesoro,
 } from '../services/tesoroService';
 import EquipoSelector from '../components/gymkana/EquipoSelector';
@@ -18,6 +18,7 @@ export default function TesoroPublicoPage() {
   const [equipos, setEquipos] = useState([]);
   const [equipoId, setEquipoId] = useState(() => localStorage.getItem(LS_KEY));
   const [registros, setRegistros] = useState([]);
+  const [progreso, setProgreso] = useState(null);
   const [cargandoEquipos, setCargandoEquipos] = useState(true);
   const [cargandoRegistros, setCargandoRegistros] = useState(false);
 
@@ -39,10 +40,15 @@ export default function TesoroPublicoPage() {
       .finally(() => setCargandoEquipos(false));
   }, [iniciada]);
 
+  // Las puntuaciones del equipo + su progreso (cuántas tinajas tiene en total, cuántas
+  // encontró y cuál fue la última). Si progreso es null, la búsqueda aún no tiene recorridos.
   const cargarRegistros = useCallback((id) => {
     setCargandoRegistros(true);
-    obtenerPuntuacionesTesoro(id)
-      .then(setRegistros)
+    Promise.all([obtenerPuntuacionesTesoro(id), obtenerProgresoTesoroEquipo(id)])
+      .then(([r, p]) => {
+        setRegistros(r);
+        setProgreso(p);
+      })
       .finally(() => setCargandoRegistros(false));
   }, []);
 
@@ -74,8 +80,10 @@ export default function TesoroPublicoPage() {
   }
 
   const equipoSeleccionado = equipos.find((e) => e.id === equipoId) ?? null;
+  const tinajas = progreso?.tinajas ?? [];
+  const total = progreso?.total ?? 0;
   const llenas = registros.filter((r) => r.puntos_evaluacion != null).length;
-  const porLlenar = BASES_TESORO.length - llenas;
+  const porLlenar = Math.max(0, total - llenas);
   const copasDeVino = registros.reduce((t, r) => t + (r.puntos_totales ?? 0), 0);
 
   function registroDeBase(baseId) {
@@ -87,7 +95,7 @@ export default function TesoroPublicoPage() {
       <div className="text-center space-y-1">
         <h1 className="text-xl font-black text-white">Búsqueda del Tesoro</h1>
         <p className="text-xs text-rose-200/70 uppercase tracking-widest font-semibold">
-          Llena las tinajas con el vino de cada base
+          Encuentra las tinajas y llénalas de vino
         </p>
       </div>
 
@@ -101,12 +109,17 @@ export default function TesoroPublicoPage() {
         <div className="flex justify-center py-10">
           <Loader2 className="animate-spin text-white" size={28} />
         </div>
+      ) : !progreso ? (
+        <LetreroActividadNoIniciada tema="tesoro" />
       ) : (
         <div className="space-y-6 animate-fade-up">
           <div className="grid grid-cols-3 gap-3">
             <div className="glass-card p-4 text-center">
               <Amphora className="mx-auto text-orange-300 mb-1" size={22} />
-              <p className="text-2xl font-black text-white">{llenas}</p>
+              <p className="text-2xl font-black text-white">
+                {llenas}
+                <span className="text-sm font-bold text-slate-400"> de {total}</span>
+              </p>
               <p className="text-xs text-slate-400">Tinajas llenas</p>
             </div>
             <div className="glass-card p-4 text-center">
@@ -121,10 +134,10 @@ export default function TesoroPublicoPage() {
             </div>
           </div>
 
-          {/* Vasija de tinajas: una por base, "llena" de vino al calificarla */}
+          {/* Una casilla por cada tinaja del equipo; se "llena" de vino al calificarla */}
           <div className="relative rounded-3xl border-2 border-orange-900/40 bg-gradient-to-br from-orange-950/50 via-brand-navy/50 to-rose-950/30 p-6 shadow-2xl shadow-black/40">
             <div className="grid grid-cols-5 gap-3">
-              {BASES_TESORO.map((baseId) => {
+              {tinajas.map((baseId) => {
                 const registro = registroDeBase(baseId);
                 const llena = registro?.puntos_evaluacion != null;
                 const enProgreso = registro && !llena;
@@ -151,6 +164,17 @@ export default function TesoroPublicoPage() {
               })}
             </div>
           </div>
+
+          <p className="text-center text-sm text-slate-300">
+            {progreso.base_id != null ? (
+              <>
+                Última tinaja encontrada:{' '}
+                <span className="font-bold text-white">Tinaja {progreso.base_id}</span>
+              </>
+            ) : (
+              'Todavía no ha encontrado ninguna tinaja'
+            )}
+          </p>
 
           <button
             onClick={cambiarEquipo}

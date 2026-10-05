@@ -5,13 +5,11 @@ import BloqueActividades from '../components/panel/BloqueActividades';
 import BloqueCronograma from '../components/panel/BloqueCronograma';
 import BloqueAyuda from '../components/panel/BloqueAyuda';
 
-// Logica de permisos exacta:
-// - animador: Comisiones + Ayuda (NO actividades, NO cronograma... espera,
-//   cronograma SI lo ve animador, segun lo confirmado). Ve Bloque 1,
-//   Cronograma y Bloque 3; NO ve Actividades.
-// - staff_gymkana / staff_tesoro / arbitro: Comisiones + Actividades (solo
-//   la suya) + Ayuda. NO ven Cronograma (es exclusivo de animador + Admin).
-// - admin: ve TODO.
+// Permisos de pestañas:
+// - Comisiones, Cronograma y Ayuda: TODO el staff (admin, animador,
+//   staff_gymkana, staff_tesoro y arbitro).
+// - Actividades: todos menos el animador, y cada rol ve SOLO la suya
+//   (ver BloqueActividades); el Admin ve las tres.
 const TODOS_LOS_TABS = [
   {
     id: 'comisiones',
@@ -26,7 +24,7 @@ const TODOS_LOS_TABS = [
   {
     id: 'cronograma',
     label: 'Cronograma',
-    roles: ['admin', 'animador'],
+    roles: ['admin', 'animador', 'staff_gymkana', 'staff_tesoro', 'arbitro'],
   },
   {
     id: 'ayuda',

@@ -1,4 +1,5 @@
 import { supabase } from './supabaseClient';
+import { nombreCanalUnico } from './canalUnico';
 
 // ---------- Marcador / resumen ----------
 export async function obtenerMarcadorGeneral() {
@@ -146,6 +147,22 @@ export async function listarAlertasGymkana() {
     .order('auditoria_reportada_en', { ascending: false });
   if (error) throw error;
   return data;
+}
+
+/**
+ * Avisa cuando cambia cualquier partido de Gymkana (una alerta nueva, una
+ * resuelta, un resultado sellado...). Sirve para que el contador de alertas
+ * del Admin se mantenga al día sin recargar.
+ */
+export function suscribirseAlertasGymkana(onChange) {
+  const channel = supabase
+    .channel(nombreCanalUnico('admin-alertas-gymkana'))
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'puntuaciones_gymkana' }, onChange)
+    .subscribe();
+
+  return () => {
+    supabase.removeChannel(channel);
+  };
 }
 
 export async function sobrescribirResultadoGymkana(partidoId, resultadoA, resultadoB) {

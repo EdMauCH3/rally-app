@@ -34,7 +34,15 @@ const ACTIVIDADES = [
   { id: 'torneo', label: 'Torneo', icon: Trophy },
 ];
 
-export default function ControlInicioActividades() {
+/**
+ * `actividades`: ids a mostrar (por defecto las tres). `titulo` y `descripcion`
+ * permiten reutilizarlo dentro de un módulo de una sola actividad.
+ */
+export default function ControlInicioActividades({
+  actividades,
+  titulo = 'Control de Actividades',
+  descripcion = 'Mientras una actividad esté apagada, el público ve un letrero de espera en vez del contenido.',
+}) {
   const { showToast } = useToast();
   const [estados, setEstados] = useState([]);
   const [cargando, setCargando] = useState(true);
@@ -80,25 +88,24 @@ export default function ControlInicioActividades() {
   return (
     <div className="glass-card p-5 space-y-4">
       <div>
-        <h2 className="font-semibold text-white">Control de Actividades</h2>
-        <p className="text-sm text-slate-400 mt-1">
-          Mientras una actividad esté apagada, el público ve un letrero de espera en vez del
-          contenido.
-        </p>
+        <h2 className="font-semibold text-white">{titulo}</h2>
+        <p className="text-sm text-slate-400 mt-1">{descripcion}</p>
       </div>
 
-      {ACTIVIDADES.map(({ id, label, icon: Icon }) => (
-        <div key={id} className="flex items-center justify-between glass-row px-4 py-3">
-          <span className="flex items-center gap-2 font-medium text-white">
-            <Icon size={18} className="text-emerald-300" /> {label}
-          </span>
-          <Switch
-            activo={estadoDe(id)}
-            disabled={guardandoId === id}
-            onChange={(v) => handleToggle(id, v)}
-          />
-        </div>
-      ))}
+      {ACTIVIDADES.filter((a) => !actividades || actividades.includes(a.id)).map(
+        ({ id, label, icon: Icon }) => (
+          <div key={id} className="flex items-center justify-between glass-row px-4 py-3">
+            <span className="flex items-center gap-2 font-medium text-white">
+              <Icon size={18} className="text-emerald-300" /> {label}
+            </span>
+            <Switch
+              activo={estadoDe(id)}
+              disabled={guardandoId === id}
+              onChange={(v) => handleToggle(id, v)}
+            />
+          </div>
+        )
+      )}
     </div>
   );
 }
