@@ -8,10 +8,28 @@ export async function listarEstadoActividades() {
 }
 
 export async function actualizarEstadoActividad(actividad, iniciada) {
+  const cambios = { iniciada, actualizado_en: new Date().toISOString() };
+  // Apagar una actividad también quita su pausa: al volver a encenderla arranca limpia.
+  if (!iniciada) {
+    cambios.pausada = false;
+    cambios.pausada_en = null;
+  }
   const { error } = await supabase
     .from('estado_actividades_tarde')
-    .update({ iniciada, actualizado_en: new Date().toISOString() })
+    .update(cambios)
     .eq('actividad', actividad);
+  if (error) throw error;
+}
+
+/**
+ * Pausa o reanuda una actividad (solo Admin). Mientras está pausada el servidor
+ * rechaza cualquier registro del staff, y todas las pantallas muestran el aviso.
+ */
+export async function establecerPausaActividad(actividad, pausada) {
+  const { error } = await supabase.rpc('establecer_pausa_actividad', {
+    p_actividad: actividad,
+    p_pausada: pausada,
+  });
   if (error) throw error;
 }
 

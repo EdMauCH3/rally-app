@@ -80,6 +80,29 @@ export async function obtenerProgresoTesoroEquipo(equipoId) {
   return data;
 }
 
+/**
+ * Destino actual de cada equipo: [{ equipo_id, tinaja (null = esperando una
+ * libre), asignada_en, en_espera_desde }]. Solo Admin y staff del Tesoro.
+ */
+export async function listarAsignacionesTesoro() {
+  const { data, error } = await supabase
+    .from('tesoro_asignaciones')
+    .select('equipo_id, tinaja, asignada_en, en_espera_desde');
+  if (error) throw error;
+  return data ?? [];
+}
+
+/**
+ * Lo que ve el equipo en su pantalla pública: { estado, tinaja, pista, completadas,
+ * total } con estado 'en_camino' | 'en_tinaja' | 'espera' | 'termino'. Solo trae la
+ * pista de SU tinaja actual; null si la búsqueda aún no tiene recorrido.
+ */
+export async function obtenerPistaTesoroEquipo(equipoId) {
+  const { data, error } = await supabase.rpc('pista_tesoro_equipo', { p_equipo_id: equipoId });
+  if (error) throw error;
+  return data?.[0] ?? null;
+}
+
 /** Genera los recorridos aleatorios y enciende la actividad (solo Admin). */
 export async function iniciarBusquedaTesoro() {
   const { error } = await supabase.rpc('iniciar_busqueda_tesoro');
@@ -118,6 +141,7 @@ export function suscribirseTesoroGlobal(onChange) {
     .channel(nombreCanalUnico('tesoro-global'))
     .on('postgres_changes', { event: '*', schema: 'public', table: 'puntuaciones_tesoro' }, onChange)
     .on('postgres_changes', { event: '*', schema: 'public', table: 'rutas_tesoro' }, onChange)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'tesoro_asignaciones' }, onChange)
     .subscribe();
 
   return () => {

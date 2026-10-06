@@ -5,7 +5,7 @@ import { listarEstadoActividades, suscribirseEstadoActividades } from '../servic
 import { obtenerEstadoGymkana, suscribirseGymkana } from '../services/gymkanaService';
 import EquipoSelector from '../components/gymkana/EquipoSelector';
 import LetreroActividadNoIniciada from '../components/common/LetreroActividadNoIniciada';
-import UbicacionBase from '../components/gymkana/UbicacionBase';
+import PausaActividadOverlay from '../components/common/PausaActividadOverlay';
 import { useBasesGymkana } from '../hooks/useBasesGymkana';
 
 const LS_KEY = 'gymkana_equipo_seleccionado';
@@ -24,6 +24,52 @@ function calcularPuntos(recorrido, equipoId) {
     const bono = resultado === 'gano' ? 3 : resultado === 'empato' ? 1 : 0;
     return total + 1 + bono;
   }, 0);
+}
+
+/**
+ * Lectura rápida: "Siguiente: Base 3 - Fuente Principal" y, debajo, la descripción que
+ * configuró el Admin. El color del equipo va en el borde grueso y en el círculo con la
+ * insignia de la base; el fondo es oscuro y el texto blanco, así el contraste no depende
+ * del color del equipo.
+ */
+function TarjetaSiguienteBase({ partido, info, rival, color }) {
+  const lugar = info?.lugar?.trim();
+  const descripcion = info?.descripcion?.trim();
+  const estaAhi = !!partido.llegada_en;
+
+  return (
+    <div
+      className="space-y-3 rounded-3xl border border-white/10 bg-slate-900/90 p-5 shadow-2xl shadow-black/40"
+      style={{ borderLeft: `10px solid ${color}` }}
+    >
+      <div className="flex items-center gap-4">
+        <span
+          className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full border-4 border-slate-900 text-2xl font-black text-white"
+          style={{ backgroundColor: color, boxShadow: `0 0 26px 4px ${color}88` }}
+          aria-hidden="true"
+        >
+          {partido.base_id}
+        </span>
+        <div className="min-w-0">
+          <p className="text-2xl font-black leading-tight text-white break-words">
+            {estaAhi ? 'Estás en' : 'Siguiente'}: Base {partido.base_id}
+            {lugar ? ` - ${lugar}` : ''}
+          </p>
+          {rival && (
+            <p className="mt-1 text-sm text-slate-300">
+              Compites contra <span className="font-bold text-white">{rival.nombre}</span>
+            </p>
+          )}
+        </div>
+      </div>
+
+      {descripcion && (
+        <p className="rounded-2xl bg-black/30 px-4 py-3 text-base leading-relaxed text-slate-100">
+          Descripción: {descripcion}
+        </p>
+      )}
+    </div>
+  );
 }
 
 export default function GymkanaPublicoPage() {
@@ -91,6 +137,7 @@ export default function GymkanaPublicoPage() {
 
   return (
     <main className="max-w-2xl mx-auto px-4 py-6 space-y-6">
+      <PausaActividadOverlay actividad="gymkana" />
       <h1 className="text-xl font-black text-white text-center">Gymkana</h1>
 
       {cargandoEquipos ? (
@@ -106,20 +153,12 @@ export default function GymkanaPublicoPage() {
       ) : (
         <div className="space-y-5 animate-fade-up">
           {estado.actual ? (
-            <div className="rounded-2xl bg-gradient-to-r from-emerald-500 to-emerald-700 p-5 flex items-center gap-4 shadow-2xl shadow-black/40">
-              <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white/15 text-white">
-                <MapPin size={28} />
-              </span>
-              <div className="min-w-0">
-                <UbicacionBase
-                  numero={estado.actual.base_id}
-                  info={bases[estado.actual.base_id]}
-                />
-                <p className="mt-2 text-sm text-white/80">
-                  contra <span className="font-bold">{estado.rival?.nombre}</span>
-                </p>
-              </div>
-            </div>
+            <TarjetaSiguienteBase
+              partido={estado.actual}
+              info={bases[estado.actual.base_id]}
+              rival={estado.rival}
+              color={equipoSeleccionado.color_hex}
+            />
           ) : (
             <div className="rounded-2xl border border-emerald-500/25 bg-emerald-500/[0.06] p-6 text-center">
               <p className="font-semibold text-emerald-300">¡Recorrido completo!</p>

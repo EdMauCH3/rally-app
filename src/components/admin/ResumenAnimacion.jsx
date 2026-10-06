@@ -7,7 +7,7 @@ import {
 import { listarPartidos, suscribirsePartidos } from '../../services/torneoService';
 import TablaMarcador from './TablaMarcador';
 
-function Tarjeta({ icono: Icono, nombre, color, visible, cargado, lineas, alerta }) {
+function Tarjeta({ icono: Icono, nombre, color, visible, pausada = false, cargado, lineas, alerta }) {
   return (
     <div className="glass-card p-4 space-y-3">
       <div className="flex items-center justify-between gap-2">
@@ -18,10 +18,14 @@ function Tarjeta({ icono: Icono, nombre, color, visible, cargado, lineas, alerta
         {cargado && (
           <span
             className={`rounded-full px-2.5 py-0.5 text-[11px] font-bold ${
-              visible ? 'bg-emerald-500/20 text-emerald-300' : 'bg-white/10 text-slate-400'
+              pausada
+                ? 'bg-red-500/25 text-red-200'
+                : visible
+                  ? 'bg-emerald-500/20 text-emerald-300'
+                  : 'bg-white/10 text-slate-400'
             }`}
           >
-            {visible ? 'Iniciada' : 'Apagada'}
+            {pausada ? 'Pausada' : visible ? 'Iniciada' : 'Apagada'}
           </span>
         )}
       </div>
@@ -78,6 +82,8 @@ export default function ResumenAnimacion({
   }, [cargar]);
 
   const visible = (actividad) => estados.find((e) => e.actividad === actividad)?.iniciada ?? false;
+  const pausada = (actividad) =>
+    visible(actividad) && (estados.find((e) => e.actividad === actividad)?.pausada ?? false);
 
   const gymkanaTotal = partidosGymkana.length;
   const gymkanaListos = partidosGymkana.filter((p) => p.finalizado).length;
@@ -92,6 +98,7 @@ export default function ResumenAnimacion({
           nombre="Gymkana"
           color="text-emerald-300"
           visible={visible('gymkana')}
+          pausada={pausada('gymkana')}
           cargado={cargado}
           lineas={
             gymkanaLanzada
@@ -109,6 +116,7 @@ export default function ResumenAnimacion({
           nombre="Torneo"
           color="text-violet-300"
           visible={visible('torneo')}
+          pausada={pausada('torneo')}
           cargado={cargado}
           lineas={
             torneoTotal > 0
@@ -121,6 +129,7 @@ export default function ResumenAnimacion({
           nombre="Búsqueda del Tesoro"
           color="text-amber-300"
           visible={visible('tesoro')}
+          pausada={pausada('tesoro')}
           cargado={cargado}
           lineas={['Se inicia y califica desde su módulo']}
         />

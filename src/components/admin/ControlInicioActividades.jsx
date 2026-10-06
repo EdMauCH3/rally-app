@@ -7,7 +7,7 @@ import {
   suscribirseEstadoActividades,
 } from '../../services/estadoActividadesService';
 
-function Switch({ activo, onChange, disabled }) {
+export function Switch({ activo, onChange, disabled }) {
   return (
     <button
       type="button"

@@ -1,156 +1,45 @@
-import { useEffect, useState, useCallback } from 'react';
-import { useEstadoPersistente } from '../hooks/useEstadoPersistente';
 import { useBasesGymkana } from '../hooks/useBasesGymkana';
-import UbicacionBase from '../components/gymkana/UbicacionBase';
-import { Loader2, MapPin } from 'lucide-react';
-import { useToast } from '../context/ToastContext';
-import { listarSubEquiposColorPorActividad } from '../services/subEquiposColorService';
-import {
-  obtenerEstadoGymkana,
-  sellarResultadoGymkana,
-  reportarAlertaGymkana,
-  suscribirseGymkana,
-} from '../services/gymkanaService';
-import EquipoSelector from '../components/gymkana/EquipoSelector';
-import PartidoGymkanaActual, { HistorialGymkana } from '../components/gymkana/PartidoGymkanaActual';
+import { useEstadoPersistente } from '../hooks/useEstadoPersistente';
+import SelectorEstacion from '../components/estacion/SelectorEstacion';
+import EstacionGymkana from '../components/gymkana/EstacionGymkana';
 
+const BASES = [1, 2, 3, 4, 5, 6];
+
+/**
+ * Gymkana en el panel del staff: el juez elige SU base y se queda ahí. Los
+ * equipos vienen a él (ver EstacionGymkana). La base elegida se recuerda
+ * aunque se cambie de pestaña o se recargue la página.
+ */
 export default function GymkanaPage() {
   const bases = useBasesGymkana();
-  const { showToast } = useToast();
-
-  const [equipos, setEquipos] = useState([]);
-  const [equipoSeleccionado, setEquipoSeleccionado] = useEstadoPersistente(
-    'rally_ui_gymkana_equipo',
-    null
+  const [base, setBase] = useEstadoPersistente('rally_ui_gymkana_base', null, (v) =>
+    BASES.includes(v)
   );
-  const [estado, setEstado] = useState(null);
-  const [cargandoEquipos, setCargandoEquipos] = useState(true);
-  const [cargandoEstado, setCargandoEstado] = useState(false);
-
-  useEffect(() => {
-    listarSubEquiposColorPorActividad('gymkana')
-      .then(setEquipos)
-      .catch(() => showToast('No se pudieron cargar los colores de Gymkana', 'error'))
-      .finally(() => setCargandoEquipos(false));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // El equipo recordado puede haber cambiado de color o ya no existir:
-  // se resincroniza con la lista real una vez cargada.
-  useEffect(() => {
-    if (cargandoEquipos || !equipoSeleccionado) return;
-    const vigente = equipos.find((e) => e.id === equipoSeleccionado.id);
-    if (!vigente) {
-      setEquipoSeleccionado(null);
-    } else if (
-      vigente.nombre !== equipoSeleccionado.nombre ||
-      vigente.color_hex !== equipoSeleccionado.color_hex
-    ) {
-      setEquipoSeleccionado(vigente);
-    }
-  }, [cargandoEquipos, equipos, equipoSeleccionado, setEquipoSeleccionado]);
-
-  const cargarEstado = useCallback((equipoId) => {
-    setCargandoEstado(true);
-    obtenerEstadoGymkana(equipoId)
-      .then(setEstado)
-      .catch(() => showToast('No se pudo cargar la ruta de este equipo', 'error'))
-      .finally(() => setCargandoEstado(false));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    if (!equipoSeleccionado) return;
-    cargarEstado(equipoSeleccionado.id);
-    const unsubscribe = suscribirseGymkana(() => cargarEstado(equipoSeleccionado.id));
-    return unsubscribe;
-  }, [equipoSeleccionado, cargarEstado]);
-
-  async function handleCalificar(partidoId, resultado) {
-    try {
-      const resultadoRpc = await sellarResultadoGymkana(partidoId, equipoSeleccionado.id, resultado);
-      showToast(
-        resultadoRpc?.mensaje ?? 'Resultado registrado',
-        resultadoRpc?.ya_bloqueado ? 'warning' : 'success'
-      );
-      cargarEstado(equipoSeleccionado.id);
-    } catch (err) {
-      showToast(err.message ?? 'Error al registrar el resultado', 'error');
-    }
-  }
-
-  async function handleReportarAlerta(partidoId) {
-    try {
-      await reportarAlertaGymkana(partidoId);
-      showToast('Alerta enviada al Admin', 'warning');
-      cargarEstado(equipoSeleccionado.id);
-    } catch (err) {
-      showToast(err.message ?? 'No se pudo reportar la alerta', 'error');
-    }
-  }
 
   return (
-    <main className="max-w-2xl mx-auto px-4 py-6 space-y-6">
+    <main className="mx-auto max-w-2xl space-y-6 px-4 py-6">
       <h1 className="sr-only">Staff Gymkana</h1>
 
-        {cargandoEquipos ? (
-          <div className="flex justify-center py-10">
-            <Loader2 className="animate-spin text-indigo-400" size={28} />
-          </div>
-        ) : (
-          <EquipoSelector
-            equipos={equipos}
-            equipoSeleccionado={equipoSeleccionado}
-            onSeleccionar={setEquipoSeleccionado}
-          />
-        )}
-
-        {equipoSeleccionado && (
-          <section className="space-y-4">
-            <h2 className="font-semibold text-slate-200">
-              Ruta — {equipoSeleccionado.nombre}
-            </h2>
-
-            {cargandoEstado ? (
-              <div className="flex justify-center py-10">
-                <Loader2 className="animate-spin text-indigo-400" size={28} />
-              </div>
-            ) : (
-              <>
-                {estado?.actual && (
-                  <div className="rounded-2xl bg-gradient-to-r from-indigo-500 to-violet-500 p-5 flex items-center gap-4 shadow-glow-lg animate-fade-up">
-                    <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white/15 text-white animate-glow-pulse">
-                      <MapPin size={28} />
-                    </span>
-                    <UbicacionBase
-                      numero={estado.actual.base_id}
-                      info={bases[estado.actual.base_id]}
-                    />
-                  </div>
-                )}
-
-                <PartidoGymkanaActual
-                  equipoId={equipoSeleccionado.id}
-                  equipoColor={equipoSeleccionado.color_hex}
-                  rival={estado?.rival}
-                  estado={estado}
-                  onCalificar={handleCalificar}
-                  onReportarAlerta={handleReportarAlerta}
-                />
-
-                {estado && (
-                  <HistorialGymkana
-                    bases={bases}
-                    equipoId={equipoSeleccionado.id}
-                    recorrido={estado.recorrido}
-                    actualIndex={estado.actualIndex}
-                    onReportarAlerta={handleReportarAlerta}
-                  />
-                )}
-              </>
-            )}
-          </section>
-        )}
-      </main>
+      {base == null ? (
+        <SelectorEstacion
+          etiqueta="Base"
+          numeros={BASES}
+          seleccionada={base}
+          onSeleccionar={setBase}
+          detalle={(n) => bases[n]?.lugar?.trim()}
+        />
+      ) : (
+        <>
+          <EstacionGymkana key={base} base={base} />
+          <button
+            type="button"
+            onClick={() => setBase(null)}
+            className="mx-auto block text-sm text-slate-400 underline underline-offset-2 transition-colors hover:text-white"
+          >
+            Cambiar de base
+          </button>
+        </>
+      )}
+    </main>
   );
 }

@@ -1,4 +1,4 @@
-import { ClipboardList, Flag, Map, Settings, Trophy } from 'lucide-react';
+import { ClipboardList, Flag, Map, Radio, Settings, Trophy } from 'lucide-react';
 import { useEstadoPersistente } from '../../hooks/useEstadoPersistente';
 import ResumenAnimacion from './ResumenAnimacion';
 import GestionBasesGymkana from './GestionBasesGymkana';
@@ -7,6 +7,8 @@ import AlertasGymkana from './AlertasGymkana';
 import TorneoAdminTab from './TorneoAdminTab';
 import AjustesForm from './AjustesForm';
 import TesoroAdminModulo from './TesoroAdminModulo';
+import RadarAdmin from './RadarAdmin';
+import { BannerPausasActivas } from './ControlPausaActividades';
 
 const MODULOS = [
   {
@@ -15,6 +17,13 @@ const MODULOS = [
     detalle: 'Estado general',
     icon: ClipboardList,
     clases: 'from-sky-500 to-sky-700',
+  },
+  {
+    id: 'radar',
+    nombre: 'Radar',
+    detalle: 'En vivo y pausas',
+    icon: Radio,
+    clases: 'from-red-500 to-rose-700',
   },
   {
     id: 'gymkana',
@@ -90,7 +99,10 @@ export default function AnimacionAdminTab({
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 md:grid-cols-5">
+      {/* Visible desde cualquier módulo mientras haya una actividad pausada */}
+      <BannerPausasActivas />
+
+      <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 md:grid-cols-6">
         {MODULOS.map((m) => {
           const Icon = m.icon;
           const activo = m.id === modulo;
@@ -127,6 +139,17 @@ export default function AnimacionAdminTab({
           gymkanaLanzada={gymkanaIniciada}
           partidosGymkana={partidosGymkana}
           alertasGymkanaPendientes={alertasPendientes}
+        />
+      )}
+
+      {modulo === 'radar' && (
+        <RadarAdmin
+          coloresGymkana={coloresGymkana}
+          rutasGymkana={rutasGymkana}
+          partidosGymkana={partidosGymkana}
+          gymkanaIniciada={gymkanaIniciada}
+          alertasPendientes={alertasPendientes}
+          onCambio={onCambio}
         />
       )}
 

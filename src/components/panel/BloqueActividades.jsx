@@ -3,6 +3,7 @@ import { useEstadoPersistente } from '../../hooks/useEstadoPersistente';
 import GymkanaPage from '../../pages/GymkanaPage';
 import TorneoModulo from '../torneo/TorneoModulo';
 import TesoroPage from '../../pages/TesoroPage';
+import PausaActividadOverlay from '../common/PausaActividadOverlay';
 
 const MODULOS = {
   gymkana: {
@@ -51,9 +52,15 @@ export default function BloqueActividades({ rol }) {
 
   // Un solo rol asignado (staff_gymkana / staff_tesoro / arbitro): se
   // muestra directo, sin selector, porque no hay nada entre que elegir.
+  // Mientras el Admin pausa la actividad, el aviso tapa la pantalla del staff (el Admin no se bloquea).
   if (claves.length === 1) {
     const { Componente } = MODULOS[claves[0]];
-    return <Componente />;
+    return (
+      <>
+        <PausaActividadOverlay actividad={claves[0]} />
+        <Componente />
+      </>
+    );
   }
 
   // Admin: puede cambiar entre los 3 modulos con un selector de colores.

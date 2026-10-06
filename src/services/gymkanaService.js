@@ -59,6 +59,39 @@ export async function sellarResultadoGymkana(partidoId, equipoId, resultado) {
   return data?.[0];
 }
 
+/**
+ * Juez fijo de una Base: marca que la pareja que venía ya llegó. Después se
+ * califica con sellarResultadoGymkana.
+ */
+export async function marcarLlegadaGymkana(partidoId) {
+  const { data, error } = await supabase.rpc('marcar_llegada_gymkana', { p_partido_id: partidoId });
+  if (error) throw error;
+  return data?.[0];
+}
+
+/** Deshace una llegada marcada por error (mientras no esté calificada). */
+export async function deshacerLlegadaGymkana(partidoId) {
+  const { data, error } = await supabase.rpc('deshacer_llegada_gymkana', { p_partido_id: partidoId });
+  if (error) throw error;
+  return data?.[0];
+}
+
+/**
+ * Todo lo necesario para saber qué pareja viene a cada base: los recorridos
+ * (qué orden de bases lleva cada equipo) y los 12 enfrentamientos con su
+ * estado. Son pocas filas, así que se traen completas. Con la Gymkana sin
+ * iniciar devuelve listas vacías.
+ */
+export async function obtenerEstacionesGymkana() {
+  const [r, p] = await Promise.all([
+    supabase.from('rutas_gymkana').select('equipo_id, rival_id, pareja_num, orden_bases'),
+    supabase.from('puntuaciones_gymkana').select('*').order('base_id', { ascending: true }),
+  ]);
+  if (r.error) throw r.error;
+  if (p.error) throw p.error;
+  return { rutas: r.data ?? [], partidos: p.data ?? [] };
+}
+
 /** Reporta un error/alerta sobre una base ya sellada, para que el Admin la revise. */
 export async function reportarAlertaGymkana(partidoId) {
   const { error } = await supabase.rpc('reportar_alerta_gymkana', {
@@ -81,6 +114,7 @@ export function suscribirseGymkana(onChange) {
       { event: '*', schema: 'public', table: 'puntuaciones_gymkana' },
       onChange
     )
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'rutas_gymkana' }, onChange)
     .subscribe();
 
   return () => {

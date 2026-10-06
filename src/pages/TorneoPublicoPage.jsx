@@ -13,6 +13,7 @@ import {
 } from '../services/estadoActividadesService';
 import LetreroActividadNoIniciada from '../components/common/LetreroActividadNoIniciada';
 import TorneoPublicoPro from '../components/torneo/TorneoPublicoPro';
+import PausaActividadOverlay from '../components/common/PausaActividadOverlay';
 import { useModoTorneoPro } from '../hooks/useModoTorneoPro';
 
 const ETIQUETA_RESULTADO = { gano: 'Ganó', empato: 'Empató', perdio: 'Perdió' };
@@ -74,6 +75,7 @@ export default function TorneoPublicoPage() {
   if (modoPro) {
     return (
       <main className="max-w-3xl mx-auto px-4 py-6">
+        <PausaActividadOverlay actividad="torneo" />
         <TorneoPublicoPro />
       </main>
     );
@@ -81,6 +83,7 @@ export default function TorneoPublicoPage() {
 
   return (
     <main className="max-w-2xl mx-auto px-4 py-6 space-y-6">
+      <PausaActividadOverlay actividad="torneo" />
       <h1 className="text-xl font-black text-white text-center">Torneo</h1>
 
       {cargando ? (
