@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
-import { AlertTriangle, Flag, Loader2, OctagonX, RotateCw } from 'lucide-react';
+import { AlertTriangle, Flag, Loader2, OctagonX, Play, RotateCcw, RotateCw } from 'lucide-react';
 import { useToast } from '../../context/ToastContext';
 import {
   rotarSiguienteBase,
   marcarUltimaBase,
   terminarRotacion,
   reiniciarConfiguracion,
+  repetirRotacion,
 } from '../../services/coloresService';
 
 function useCuentaRegresiva(tiempoFin) {
@@ -67,15 +68,24 @@ export default function EjecucionRotacion({ config, bases, equipos, onCambio }) 
       <div className="glass-card p-6 max-w-lg space-y-4 text-center">
         <h2 className="text-xl font-bold text-white">La rotación ha terminado</h2>
         <p className="text-slate-300 text-sm">
-          Puedes configurar una nueva rotación cuando quieras.
+          Tus equipos y bases siguen guardados. Puedes repetir la actividad tal cual o ajustar la
+          configuración antes de empezar.
         </p>
         <button
-          onClick={() => conManejoDeError(reiniciarConfiguracion, 'Lista para configurar de nuevo')}
+          onClick={() => conManejoDeError(repetirRotacion, 'Rotación iniciada de nuevo desde la ronda 1')}
           disabled={procesando}
-          className="btn-secondary"
+          className="btn-primary w-full"
         >
-          {procesando && <Loader2 className="animate-spin" size={16} />}
-          Configurar nueva rotación
+          {procesando ? <Loader2 className="animate-spin" size={16} /> : <Play size={16} />}
+          Repetir con los mismos equipos y bases
+        </button>
+        <button
+          onClick={() => conManejoDeError(reiniciarConfiguracion, 'Lista para ajustar la configuración')}
+          disabled={procesando}
+          className="btn-secondary w-full"
+        >
+          <RotateCcw size={16} />
+          Ajustar la configuración
         </button>
       </div>
     );
@@ -133,6 +143,35 @@ export default function EjecucionRotacion({ config, bases, equipos, onCambio }) 
           className="btn-danger w-full !py-4"
         >
           <OctagonX size={18} /> Terminar Ahora
+        </button>
+      </div>
+
+      <div className="glass-card p-4 space-y-3">
+        <h3 className="text-sm font-semibold text-slate-300">¿Quieres empezar de nuevo?</h3>
+        <p className="text-xs text-slate-400">
+          Tus equipos y bases NO se borran en ninguno de los dos casos.
+        </p>
+        <button
+          onClick={() => {
+            if (window.confirm('¿Volver a la ronda 1? Los equipos regresan a su base de inicio y el cronómetro arranca de nuevo.')) {
+              conManejoDeError(repetirRotacion, 'Rotación reiniciada desde la ronda 1');
+            }
+          }}
+          disabled={procesando}
+          className="btn-secondary w-full"
+        >
+          <RotateCcw size={16} /> Reiniciar desde la ronda 1
+        </button>
+        <button
+          onClick={() => {
+            if (window.confirm('¿Detener la rotación y volver a la configuración? Los equipos y bases se conservan.')) {
+              conManejoDeError(reiniciarConfiguracion, 'Volviste a la configuración (nada se borró)');
+            }
+          }}
+          disabled={procesando}
+          className="btn-ghost w-full justify-center"
+        >
+          Detener y volver a configurar
         </button>
       </div>
 

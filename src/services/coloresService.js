@@ -92,6 +92,15 @@ export async function reiniciarConfiguracion() {
   if (error) throw error;
 }
 
+/**
+ * Arranca la rotación otra vez desde la ronda 1 con los MISMOS equipos y bases
+ * (no pide ni borra nada). Sirve para repetir la actividad.
+ */
+export async function repetirRotacion() {
+  const { error } = await supabase.rpc('repetir_rotacion_colores');
+  if (error) throw error;
+}
+
 export function suscribirseColores(onChange) {
   const channel = supabase
     .channel(nombreCanalUnico('colores-admin'))

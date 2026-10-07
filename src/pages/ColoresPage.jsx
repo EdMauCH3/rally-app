@@ -17,6 +17,25 @@ import {
 } from '../services/coloresService';
 
 const LS_KEY = 'colores_equipo_seleccionado';
+// También se recuerda el nombre: si el Admin reconfigura la rotación, el equipo se
+// reencuentra por nombre y el celular no vuelve a pedir "¿Cuál es tu equipo?".
+const LS_NOMBRE = 'colores_equipo_seleccionado_nombre';
+
+/**
+ * Tamaño de letra que SIEMPRE cabe en el ancho disponible, sin importar lo largo que
+ * sea el texto (nombres de base o de lugar). Reparte el ancho entre los caracteres de la
+ * palabra más larga o de la mitad del texto (se permiten 2 líneas) y lo limita entre
+ * un mínimo legible y el tamaño de diseño. `factor` = ancho aprox. de un carácter en "em".
+ */
+function tamanoAdaptable(texto, { maxRem, minRem, factor, padRem }) {
+  const limpio = String(texto ?? '').trim();
+  const palabras = limpio.split(/\s+/).filter(Boolean);
+  const mayor = Math.max(1, ...palabras.map((w) => w.length));
+  const caracteres = Math.max(mayor, Math.ceil(limpio.length / 2), 1);
+  return `clamp(${minRem}rem, calc((min(100vw, 36rem) - ${padRem}rem) / ${(caracteres * factor).toFixed(2)}), ${maxRem}rem)`;
+}
+
+const ESTILO_TEXTO_LARGO = { overflowWrap: 'anywhere', textWrap: 'balance', hyphens: 'auto' };
 
 export default function ColoresPage() {
   const [cargando, setCargando] = useState(true);
@@ -24,6 +43,7 @@ export default function ColoresPage() {
   const [bases, setBases] = useState([]);
   const [equipos, setEquipos] = useState([]);
   const [equipoId, setEquipoId] = useState(() => localStorage.getItem(LS_KEY));
+  const [equipoNombre, setEquipoNombre] = useState(() => localStorage.getItem(LS_NOMBRE));
   const [flasheando, setFlasheando] = useState(false);
 
   const rondaAnteriorRef = useRef(null);
@@ -64,13 +84,18 @@ export default function ColoresPage() {
   }
 
   function elegirEquipo(id) {
+    const nombre = equipos.find((e) => e.id === id)?.nombre ?? null;
     localStorage.setItem(LS_KEY, id);
+    if (nombre) localStorage.setItem(LS_NOMBRE, nombre);
     setEquipoId(id);
+    setEquipoNombre(nombre);
   }
 
   function cambiarEquipo() {
     localStorage.removeItem(LS_KEY);
+    localStorage.removeItem(LS_NOMBRE);
     setEquipoId(null);
+    setEquipoNombre(null);
   }
 
   if (cargando) {
@@ -81,7 +106,10 @@ export default function ColoresPage() {
     );
   }
 
-  const equipoActual = equipos.find((e) => e.id === equipoId) ?? null;
+  const equipoActual =
+    equipos.find((e) => e.id === equipoId) ??
+    (equipoNombre ? equipos.find((e) => e.nombre === equipoNombre) : null) ??
+    null;
   const baseActual =
     equipoActual && bases.length > 0
       ? bases[(equipoActual.orden + config.ronda_actual) % bases.length]
@@ -199,14 +227,22 @@ function PantallaSeleccion({ equipos, onElegir }) {
           <button
             key={eq.id}
             onClick={() => onElegir(eq.id)}
-            className="flex items-center gap-4 rounded-2xl border-2 p-5 text-left transition-all duration-300 ease-in-out hover:scale-105 backdrop-blur-xl bg-white/5 shadow-2xl shadow-black/40"
+            className="flex min-w-0 items-center gap-4 rounded-2xl border-2 p-5 text-left transition-all duration-300 ease-in-out hover:scale-105 backdrop-blur-xl bg-white/5 shadow-2xl shadow-black/40"
             style={{ borderColor: eq.color_hex }}
           >
             <span
               className="w-10 h-10 rounded-full shrink-0"
               style={{ backgroundColor: eq.color_hex, boxShadow: `0 0 18px ${eq.color_hex}` }}
             />
-            <span className="text-xl font-bold text-white">{eq.nombre}</span>
+            <span
+              className="min-w-0 font-bold leading-tight text-white"
+              style={{
+                ...ESTILO_TEXTO_LARGO,
+                fontSize: tamanoAdaptable(eq.nombre, { maxRem: 1.25, minRem: 0.95, factor: 0.62, padRem: 8.5 }),
+              }}
+            >
+              {eq.nombre}
+            </span>
           </button>
         ))}
       </div>
@@ -230,10 +266,17 @@ function PantallaActiva({ config, equipoActual, baseActual, onCambiarEquipo }) {
         <p className="text-lg sm:text-xl text-white/70 font-medium">Dirígete a la</p>
 
         <p
-          className="text-6xl sm:text-8xl font-black leading-none my-3 tracking-tight"
+          className="font-black leading-[1.05] my-3 tracking-tight"
           style={{
             color: equipoActual.color_hex,
             textShadow: `0 0 45px ${equipoActual.color_hex}99`,
+            ...ESTILO_TEXTO_LARGO,
+            fontSize: tamanoAdaptable(`BASE ${baseActual.nombre}`, {
+              maxRem: 6,
+              minRem: 1.6,
+              factor: 0.74,
+              padRem: 7.5,
+            }),
           }}
         >
           BASE {baseActual.nombre}
@@ -241,9 +284,21 @@ function PantallaActiva({ config, equipoActual, baseActual, onCambiarEquipo }) {
 
         <p className="text-lg sm:text-xl text-white/70 font-medium">ubicada en</p>
 
-        <p className="flex items-center justify-center gap-3 text-3xl sm:text-5xl font-extrabold text-white mt-2 leading-tight">
-          <MapPin size={36} className="shrink-0" style={{ color: '#c4915f' }} />
-          {baseActual.lugar}
+        <p
+          className="flex items-center justify-center gap-3 font-extrabold text-white mt-2 leading-tight"
+          style={{
+            fontSize: tamanoAdaptable(baseActual.lugar, {
+              maxRem: 3,
+              minRem: 1.15,
+              factor: 0.66,
+              padRem: 11,
+            }),
+          }}
+        >
+          <MapPin size={32} className="shrink-0" style={{ color: '#c4915f' }} />
+          <span className="min-w-0" style={ESTILO_TEXTO_LARGO}>
+            {baseActual.lugar}
+          </span>
         </p>
       </div>
 
