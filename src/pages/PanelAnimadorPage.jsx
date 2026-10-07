@@ -8,16 +8,16 @@ import FormacionPanel from '../components/formacion/FormacionPanel';
 
 // Permisos de pestañas:
 // - Comisiones, Cronograma y Ayuda: TODO el staff (admin, animador,
-//   staff_gymkana, staff_tesoro y arbitro).
+//   staff_gymkana, staff_tesoro, arbitro y formacion).
 // - Actividades: todos menos el animador, y cada rol ve SOLO la suya
 //   (ver BloqueActividades); el Admin ve las tres.
-// - Formación: solo el rol `formacion` (y el Admin). El formador NO ve ninguna
-//   otra pestaña: es informativa, sin puntajes ni módulos competitivos.
+// - Formación: solo el rol `formacion` (y el Admin). El formador ve además
+//   Comisiones, Cronograma y Ayuda, pero NO Actividades (sin módulos competitivos).
 const TODOS_LOS_TABS = [
   {
     id: 'comisiones',
     label: 'Comisiones',
-    roles: ['admin', 'animador', 'staff_gymkana', 'staff_tesoro', 'arbitro'],
+    roles: ['admin', 'animador', 'staff_gymkana', 'staff_tesoro', 'arbitro', 'formacion'],
   },
   {
     id: 'actividades',
@@ -32,12 +32,12 @@ const TODOS_LOS_TABS = [
   {
     id: 'cronograma',
     label: 'Cronograma',
-    roles: ['admin', 'animador', 'staff_gymkana', 'staff_tesoro', 'arbitro'],
+    roles: ['admin', 'animador', 'staff_gymkana', 'staff_tesoro', 'arbitro', 'formacion'],
   },
   {
     id: 'ayuda',
     label: 'Ayuda',
-    roles: ['admin', 'animador', 'staff_gymkana', 'staff_tesoro', 'arbitro'],
+    roles: ['admin', 'animador', 'staff_gymkana', 'staff_tesoro', 'arbitro', 'formacion'],
   },
 ];
 
@@ -48,7 +48,9 @@ export default function PanelAnimadorPage() {
   const [tabSeleccionado, setTabSeleccionado] = useEstadoPersistente('rally_ui_panel_tab', null);
   const tabActivo = tabsVisibles.some((t) => t.id === tabSeleccionado)
     ? tabSeleccionado
-    : tabsVisibles[0]?.id;
+    : perfil?.rol === 'formacion'
+      ? 'formacion' // el formador abre directo en su pestaña
+      : tabsVisibles[0]?.id;
 
   return (
     <>
