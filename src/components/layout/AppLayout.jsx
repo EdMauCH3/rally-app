@@ -1,4 +1,6 @@
+import { useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
+import { activarAroColoresOscuros } from '../../utils/aroColoresOscuros';
 import Header from './Header';
 import NotificationListener from './NotificationListener';
 import Footer from './Footer';
@@ -10,6 +12,9 @@ export default function AppLayout() {
   const { pathname } = useLocation();
   const { perfil, loading } = useAuth();
   const { activo: cuentaRegresiva, cargando: cargandoModo } = useModoCuentaRegresiva();
+
+  // Aro blanco automático para colores de equipo muy oscuros (ej. Negro).
+  useEffect(() => activarAroColoresOscuros(), []);
 
   // Mientras no sabemos si hay sesión ni si el modo está encendido no se
   // muestra contenido: así el público nunca alcanza a ver la app un instante
