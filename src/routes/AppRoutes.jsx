@@ -50,7 +50,7 @@ export default function AppRoutes() {
           path="/panel"
           element={
             <ProtectedRoute
-              roles={['admin', 'animador', 'staff_gymkana', 'staff_tesoro', 'arbitro']}
+              roles={['admin', 'animador', 'staff_gymkana', 'staff_tesoro', 'arbitro', 'formacion']}
             >
               <PanelAnimadorPage />
             </ProtectedRoute>

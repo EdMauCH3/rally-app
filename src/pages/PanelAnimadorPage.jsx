@@ -4,12 +4,15 @@ import BloqueComisiones from '../components/panel/BloqueComisiones';
 import BloqueActividades from '../components/panel/BloqueActividades';
 import BloqueCronograma from '../components/panel/BloqueCronograma';
 import BloqueAyuda from '../components/panel/BloqueAyuda';
+import FormacionPanel from '../components/formacion/FormacionPanel';
 
 // Permisos de pestañas:
 // - Comisiones, Cronograma y Ayuda: TODO el staff (admin, animador,
 //   staff_gymkana, staff_tesoro y arbitro).
 // - Actividades: todos menos el animador, y cada rol ve SOLO la suya
 //   (ver BloqueActividades); el Admin ve las tres.
+// - Formación: solo el rol `formacion` (y el Admin). El formador NO ve ninguna
+//   otra pestaña: es informativa, sin puntajes ni módulos competitivos.
 const TODOS_LOS_TABS = [
   {
     id: 'comisiones',
@@ -20,6 +23,11 @@ const TODOS_LOS_TABS = [
     id: 'actividades',
     label: 'Actividades',
     roles: ['admin', 'staff_gymkana', 'staff_tesoro', 'arbitro'],
+  },
+  {
+    id: 'formacion',
+    label: 'Formación',
+    roles: ['admin', 'formacion'],
   },
   {
     id: 'cronograma',
@@ -68,6 +76,7 @@ export default function PanelAnimadorPage() {
       <main className="px-4 py-6">
         {tabActivo === 'comisiones' && <BloqueComisiones />}
         {tabActivo === 'actividades' && <BloqueActividades rol={perfil?.rol} />}
+        {tabActivo === 'formacion' && <FormacionPanel />}
         {tabActivo === 'cronograma' && <BloqueCronograma />}
         {tabActivo === 'ayuda' && <BloqueAyuda />}
       </main>

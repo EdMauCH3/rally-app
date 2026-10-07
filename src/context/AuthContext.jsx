@@ -13,6 +13,7 @@ export const RUTA_POR_ROL = {
   staff_gymkana: '/panel',
   staff_tesoro: '/panel',
   arbitro: '/panel',
+  formacion: '/panel',
 };
 
 // Prefijo de las claves de sessionStorage donde se recuerda en qué parte

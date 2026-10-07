@@ -21,7 +21,7 @@ import ConfiguracionUIPanel from '../components/admin/ConfiguracionUIPanel';
 import EquiposCRUD from '../components/admin/EquiposCRUD';
 import GestionSubEquiposColor from '../components/admin/GestionSubEquiposColor';
 import ControlInicioActividades from '../components/admin/ControlInicioActividades';
-import RotacionColoresAdmin from '../components/admin/RotacionColoresAdmin';
+import FormacionAdminTab from '../components/formacion/FormacionAdminTab';
 import AnimacionAdminTab from '../components/admin/AnimacionAdminTab';
 import NotificacionesAdminPanel from '../components/admin/NotificacionesAdminPanel';
 import AlertasAnimadorAdminPanel from '../components/admin/AlertasAnimadorAdminPanel';
@@ -216,7 +216,7 @@ export default function AdminPage() {
                 <GestionSubEquiposColor macroEquipos={equipos} />
               </div>
             )}
-            {tab === 'formacion' && <RotacionColoresAdmin />}
+            {tab === 'formacion' && <FormacionAdminTab />}
             {tab === 'animacion' && (
               <AnimacionAdminTab
                 marcador={marcador}

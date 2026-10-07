@@ -19,9 +19,13 @@ function basesIniciales(guardadas) {
 
 function equiposIniciales(guardados) {
   if (guardados?.length > 0) {
-    return guardados.map((e) => ({ nombre: e.nombre, color_hex: e.color_hex }));
+    return guardados.map((e) => ({
+      nombre: e.nombre,
+      color_hex: e.color_hex,
+      subgrupos: e.subgrupos ?? '',
+    }));
   }
-  return [{ nombre: '', color_hex: COLOR_DEFAULT }];
+  return [{ nombre: '', color_hex: COLOR_DEFAULT, subgrupos: '' }];
 }
 
 // "Foto" del formulario, para saber si hay cambios sin guardar.
@@ -90,7 +94,7 @@ export default function ConfiguracionRotacion({
       showToast(`No puedes tener más equipos que actividades (${cantidadBases})`, 'warning');
       return;
     }
-    setEquipos((prev) => [...prev, { nombre: '', color_hex: COLOR_DEFAULT }]);
+    setEquipos((prev) => [...prev, { nombre: '', color_hex: COLOR_DEFAULT, subgrupos: '' }]);
   }
 
   function quitarEquipo(i) {
@@ -104,7 +108,11 @@ export default function ConfiguracionRotacion({
   function datosParaEnviar() {
     return {
       bases: bases.map((b) => ({ nombre: b.nombre.trim(), lugar: b.lugar.trim() })),
-      equipos: equipos.map((e) => ({ nombre: e.nombre.trim(), color_hex: e.color_hex })),
+      equipos: equipos.map((e) => ({
+        nombre: e.nombre.trim(),
+        color_hex: e.color_hex,
+        subgrupos: (e.subgrupos ?? '').trim(),
+      })),
       duracionSegundos: minutos * 60 + segundos,
     };
   }
@@ -223,28 +231,36 @@ export default function ConfiguracionRotacion({
 
         <div className="space-y-3">
           {equipos.map((eq, i) => (
-            <div key={i} className="flex items-center gap-2">
+            <div key={i} className="space-y-2">
+              <div className="flex items-center gap-2">
+                <input
+                  type="color"
+                  value={eq.color_hex}
+                  onChange={(e) => actualizarEquipo(i, 'color_hex', e.target.value)}
+                  className="w-11 h-11 rounded-lg cursor-pointer shrink-0 bg-transparent"
+                />
+                <input
+                  placeholder={`Nombre equipo ${i + 1}`}
+                  value={eq.nombre}
+                  onChange={(e) => actualizarEquipo(i, 'nombre', e.target.value)}
+                  className="field"
+                />
+                {equipos.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => quitarEquipo(i)}
+                    className="p-2 text-red-400 hover:bg-red-500/10 rounded-lg shrink-0 transition-all duration-300"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                )}
+              </div>
               <input
-                type="color"
-                value={eq.color_hex}
-                onChange={(e) => actualizarEquipo(i, 'color_hex', e.target.value)}
-                className="w-11 h-11 rounded-lg cursor-pointer shrink-0 bg-transparent"
+                placeholder="Subgrupos (opcional, separados por coma). Los ve el formador."
+                value={eq.subgrupos ?? ''}
+                onChange={(e) => actualizarEquipo(i, 'subgrupos', e.target.value)}
+                className="field !text-sm"
               />
-              <input
-                placeholder={`Nombre equipo ${i + 1}`}
-                value={eq.nombre}
-                onChange={(e) => actualizarEquipo(i, 'nombre', e.target.value)}
-                className="field"
-              />
-              {equipos.length > 1 && (
-                <button
-                  type="button"
-                  onClick={() => quitarEquipo(i)}
-                  className="p-2 text-red-400 hover:bg-red-500/10 rounded-lg shrink-0 transition-all duration-300"
-                >
-                  <Trash2 size={16} />
-                </button>
-              )}
             </div>
           ))}
         </div>
