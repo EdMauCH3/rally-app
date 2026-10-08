@@ -10,20 +10,6 @@ export async function obtenerMarcadorGeneral() {
   return data;
 }
 
-/**
- * Posiciones del Torneo (incluye equipos generales Y exclusivos).
- * Se usa aquí solo para extraer los EXCLUSIVOS, ya que los generales
- * ya traen su total_torneo correcto dentro de marcador_general.
- */
-export async function obtenerTorneoPosiciones() {
-  const { data, error } = await supabase
-    .from('v_torneo_posiciones')
-    .select('*')
-    .order('puntos_torneo', { ascending: false });
-  if (error) throw error;
-  return data;
-}
-
 export async function obtenerUbicacionesGymkana() {
   const { data, error } = await supabase.from('v_ubicacion_gymkana').select('*');
   if (error) throw error;
@@ -44,6 +30,7 @@ export function suscribirseVisor(onChange) {
     .on('postgres_changes', { event: '*', schema: 'public', table: 'puntuaciones_tesoro' }, onChange)
     .on('postgres_changes', { event: '*', schema: 'public', table: 'partidos_torneo' }, onChange)
     .on('postgres_changes', { event: '*', schema: 'public', table: 'equipos_torneo' }, onChange)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'torneo_eventos' }, onChange)
     .on('postgres_changes', { event: '*', schema: 'public', table: 'ajustes_admin' }, onChange)
     .on('postgres_changes', { event: '*', schema: 'public', table: 'macro_equipos' }, onChange)
     .on('postgres_changes', { event: '*', schema: 'public', table: 'sub_equipos_color' }, onChange)

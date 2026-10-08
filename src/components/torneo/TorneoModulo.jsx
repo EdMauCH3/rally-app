@@ -1,7 +1,5 @@
-import { ClipboardList, Loader2, Users } from 'lucide-react';
+import { ClipboardList, Users } from 'lucide-react';
 import { useEstadoPersistente } from '../../hooks/useEstadoPersistente';
-import { useModoTorneoPro } from '../../hooks/useModoTorneoPro';
-import TorneoPage from '../../pages/TorneoPage';
 import PartidosPro from './PartidosPro';
 import InscripcionJugadores from './InscripcionJugadores';
 
@@ -12,24 +10,12 @@ const VISTAS = [
 
 /**
  * Lo que ve el árbitro dentro de Actividades > Torneo.
- * - Modo Pro apagado: el sistema básico de siempre, sin cambios.
- * - Modo Pro encendido: dos vistas, Partidos y Jugadores.
+ * Dos vistas: Partidos y Jugadores.
  */
 export default function TorneoModulo() {
-  const { modoPro, cargando } = useModoTorneoPro();
   const [vista, setVista] = useEstadoPersistente('rally_ui_torneo_vista', 'partidos', (v) =>
     VISTAS.some((x) => x.id === v)
   );
-
-  if (cargando) {
-    return (
-      <div className="flex justify-center py-16">
-        <Loader2 className="animate-spin text-white" size={28} />
-      </div>
-    );
-  }
-
-  if (!modoPro) return <TorneoPage />;
 
   return (
     <div className="space-y-4">

@@ -12,7 +12,6 @@ import {
 const ACTIVIDADES = [
   { id: 'gymkana', label: 'Gymkana' },
   { id: 'tesoro', label: 'Tesoro' },
-  { id: 'torneo', label: 'Torneo' },
 ];
 
 const COLOR_DEFAULT = '#733f2d';
@@ -110,7 +109,7 @@ export default function GestionSubEquiposColor({ macroEquipos }) {
       <div>
         <h2 className="font-semibold text-white">Colores por Macro-Equipo</h2>
         <p className="text-sm text-slate-400 mt-1">
-          Asigna qué color de cada Macro-Equipo va a Gymkana, cuál a Tesoro y cuál a Torneo.
+          Asigna qué color de cada Macro-Equipo va a Gymkana, y cuál a Tesoro. Los equipos del Torneo se crean en Admin → Torneo.
         </p>
       </div>
 
@@ -124,7 +123,7 @@ export default function GestionSubEquiposColor({ macroEquipos }) {
             <span className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: macro.color_hex }} />
             {macro.nombre}
           </p>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-2 gap-2">
             {ACTIVIDADES.map((act) => {
               const color = colorDe(macro.id, act.id);
               return (

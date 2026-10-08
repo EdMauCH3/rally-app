@@ -122,8 +122,8 @@ export async function reabrirPartido(partidoId) {
 }
 
 // ---------- Operación del partido en vivo (árbitro) ----------
-// Todas llaman a funciones del servidor, que validan el rol, que el
-// Modo Pro esté encendido, las sanciones, etc. (ver sql/26).
+// Todas llaman a funciones del servidor, que validan el rol, las
+// sanciones, la fase del partido, etc. (ver sql/26 y sql/40).
 
 export async function obtenerPartidoPro(partidoId) {
   const { data, error } = await supabase
@@ -210,6 +210,60 @@ export async function finalizarPartidoPro(partidoId) {
   return data?.[0];
 }
 
+// ---------- Tiempo suplementario y penales ----------
+
+/** Solo la Final: 2 tiempos de 5 min sin descanso. Devuelve { ok, mensaje }. */
+export async function iniciarProrrogaPartido(partidoId) {
+  const { data, error } = await supabase.rpc('torneo_iniciar_prorroga', { p_partido_id: partidoId });
+  if (error) throw error;
+  return data?.[0];
+}
+
+/** Pasa a la tanda de penales (Tercer Puesto: directo; Final: tras el suplementario). */
+export async function iniciarPenalesPartido(partidoId) {
+  const { data, error } = await supabase.rpc('torneo_iniciar_penales', { p_partido_id: partidoId });
+  if (error) throw error;
+  return data?.[0];
+}
+
+/** Registra el siguiente tiro de la tanda. jugadorId es opcional. */
+export async function registrarPenalPartido({ partidoId, jugadorId = null, convertido }) {
+  const { data, error } = await supabase.rpc('torneo_penal_registrar', {
+    p_partido_id: partidoId,
+    p_jugador_id: jugadorId,
+    p_convertido: convertido,
+  });
+  if (error) throw error;
+  return data?.[0];
+}
+
+export async function deshacerPenalPartido(partidoId) {
+  const { data, error } = await supabase.rpc('torneo_penal_deshacer', { p_partido_id: partidoId });
+  if (error) throw error;
+  return data?.[0];
+}
+
+export async function listarPenalesDePartido(partidoId) {
+  const { data, error } = await supabase
+    .from('torneo_penales')
+    .select('*')
+    .eq('partido_id', partidoId)
+    .order('orden', { ascending: true });
+  if (error) throw error;
+  return data;
+}
+
+/** Todos los tiros (para el resumen público). */
+export async function listarPenalesTorneo() {
+  const { data, error } = await supabase
+    .from('torneo_penales')
+    .select('*')
+    .order('partido_id', { ascending: true })
+    .order('orden', { ascending: true });
+  if (error) throw error;
+  return data;
+}
+
 // ---------- Realtime ----------
 
 export function suscribirseTorneoPro(onChange) {
@@ -218,6 +272,7 @@ export function suscribirseTorneoPro(onChange) {
     .on('postgres_changes', { event: '*', schema: 'public', table: 'torneo_eventos' }, onChange)
     .on('postgres_changes', { event: '*', schema: 'public', table: 'partidos_torneo' }, onChange)
     .on('postgres_changes', { event: '*', schema: 'public', table: 'torneo_jugadores' }, onChange)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'torneo_penales' }, onChange)
     .subscribe();
 
   return () => {

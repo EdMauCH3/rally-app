@@ -1,7 +1,7 @@
 const MEDALLAS = ['🥇', '🥈', '🥉', '4º'];
 
-export default function TablaPosicionesVisor({ generales, exclusivos }) {
-  if (generales.length === 0 && exclusivos.length === 0) {
+export default function TablaPosicionesVisor({ generales }) {
+  if (generales.length === 0) {
     return <p className="text-center text-slate-400 py-10">Aún no hay equipos registrados.</p>;
   }
 
@@ -53,31 +53,6 @@ export default function TablaPosicionesVisor({ generales, exclusivos }) {
             </tr>
           ))}
 
-          {exclusivos.map((eq) => (
-            <tr
-              key={eq.equipo_torneo_id}
-              className="border-b border-white/5 last:border-0 bg-brand-brown/[0.07]"
-            >
-              <td className="px-4 py-4">
-                <div className="flex items-center gap-2 min-w-0 flex-wrap">
-                  <span
-                    className="w-2.5 h-2.5 rounded-full shrink-0"
-                    style={{ backgroundColor: eq.color_hex }}
-                  />
-                  <span className="font-semibold text-white/90 truncate">{eq.nombre}</span>
-                  <span className="text-[9px] sm:text-[10px] uppercase tracking-wide font-bold bg-brand-brown/40 text-amber-200 px-1.5 py-0.5 rounded-full shrink-0">
-                    Solo Torneo
-                  </span>
-                </div>
-              </td>
-              <td className="px-2 sm:px-3 py-4 text-right text-slate-500">—</td>
-              <td className="px-2 sm:px-3 py-4 text-right text-slate-500">—</td>
-              <td className="px-2 sm:px-3 py-4 text-right font-bold text-slate-100 tabular-nums">
-                {eq.puntos_torneo}
-              </td>
-              <td className="px-4 py-4 text-right text-slate-500">—</td>
-            </tr>
-          ))}
         </tbody>
       </table>
     </div>

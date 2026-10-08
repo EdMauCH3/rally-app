@@ -14,7 +14,7 @@ import {
   X,
 } from 'lucide-react';
 import { useToast } from '../../context/ToastContext';
-import { listarRosterTorneo } from '../../services/torneoService';
+import { NOMBRE_FASE_PARTIDO } from '../../services/torneoLogica';
 import {
   obtenerPartidoPro,
   listarEventosDePartido,
@@ -26,10 +26,16 @@ import {
   registrarEventoPartido,
   deshacerUltimoEventoPartido,
   finalizarPartidoPro,
+  iniciarProrrogaPartido,
+  iniciarPenalesPartido,
+  registrarPenalPartido,
+  deshacerPenalPartido,
+  listarPenalesDePartido,
   suscribirseTorneoPro,
 } from '../../services/torneoProService';
 import { useRelojPartido, formatoMMSS } from '../../hooks/useRelojPartido';
 import SelectorJugadorModal from './SelectorJugadorModal';
+import PanelPenales from './PanelPenales';
 
 const ACCIONES = [
   { tipo: 'gol', emoji: '⚽', label: 'GOL', clase: 'from-emerald-500 to-emerald-700 text-white' },
@@ -50,7 +56,7 @@ export default function PartidoProModal({ partidoId, onCerrar }) {
   const { showToast } = useToast();
   const [partido, setPartido] = useState(null);
   const [eventos, setEventos] = useState([]);
-  const [roster, setRoster] = useState([]);
+  const [penales, setPenales] = useState([]);
   const [jugadores, setJugadores] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [ocupado, setOcupado] = useState(false);
@@ -110,15 +116,20 @@ export default function PartidoProModal({ partidoId, onCerrar }) {
   const cargar = useCallback(async () => {
     try {
       const p = await obtenerPartidoPro(partidoId);
-      const [ev, r, j] = await Promise.all([
+      if (!p.equipo_a_id || !p.equipo_b_id) {
+        setPartido(p);
+        return;
+      }
+      const decisivo = p.fase === 'tercer_puesto' || p.fase === 'final';
+      const [ev, j, pen] = await Promise.all([
         listarEventosDePartido(partidoId),
-        listarRosterTorneo(),
         listarEstadoJugadoresDeEquipos([p.equipo_a_id, p.equipo_b_id]),
+        decisivo ? listarPenalesDePartido(partidoId) : Promise.resolve([]),
       ]);
       setPartido(p);
       setEventos(ev);
-      setRoster(r);
       setJugadores(j);
+      setPenales(pen);
     } catch {
       showToast('No se pudo cargar el partido', 'error');
     } finally {
@@ -148,7 +159,16 @@ export default function PartidoProModal({ partidoId, onCerrar }) {
     setTimeout(() => setFlasheando(false), 3000);
   }, []);
 
-  const reloj = useRelojPartido(partido, alTiempoCumplido);
+  const alMitadSuplementario = useCallback(() => {
+    audioRef.current?.play().catch(() => {});
+    showToast('Fin del 1.er tiempo suplementario: siguen los otros 5 min sin descanso', 'info');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const reloj = useRelojPartido(partido, alTiempoCumplido, {
+    puntoIntermedio: partido?.fase_juego === 'prorroga' ? 300 : null,
+    onPuntoIntermedio: alMitadSuplementario,
+  });
 
   async function ejecutar(accion, mensajeExito) {
     setOcupado(true);
@@ -196,8 +216,22 @@ export default function PartidoProModal({ partidoId, onCerrar }) {
     );
   }
 
+  function iniciarProrroga() {
+    if (!window.confirm('¿Iniciar el tiempo suplementario? Son 2 tiempos de 5 min, sin descanso.')) return;
+    ejecutar(() => iniciarProrrogaPartido(partidoId));
+  }
+
+  function irAPenales() {
+    const n = partido.fase === 'final' ? 5 : 3;
+    if (!window.confirm(`¿Pasar a la tanda de penales (${n} tiros por equipo y muerte súbita)?`)) return;
+    ejecutar(() => iniciarPenalesPartido(partidoId));
+  }
+
   function finalizar() {
-    const texto = `${partido.goles_a} - ${partido.goles_b}`;
+    const texto =
+      partido.fase_juego === 'penales'
+        ? `${partido.goles_a} - ${partido.goles_b} (penales ${partido.pen_a} - ${partido.pen_b})`
+        : `${partido.goles_a} - ${partido.goles_b}`;
     if (!window.confirm(`¿Finalizar el partido con el marcador ${texto}?`)) return;
     ejecutar(() => finalizarPartidoPro(partidoId));
   }
@@ -250,12 +284,18 @@ export default function PartidoProModal({ partidoId, onCerrar }) {
     );
   }
 
-  const equipoA = roster.find((e) => e.id === partido.equipo_a_id);
-  const equipoB = roster.find((e) => e.id === partido.equipo_b_id);
+  const equipoA = partido.equipo_a_id
+    ? { id: partido.equipo_a_id, nombre: partido.a_nombre, color_hex: partido.a_color }
+    : null;
+  const equipoB = partido.equipo_b_id
+    ? { id: partido.equipo_b_id, nombre: partido.b_nombre, color_hex: partido.b_color }
+    : null;
   if (!equipoA || !equipoB) {
     return (
       <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center gap-4 bg-brand-navy p-6 text-center">
-        <p className="text-white">No se encontraron los equipos de este partido.</p>
+        <p className="text-white">
+          Este partido todavía no tiene equipos: depende de que termine la fase anterior.
+        </p>
         <button type="button" onClick={onCerrar} className="btn-secondary">
           Cerrar
         </button>
@@ -264,6 +304,14 @@ export default function PartidoProModal({ partidoId, onCerrar }) {
   }
 
   const finalizado = partido.finalizado;
+  const decisivo = partido.fase === 'tercer_puesto' || partido.fase === 'final';
+  const empatado = partido.goles_a === partido.goles_b;
+  const enPenales = partido.fase_juego === 'penales';
+  const enProrroga = partido.fase_juego === 'prorroga';
+  const nombreEquipo = (id) => (id === equipoA.id ? equipoA.nombre : equipoB.nombre);
+  const serieDefinida = enPenales && Boolean(partido.pen_terminada);
+  // En fases decisivas un empate no se puede cerrar: hay que resolverlo primero.
+  const finalNoPermitido = decisivo && empatado && !serieDefinida;
   const estado = ESTADOS[partido.estado] ?? ESTADOS.pendiente;
   const bloqueado = ocupado || finalizado;
 
@@ -358,7 +406,10 @@ export default function PartidoProModal({ partidoId, onCerrar }) {
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-3 min-w-0">
               <span className="text-sm font-bold text-slate-300 shrink-0">
-                Partido #{partido.partido_num}
+                Fecha {partido.fecha_num} · Cancha {partido.cancha}
+                <span className="ml-2 hidden font-medium text-slate-400 sm:inline">
+                  {NOMBRE_FASE_PARTIDO[partido.fase]}
+                </span>
               </span>
               <span
                 className={`rounded-full border px-3 py-1 text-xs font-extrabold tracking-wider ${estado.clase}`}
@@ -406,6 +457,11 @@ export default function PartidoProModal({ partidoId, onCerrar }) {
               {partido.goles_a}
               <span className="mx-1.5 sm:mx-4 text-slate-500">-</span>
               {partido.goles_b}
+              {enPenales && (
+                <span className="mt-2 block text-base font-bold text-amber-300 sm:text-3xl">
+                  penales {partido.pen_a ?? 0} - {partido.pen_b ?? 0}
+                </span>
+              )}
             </p>
             {columnaEquipo(equipoB)}
           </div>
@@ -421,6 +477,11 @@ export default function PartidoProModal({ partidoId, onCerrar }) {
             {formatoMMSS(reloj.segundos)}
           </p>
           <p className="mt-3 text-sm sm:text-xl font-semibold tracking-wide text-slate-300">
+            {enProrroga && !finalizado && (
+              <span className="mb-1 block text-amber-300">
+                TIEMPO SUPLEMENTARIO · {reloj.segundos < 300 ? '1.er' : '2.º'} tiempo
+              </span>
+            )}
             {finalizado
               ? 'PARTIDO FINALIZADO'
               : reloj.agotado
@@ -440,6 +501,52 @@ export default function PartidoProModal({ partidoId, onCerrar }) {
         {/* CONTROLES (se ocultan en modo proyección) */}
         {!proyeccion && !finalizado && (
           <>
+            {decisivo && empatado && !enPenales && (
+              <div className="space-y-3 rounded-2xl border border-amber-400/40 bg-amber-500/10 p-4 text-center">
+                <p className="font-bold text-amber-200">
+                  {partido.fase === 'final' && !enProrroga
+                    ? 'Empate en la Gran Final'
+                    : partido.fase === 'final'
+                      ? 'Sigue el empate tras el suplementario'
+                      : 'Empate en el Tercer Puesto'}
+                </p>
+                <p className="text-sm text-amber-100/80">
+                  {partido.fase === 'final' && !enProrroga
+                    ? 'Se juegan 2 tiempos suplementarios de 5 min sin descanso. Si continúa, 5 penales por equipo y muerte súbita.'
+                    : partido.fase === 'final'
+                      ? 'Toca la tanda de 5 penales por equipo y muerte súbita.'
+                      : 'No hay tiempo extra: se define directo por 3 penales por equipo y muerte súbita.'}
+                </p>
+                {partido.fase === 'final' && !enProrroga ? (
+                  <button type="button" onClick={iniciarProrroga} disabled={bloqueado} className="btn-primary mx-auto !py-3">
+                    Iniciar tiempo suplementario
+                  </button>
+                ) : (
+                  <button type="button" onClick={irAPenales} disabled={bloqueado} className="btn-primary mx-auto !py-3">
+                    Ir a penales
+                  </button>
+                )}
+              </div>
+            )}
+
+            {enPenales && (
+              <PanelPenales
+                partido={partido}
+                equipoA={equipoA}
+                equipoB={equipoB}
+                penales={penales}
+                jugadores={jugadores}
+                eventos={eventos}
+                ocupado={ocupado}
+                onRegistrar={({ jugadorId, convertido }) =>
+                  ejecutar(() => registrarPenalPartido({ partidoId, jugadorId, convertido }))
+                }
+                onDeshacer={() => ejecutar(() => deshacerPenalPartido(partidoId))}
+              />
+            )}
+
+            {!enPenales && (
+              <>
             <div className="grid grid-cols-[1fr_auto] gap-3">
               <button
                 type="button"
@@ -556,13 +663,16 @@ export default function PartidoProModal({ partidoId, onCerrar }) {
               ))}
             </div>
 
+              </>
+            )}
+
             {ultimosEventos.length > 0 && (
               <div className="rounded-2xl border border-white/10 bg-black/20 p-3 space-y-1.5">
                 <p className="text-xs font-bold uppercase tracking-widest text-slate-400">
                   Últimos eventos
                 </p>
                 {ultimosEventos.map((ev) => {
-                  const eq = roster.find((e) => e.id === ev.equipo_torneo_id);
+                  const eq = { nombre: nombreEquipo(ev.equipo_torneo_id) };
                   return (
                     <p key={ev.id} className="text-sm text-slate-200">
                       <span className="tabular-nums text-slate-400">{ev.minuto}'</span>{' '}
@@ -584,7 +694,7 @@ export default function PartidoProModal({ partidoId, onCerrar }) {
               <button
                 type="button"
                 onClick={() => ejecutar(() => deshacerUltimoEventoPartido(partidoId))}
-                disabled={bloqueado || eventos.length === 0}
+                disabled={bloqueado || enPenales || eventos.length === 0}
                 className="btn-secondary !py-3.5 disabled:opacity-40"
               >
                 <RotateCcw size={18} />
@@ -593,8 +703,9 @@ export default function PartidoProModal({ partidoId, onCerrar }) {
               <button
                 type="button"
                 onClick={finalizar}
-                disabled={bloqueado}
-                className="btn-danger !py-3.5"
+                disabled={bloqueado || finalNoPermitido}
+                title={finalNoPermitido ? 'Resuelve el empate antes de finalizar' : undefined}
+                className="btn-danger !py-3.5 disabled:opacity-40"
               >
                 <Flag size={18} />
                 Finalizar partido

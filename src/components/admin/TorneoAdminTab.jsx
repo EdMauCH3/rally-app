@@ -1,32 +1,23 @@
-import { useState } from 'react';
-import { Loader2 } from 'lucide-react';
-import { useToast } from '../../context/ToastContext';
-import { actualizarConfiguracionApp } from '../../services/configuracionAppService';
-import { useModoTorneoPro } from '../../hooks/useModoTorneoPro';
-import ModoTorneoProSwitch from './ModoTorneoProSwitch';
+import { CalendarDays, Loader2, ShieldHalf, Users, History } from 'lucide-react';
+import { useEstadoPersistente } from '../../hooks/useEstadoPersistente';
+import { useTorneoFases } from '../../hooks/useTorneoFases';
 import HistorialEventosTorneo from './HistorialEventosTorneo';
-import GestionEquiposTorneo from './GestionEquiposTorneo';
-import TorneoPage from '../../pages/TorneoPage';
+import EquiposPorMacro from './torneo/EquiposPorMacro';
+import FixtureAdmin from './torneo/FixtureAdmin';
+import InscripcionJugadores from '../torneo/InscripcionJugadores';
+
+const VISTAS = [
+  { id: 'equipos', label: 'Equipos', icon: ShieldHalf },
+  { id: 'plantillas', label: 'Plantillas', icon: Users },
+  { id: 'fixture', label: 'Fixture', icon: CalendarDays },
+  { id: 'historial', label: 'Historial', icon: History },
+];
 
 export default function TorneoAdminTab() {
-  const { showToast } = useToast();
-  const { modoPro, setModoPro, cargando } = useModoTorneoPro();
-  const [guardando, setGuardando] = useState(false);
-
-  async function handleCambiarModo(valor) {
-    const previo = modoPro;
-    setModoPro(valor); // actualización optimista
-    setGuardando(true);
-    try {
-      await actualizarConfiguracionApp({ torneo_modo_pro: valor });
-      showToast(valor ? 'Modo Torneo Pro encendido' : 'Modo Torneo Pro apagado', 'success');
-    } catch (err) {
-      setModoPro(previo); // revertir si la escritura falla
-      showToast(err.message ?? 'No se pudo cambiar el modo', 'error');
-    } finally {
-      setGuardando(false);
-    }
-  }
+  const { partidos, tablas, equipos, macros, cargando, error, recargar } = useTorneoFases();
+  const [vista, setVista] = useEstadoPersistente('rally_ui_admin_torneo', 'equipos', (v) =>
+    VISTAS.some((x) => x.id === v)
+  );
 
   if (cargando) {
     return (
@@ -36,24 +27,61 @@ export default function TorneoAdminTab() {
     );
   }
 
+  if (error) {
+    return (
+      <div className="glass-card mx-auto max-w-md space-y-3 p-6 text-center">
+        <p className="text-slate-300">No se pudo cargar el torneo.</p>
+        <p className="text-xs text-slate-500">
+          Si acabas de actualizar la app, verifica que ya ejecutaste el SQL 40 en Supabase.
+        </p>
+        <button type="button" onClick={recargar} className="btn-secondary mx-auto">
+          Reintentar
+        </button>
+      </div>
+    );
+  }
+
+  const fixtureGenerado = partidos.length > 0;
+
   return (
-    <div className="space-y-8">
-      <div className="max-w-2xl mx-auto">
-        <ModoTorneoProSwitch
-          activo={modoPro}
-          guardando={guardando}
-          onCambiar={handleCambiarModo}
-        />
+    <div className="space-y-6">
+      <div className="mx-auto grid max-w-2xl grid-cols-2 gap-2 sm:grid-cols-4">
+        {VISTAS.map(({ id, label, icon: Icon }) => (
+          <button
+            key={id}
+            type="button"
+            onClick={() => setVista(id)}
+            className={`flex items-center justify-center gap-2 rounded-xl border-2 py-3 text-sm font-semibold transition-all duration-300 ease-in-out ${
+              vista === id
+                ? 'border-brand-brown bg-brand-brown/15 text-white'
+                : 'border-white/10 text-slate-400 hover:border-white/20 hover:text-slate-200'
+            }`}
+          >
+            <Icon size={17} />
+            {label}
+          </button>
+        ))}
       </div>
 
-      <section className="space-y-3">
-        <h2 className="text-center font-semibold text-white">Fixture y partidos</h2>
-        <TorneoPage />
-      </section>
-
-      <HistorialEventosTorneo modoPro={modoPro} />
-
-      <GestionEquiposTorneo />
+      {vista === 'equipos' && (
+        <EquiposPorMacro
+          macros={macros}
+          equipos={equipos}
+          fixtureGenerado={fixtureGenerado}
+          onCambio={recargar}
+        />
+      )}
+      {vista === 'plantillas' && <InscripcionJugadores />}
+      {vista === 'fixture' && (
+        <FixtureAdmin
+          macros={macros}
+          equipos={equipos}
+          partidos={partidos}
+          tablas={tablas}
+          onCambio={recargar}
+        />
+      )}
+      {vista === 'historial' && <HistorialEventosTorneo modoPro />}
     </div>
   );
 }

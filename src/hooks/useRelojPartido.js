@@ -21,17 +21,23 @@ export function formatoMMSS(totalSegundos) {
  * Si el árbitro recarga o vuelve a entrar, el cálculo da el mismo minuto
  * real del partido.
  *
+ * `opciones.puntoIntermedio` (segundos) + `onPuntoIntermedio`: aviso extra a mitad
+ * (el suplementario de la Final: pitazo a los 5 min).
+ *
  * `onTiempoCumplido` se llama UNA vez, solo si se ve cruzar la duración
  * programada en vivo. Si el árbitro entra cuando el tiempo ya estaba
  * vencido, NO se dispara (no queremos un pitazo por algo que ya pasó).
  */
-export function useRelojPartido(partido, onTiempoCumplido) {
+export function useRelojPartido(partido, onTiempoCumplido, opciones = {}) {
   const [segundos, setSegundos] = useState(0);
   const callbackRef = useRef(onTiempoCumplido);
+  const mitadRef = useRef(opciones.onPuntoIntermedio);
+  const puntoIntermedio = opciones.puntoIntermedio ?? null;
 
   useEffect(() => {
     callbackRef.current = onTiempoCumplido;
-  }, [onTiempoCumplido]);
+    mitadRef.current = opciones.onPuntoIntermedio;
+  }, [onTiempoCumplido, opciones.onPuntoIntermedio]);
 
   const corriendo = Boolean(partido?.reloj_inicio_en) && !partido?.finalizado;
   const duracion = partido?.duracion_segundos ?? 0;
@@ -46,6 +52,7 @@ export function useRelojPartido(partido, onTiempoCumplido) {
     const enMarcha = inicioMs !== null && !partido.finalizado;
 
     let yaAvisado = null; // null = todavía no evaluado
+    let mitadAvisada = null;
 
     function evaluar() {
       let s = partido.segundos_acumulados;
@@ -53,6 +60,17 @@ export function useRelojPartido(partido, onTiempoCumplido) {
         s += Math.max(0, Math.floor((Date.now() + desfaseMs - inicioMs) / 1000));
       }
       setSegundos(s);
+
+      // Punto intermedio (p. ej. fin del 1.er tiempo suplementario): mismo criterio.
+      if (puntoIntermedio !== null) {
+        const pasado = s >= puntoIntermedio;
+        if (mitadAvisada === null) mitadAvisada = pasado;
+        else if (pasado && !mitadAvisada && enMarcha) {
+          mitadAvisada = true;
+          mitadRef.current?.();
+        }
+        if (!pasado) mitadAvisada = false;
+      }
 
       const cumplido = s >= partido.duracion_segundos;
       if (yaAvisado === null) {
@@ -70,7 +88,7 @@ export function useRelojPartido(partido, onTiempoCumplido) {
     if (!enMarcha) return undefined;
     const id = setInterval(evaluar, 250);
     return () => clearInterval(id);
-  }, [partido]);
+  }, [partido, puntoIntermedio]);
 
   return {
     segundos,

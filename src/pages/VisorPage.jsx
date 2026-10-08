@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from 'react';
 import { Loader2, Radio } from 'lucide-react';
 import {
   obtenerMarcadorGeneral,
-  obtenerTorneoPosiciones,
   obtenerUbicacionesGymkana,
   obtenerUbicacionesTesoro,
   suscribirseVisor,
@@ -13,7 +12,6 @@ import TrackerUbicacion from '../components/visor/TrackerUbicacion';
 
 export default function VisorPage() {
   const [marcador, setMarcador] = useState([]);
-  const [exclusivosTorneo, setExclusivosTorneo] = useState([]);
   const [ubicacionesGymkana, setUbicacionesGymkana] = useState([]);
   const [ubicacionesTesoro, setUbicacionesTesoro] = useState([]);
   const [cargando, setCargando] = useState(true);
@@ -21,12 +19,11 @@ export default function VisorPage() {
   const cargarTodo = useCallback(() => {
     Promise.all([
       obtenerMarcadorGeneral(),
-      obtenerTorneoPosiciones(),
       obtenerUbicacionesGymkana(),
       obtenerUbicacionesTesoro(),
       listarSubEquiposColor(),
     ])
-      .then(([m, torneo, ug, ut, colores]) => {
+      .then(([m, ug, ut, colores]) => {
         // ug/ut traen equipo_id = id del COLOR (sub_equipos_color); como
         // el Visor solo muestra Macro-Equipos, se resuelve cada color a
         // su macro_equipo_id antes de pasarlo al tracker.
@@ -38,7 +35,6 @@ export default function VisorPage() {
           }));
 
         setMarcador(m);
-        setExclusivosTorneo(torneo.filter((t) => t.es_exclusivo));
         setUbicacionesGymkana(porMacroEquipo(ug));
         setUbicacionesTesoro(porMacroEquipo(ut));
       })
@@ -67,7 +63,7 @@ export default function VisorPage() {
         </div>
       ) : (
         <div className="space-y-10 max-w-4xl mx-auto">
-          <TablaPosicionesVisor generales={marcador} exclusivos={exclusivosTorneo} />
+          <TablaPosicionesVisor generales={marcador} />
 
           <div>
             <h2 className="text-lg sm:text-2xl font-bold text-white mb-3 text-center sm:text-left">
