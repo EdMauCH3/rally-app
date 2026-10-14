@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Clock, Eye, Hourglass, Loader2, Play } from 'lucide-react';
+import { useCanchas } from '../../hooks/useCanchas';
 import { useTorneoFases } from '../../hooks/useTorneoFases';
 import { useEstadoPersistente } from '../../hooks/useEstadoPersistente';
 import {
   agruparPorFecha,
+  colorTextoSobre,
   nombreRonda,
   etiquetaGrupoDe,
   formatoHora,
@@ -24,11 +26,6 @@ const ESTADOS = {
   pendiente: { texto: 'PENDIENTE', clase: 'bg-white/5 text-slate-400 border border-white/10' },
 };
 
-const CANCHAS = [
-  { id: 0, label: 'Todas', activa: 'border-white bg-white text-slate-900' },
-  { id: 1, label: 'Coliseo', activa: 'border-amber-300 bg-amber-400 text-slate-950' },
-  { id: 2, label: 'Cancha Azul', activa: 'border-sky-300 bg-sky-500 text-white' },
-];
 
 /** Fecha que el árbitro probablemente necesita: la que está en vivo, o la primera con algo pendiente. */
 function fechaSugerida(fechas) {
@@ -65,9 +62,17 @@ export default function PartidosPro() {
   const { partidos, equipos, cargando, error } = useTorneoFases();
   const [abiertoId, setAbiertoId] = useEstadoPersistente('rally_ui_torneo_partido', null);
   const [fechaElegida, setFechaElegida] = useEstadoPersistente('rally_ui_torneo_fecha', null);
-  const [cancha, setCancha] = useEstadoPersistente('rally_ui_torneo_cancha', 0, (v) => [0, 1, 2].includes(v));
+  const [cancha, setCancha] = useEstadoPersistente('rally_ui_torneo_cancha', 0, (v) => typeof v === 'number');
+  const { canchas } = useCanchas();
 
-  const fechas = useMemo(() => agruparPorFecha(partidos), [partidos]);
+  // Las fechas del campeonato + una pestaña "Extra" con los partidos adicionales (sin fecha).
+  const fechas = useMemo(() => {
+    const lista = agruparPorFecha(partidos);
+    const extras = partidos
+      .filter((p) => p.fase === 'adicional')
+      .sort((a, b) => (a.hora_programada ?? '9').localeCompare(b.hora_programada ?? '9') || a.partido_num - b.partido_num);
+    return extras.length > 0 ? [...lista, { fecha: 'extra', partidos: extras }] : lista;
+  }, [partidos]);
   const fecha = fechaElegida && fechas.some((f) => f.fecha === fechaElegida) ? fechaElegida : fechaSugerida(fechas);
 
   // Si el partido recordado ya no existe (p. ej. tras reiniciar el fixture), se olvida.
@@ -92,6 +97,9 @@ export default function PartidosPro() {
   }
 
   const grupoFecha = fechas.find((f) => f.fecha === fecha);
+  // Lugares a elegir: los activos y cualquiera que tenga partidos (aunque ya esté desactivado).
+  const usadas = new Set(partidos.map((p) => p.cancha));
+  const opcionesCancha = canchas.filter((c) => c.activa || usadas.has(c.id));
   const lista = (grupoFecha?.partidos ?? []).filter((p) => cancha === 0 || p.cancha === cancha);
   const enVivoOtraFecha = fechas.find(
     (f) => f.fecha !== fecha && f.partidos.some((p) => p.estado === 'en_vivo' || p.estado === 'pausado')
@@ -129,7 +137,7 @@ export default function PartidosPro() {
                         : 'border-white/10 text-slate-400 hover:border-white/25'
                     }`}
                   >
-                    F{f.fecha}
+                    {f.fecha === 'extra' ? 'Extra' : `F${f.fecha}`}
                     <span
                       className={`absolute -right-1 -top-1 h-2.5 w-2.5 rounded-full ${
                         st === 'vivo'
@@ -144,21 +152,20 @@ export default function PartidosPro() {
               })}
             </div>
 
-            <div className="grid grid-cols-3 gap-2" role="tablist" aria-label="Cancha">
-              {CANCHAS.map((c) => (
+            <div className="flex flex-wrap gap-2" role="tablist" aria-label="Cancha">
+              {[{ id: 0, nombre: 'Todas', color: '#ffffff' }, ...opcionesCancha].map((c) => (
                 <button
                   key={c.id}
                   type="button"
                   role="tab"
                   aria-selected={cancha === c.id}
                   onClick={() => setCancha(c.id)}
-                  className={`rounded-xl border-2 px-1 py-2.5 text-sm font-black uppercase leading-tight tracking-wide transition-all duration-300 sm:text-base ${
-                    cancha === c.id
-                      ? c.activa
-                      : 'border-white/15 text-slate-300 hover:border-white/30'
+                  className={`min-w-[6.5rem] flex-1 rounded-xl border-2 px-2 py-2.5 text-sm font-black uppercase leading-tight tracking-wide transition-all duration-300 sm:text-base ${
+                    cancha === c.id ? 'border-white/60' : 'border-white/15 text-slate-300 hover:border-white/30'
                   }`}
+                  style={cancha === c.id ? { backgroundColor: c.color, color: colorTextoSobre(c.color) } : undefined}
                 >
-                  {c.label}
+                  {c.nombre}
                 </button>
               ))}
             </div>
@@ -176,8 +183,8 @@ export default function PartidosPro() {
           </div>
 
           <p className="text-xs font-bold uppercase tracking-wide text-slate-400">
-            Fecha {fecha}
-            {grupoFecha?.partidos[0] && (
+            {fecha === 'extra' ? 'Partidos adicionales' : `Fecha ${fecha}`}
+            {fecha !== 'extra' && grupoFecha?.partidos[0] && (
               <span className="ml-2 normal-case text-slate-500">
                 · {nombreRonda(grupoFecha.partidos[0])}
               </span>

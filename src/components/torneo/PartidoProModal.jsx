@@ -409,7 +409,7 @@ export default function PartidoProModal({ partidoId, etiquetaFase, onCerrar }) {
             <div className="flex flex-wrap items-center gap-x-3 gap-y-2 min-w-0">
               <BadgeCancha cancha={partido.cancha} tamano="grande" />
               <span className="text-sm font-bold text-slate-300 shrink-0">
-                Fecha {partido.fecha_num}
+                {partido.fase === 'adicional' ? 'Adicional' : `Fecha ${partido.fecha_num}`}
                 <span className="ml-2 hidden font-medium text-slate-400 sm:inline">
                   {etiquetaFase ?? NOMBRE_FASE_PARTIDO[partido.fase]}
                 </span>

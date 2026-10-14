@@ -7,7 +7,9 @@ import {
 } from '../services/configuracionAppService';
 import ModalBienvenida from '../components/home/ModalBienvenida';
 
-const VIDEO_EVALUACION_URL = 'https://www.youtube.com/watch?v=zC0JJGgnf9g';
+// Formulario de evaluación final del Rally (Google Forms).
+const URL_EVALUACION =
+  'https://docs.google.com/forms/d/e/1FAIpQLSekb1eeqgPJu1jnsBF0VtgC76XnKdZlHVVipDT3cOJIxY4R3g/viewform';
 
 // Si falla la lectura de configuracion_app, mejor mostrar de mas que
 // dejar a alguien sin poder navegar (excepto el video, que se queda
@@ -107,7 +109,7 @@ export default function Home() {
 
           {config.mostrar_evaluacion && (
             <a
-              href={VIDEO_EVALUACION_URL}
+              href={URL_EVALUACION}
               target="_blank"
               rel="noopener noreferrer"
               style={{ animationDelay: '240ms' }}
@@ -117,7 +119,7 @@ export default function Home() {
                 <ClipboardCheck size={40} />
               </span>
               <span className="font-black text-white text-2xl sm:text-3xl">Evaluación</span>
-              <span className="text-sm text-slate-500">Formulario del día</span>
+              <span className="text-sm text-slate-500">Evaluación final</span>
             </a>
           )}
         </div>

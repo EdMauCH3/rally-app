@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { Loader2, X } from 'lucide-react';
 import { useToast } from '../../../context/ToastContext';
-import { nombreCancha, nombreLado, nombreRonda } from '../../../services/torneoLogica';
+import { combinarFechaHora, nombreLado, nombreRonda } from '../../../services/torneoLogica';
+import { useCanchas } from '../../../hooks/useCanchas';
+import { agregarAdicional } from '../../../services/canchasService';
 import {
   agregarPartido,
   declararWO,
@@ -179,14 +181,17 @@ export function ModalMover({ partido, onCerrar, onHecho }) {
   const [fecha, setFecha] = useState(String(partido.fecha_num ?? 1));
   const [cancha, setCancha] = useState(String(partido.cancha ?? 1));
   const [guardando, setGuardando] = useState(false);
+  const { canchas } = useCanchas();
+  const adicional = partido.fase === 'adicional';
+  const opciones = canchas.filter((c) => c.activa || c.id === partido.cancha);
 
   async function enviar(e) {
     e.preventDefault();
-    const f = Number(fecha);
-    if (!Number.isInteger(f) || f < 1 || f > 99) return showToast('La fecha debe estar entre 1 y 99', 'error');
+    const f = adicional ? null : Number(fecha);
+    if (!adicional && (!Number.isInteger(f) || f < 1 || f > 99)) return showToast('La fecha debe estar entre 1 y 99', 'error');
     setGuardando(true);
     try {
-      await moverPartido(partido.id, f, Number(cancha));
+      await moverPartido(partido.id, f ?? partido.fecha_num ?? 1, Number(cancha));
       showToast('Partido movido', 'success');
       onHecho();
     } catch (err) {
@@ -200,19 +205,27 @@ export function ModalMover({ partido, onCerrar, onHecho }) {
     <Carcasa titulo="Mover partido" subtitulo={`Partido ${partido.partido_num} · ${nombreRonda(partido)}`} onCerrar={onCerrar}>
       <form onSubmit={enviar} className="space-y-4">
         <div className="grid grid-cols-2 gap-3">
-          <div>
-            <label className="field-label">Fecha</label>
-            <input type="number" min="1" max="99" value={fecha} onChange={(e) => setFecha(e.target.value)} className="field" />
-          </div>
-          <div>
-            <label className="field-label">Cancha</label>
+          {!adicional && (
+            <div>
+              <label className="field-label">Fecha</label>
+              <input type="number" min="1" max="99" value={fecha} onChange={(e) => setFecha(e.target.value)} className="field" />
+            </div>
+          )}
+          <div className={adicional ? 'col-span-2' : ''}>
+            <label className="field-label">Lugar de juego</label>
             <select value={cancha} onChange={(e) => setCancha(e.target.value)} className="field">
-              <option value="1">{nombreCancha(1)}</option>
-              <option value="2">{nombreCancha(2)}</option>
+              {opciones.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.nombre}
+                  {c.activa ? '' : ' (desactivado)'}
+                </option>
+              ))}
             </select>
           </div>
         </div>
-        <p className="text-xs text-slate-500">Si ese horario ya tiene un partido, los dos se intercambian.</p>
+        <p className="text-xs text-slate-500">
+          Si ese lugar ya tiene un partido en esa fecha, se juegan uno tras otro (puedes ajustar la hora de cada uno).
+        </p>
         <Pie onCerrar={onCerrar} guardando={guardando} textoOk="Mover" />
       </form>
     </Carcasa>
@@ -277,36 +290,65 @@ export function ModalRetiro({ equipo, partidosPendientes = 0, onCerrar, onHecho 
   );
 }
 
-/** Agregar un partido a mano (para reestructurar el calendario después de un retiro, por ejemplo). */
-export function ModalAgregar({ equipos, onCerrar, onHecho }) {
+/**
+ * Agregar un partido a mano. Dos tipos:
+ *  · Del campeonato: entra a las tablas y llaves (sirve para reestructurar el calendario).
+ *  · Adicional: suma puntos (y rojas) al Macro-equipo de cada lado, pero NO cuenta para el campeonato.
+ */
+export function ModalAgregar({ equipos, onCerrar, onHecho, modoInicial = 'campeonato' }) {
   const { showToast } = useToast();
+  const { activas } = useCanchas();
+  const [modo, setModo] = useState(modoInicial);
   const [etapa, setEtapa] = useState('1');
   const [fase, setFase] = useState('grupos');
   const [grupo, setGrupo] = useState('');
   const [a, setA] = useState('');
   const [b, setB] = useState('');
   const [nombre, setNombre] = useState('');
+  const [cancha, setCancha] = useState('');
+  const [hora, setHora] = useState('');
+  const [minutos, setMinutos] = useState('10');
   const [guardando, setGuardando] = useState(false);
 
+  const adicional = modo === 'adicional';
   const activos = equipos.filter((e) => e.estado !== 'retirado');
   const grupos = [...new Set(activos.map((e) => e.grupo).filter(Boolean))].sort();
-  const candidatos = fase === 'grupos' ? activos.filter((e) => e.grupo === grupo) : activos;
+  const candidatos = !adicional && fase === 'grupos' ? activos.filter((e) => e.grupo === grupo) : activos;
+  const macroA = activos.find((e) => e.id === a)?.macro_equipo_id;
+  const candidatosB = adicional && macroA ? candidatos.filter((e) => e.macro_equipo_id !== macroA) : candidatos;
 
   async function enviar(e) {
     e.preventDefault();
-    if (fase === 'grupos' && !grupo) return showToast('Elige el grupo', 'error');
+    if (!adicional && fase === 'grupos' && !grupo) return showToast('Elige el grupo', 'error');
     if (!a || !b || a === b) return showToast('Elige dos equipos distintos', 'error');
     setGuardando(true);
     try {
-      await agregarPartido({
-        etapa: Number(etapa),
-        fase,
-        grupo: fase === 'grupos' ? grupo : null,
-        equipoAId: a,
-        equipoBId: b,
-        nombre: nombre.trim() || null,
-      });
-      showToast('Partido agregado al final del calendario. Muévelo si quieres otro horario.', 'success');
+      if (adicional) {
+        const min = Number(minutos);
+        if (!Number.isInteger(min) || min < 1 || min > 120) {
+          setGuardando(false);
+          return showToast('La duración debe estar entre 1 y 120 minutos', 'error');
+        }
+        await agregarAdicional({
+          equipoAId: a,
+          equipoBId: b,
+          nombre: nombre.trim() || null,
+          cancha: cancha ? Number(cancha) : null,
+          horaIso: hora ? combinarFechaHora('2026-10-17', hora) : null,
+          minutos: min,
+        });
+        showToast('Partido adicional creado. Suma puntos a los Macro-equipos pero no cuenta para el campeonato.', 'success');
+      } else {
+        await agregarPartido({
+          etapa: Number(etapa),
+          fase,
+          grupo: fase === 'grupos' ? grupo : null,
+          equipoAId: a,
+          equipoBId: b,
+          nombre: nombre.trim() || null,
+        });
+        showToast('Partido agregado al final del calendario. Muévelo si quieres otro horario.', 'success');
+      }
       onHecho();
     } catch (err) {
       showToast(err.message ?? 'No se pudo agregar el partido', 'error');
@@ -315,10 +357,10 @@ export function ModalAgregar({ equipos, onCerrar, onHecho }) {
     }
   }
 
-  const opciones = (
+  const opciones = (lista) => (
     <>
       <option value="">Elige un equipo…</option>
-      {candidatos.map((e) => (
+      {lista.map((e) => (
         <option key={e.id} value={e.id}>
           {e.nombre} · {e.macro_nombre}
         </option>
@@ -327,37 +369,68 @@ export function ModalAgregar({ equipos, onCerrar, onHecho }) {
   );
 
   return (
-    <Carcasa titulo="Agregar partido" subtitulo="Para reestructurar el calendario a mano" onCerrar={onCerrar}>
+    <Carcasa titulo="Agregar partido" subtitulo="Calendario a mano o partido adicional" onCerrar={onCerrar}>
       <form onSubmit={enviar} className="space-y-4">
-        <div className="grid grid-cols-2 gap-3">
-          <div>
-            <label className="field-label">Etapa</label>
-            <select value={etapa} onChange={(e) => setEtapa(e.target.value)} className="field">
-              <option value="1">1 · Grupos</option>
-              <option value="2">2 · Clasificatoria</option>
-              <option value="3">3 · Finales</option>
-            </select>
-          </div>
-          <div>
-            <label className="field-label">Tipo</label>
-            <select
-              value={fase}
-              onChange={(e) => {
-                setFase(e.target.value);
+        <div className="grid grid-cols-2 gap-1.5 rounded-xl bg-white/5 p-1" role="tablist" aria-label="Tipo de partido">
+          {[
+            ['campeonato', 'Del campeonato'],
+            ['adicional', 'Adicional'],
+          ].map(([id, texto]) => (
+            <button
+              key={id}
+              type="button"
+              role="tab"
+              aria-selected={modo === id}
+              onClick={() => {
+                setModo(id);
                 setA('');
                 setB('');
               }}
-              className="field"
+              className={`rounded-lg px-2 py-2 text-sm font-bold transition ${
+                modo === id ? 'bg-white text-slate-900' : 'text-slate-300 hover:bg-white/10'
+              }`}
             >
-              <option value="grupos">Fase de grupos</option>
-              <option value="cuadrangular">Cuadrangular</option>
-              <option value="eliminatoria">Eliminación directa</option>
-              <option value="tercer_puesto">Tercer puesto</option>
-              <option value="final">Gran final</option>
-            </select>
-          </div>
+              {texto}
+            </button>
+          ))}
         </div>
-        {fase === 'grupos' && (
+        <p className="rounded-lg bg-white/5 px-3 py-2 text-xs text-slate-300">
+          {adicional
+            ? 'Un partido extra (amistoso, revancha, desempate de ánimo…): los puntos y las rojas SÍ suman al Macro-equipo de cada lado, pero NO cuenta para las tablas, la clasificación ni las llaves del campeonato. Se ve en el Historial público.'
+            : 'Entra a las tablas y llaves del campeonato. Úsalo para reestructurar el calendario.'}
+        </p>
+
+        {!adicional && (
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="field-label">Etapa</label>
+              <select value={etapa} onChange={(e) => setEtapa(e.target.value)} className="field">
+                <option value="1">1 · Grupos</option>
+                <option value="2">2 · Clasificatoria</option>
+                <option value="3">3 · Finales</option>
+              </select>
+            </div>
+            <div>
+              <label className="field-label">Tipo</label>
+              <select
+                value={fase}
+                onChange={(e) => {
+                  setFase(e.target.value);
+                  setA('');
+                  setB('');
+                }}
+                className="field"
+              >
+                <option value="grupos">Fase de grupos</option>
+                <option value="cuadrangular">Cuadrangular</option>
+                <option value="eliminatoria">Eliminación directa</option>
+                <option value="tercer_puesto">Tercer puesto</option>
+                <option value="final">Gran final</option>
+              </select>
+            </div>
+          </div>
+        )}
+        {!adicional && fase === 'grupos' && (
           <div>
             <label className="field-label">Grupo</label>
             <select
@@ -378,16 +451,43 @@ export function ModalAgregar({ equipos, onCerrar, onHecho }) {
         )}
         <div>
           <label className="field-label">Equipo local</label>
-          <select value={a} onChange={(e) => setA(e.target.value)} className="field">{opciones}</select>
+          <select value={a} onChange={(e) => { setA(e.target.value); setB(''); }} className="field">{opciones(candidatos)}</select>
         </div>
         <div>
           <label className="field-label">Equipo visitante</label>
-          <select value={b} onChange={(e) => setB(e.target.value)} className="field">{opciones}</select>
+          <select value={b} onChange={(e) => setB(e.target.value)} className="field">{opciones(candidatosB)}</select>
         </div>
         <div>
-          <label className="field-label">Nombre de la ronda (opcional)</label>
-          <input value={nombre} onChange={(e) => setNombre(e.target.value)} maxLength={60} placeholder="Ej. Repechaje" className="field" />
+          <label className="field-label">{adicional ? 'Nombre del partido (opcional)' : 'Nombre de la ronda (opcional)'}</label>
+          <input
+            value={nombre}
+            onChange={(e) => setNombre(e.target.value)}
+            maxLength={60}
+            placeholder={adicional ? 'Ej. Amistoso de revancha' : 'Ej. Repechaje'}
+            className="field"
+          />
         </div>
+        {adicional && (
+          <div className="grid grid-cols-3 gap-3">
+            <div className="col-span-3 sm:col-span-1">
+              <label className="field-label">Lugar</label>
+              <select value={cancha} onChange={(e) => setCancha(e.target.value)} className="field">
+                <option value="">Automático</option>
+                {activas.map((c) => (
+                  <option key={c.id} value={c.id}>{c.nombre}</option>
+                ))}
+              </select>
+            </div>
+            <div className="col-span-2 sm:col-span-1">
+              <label className="field-label">Hora (opc.)</label>
+              <input type="time" value={hora} onChange={(e) => setHora(e.target.value)} className="field" />
+            </div>
+            <div className="col-span-1">
+              <label className="field-label">Minutos</label>
+              <input type="number" min="1" max="120" value={minutos} onChange={(e) => setMinutos(e.target.value)} className="field" />
+            </div>
+          </div>
+        )}
         <Pie onCerrar={onCerrar} guardando={guardando} textoOk="Agregar" />
       </form>
     </Carcasa>

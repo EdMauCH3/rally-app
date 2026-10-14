@@ -7,6 +7,7 @@ import TarjetaPartido from './TarjetaPartido';
 import PanelGrupos from './PanelGrupos';
 import PanelCuadrangular from './PanelCuadrangular';
 import PanelLlaves from './PanelLlaves';
+import PanelHistorial from './PanelHistorial';
 import PuntosMacros from './PuntosMacros';
 import DetalleEquipoModal from './DetalleEquipoModal';
 import InsigniaEquipo from './InsigniaEquipo';
@@ -19,7 +20,8 @@ function pestanaSugerida(partidos, pestanas) {
     const delTab = partidos.filter((p) => pestanaDePartido(p) === t.id);
     if (delTab.some((p) => !p.finalizado)) return t.id;
   }
-  return pestanas[pestanas.length - 1]?.id ?? 'grupos';
+  const etapas = pestanas.filter((t) => t.id !== 'historial');
+  return etapas[etapas.length - 1]?.id ?? pestanas[0]?.id ?? 'grupos';
 }
 
 /** Mientras no hay partidos: los equipos inscritos, agrupados por Macro-equipo. */
@@ -145,6 +147,7 @@ export default function TorneoPublicoFases() {
       {pestana === 'grupos' && <PanelGrupos ctx={ctx} />}
       {pestana === 'cuadrangular' && <PanelCuadrangular ctx={ctx} />}
       {pestana === 'llaves' && <PanelLlaves ctx={ctx} />}
+      {pestana === 'historial' && <PanelHistorial ctx={ctx} />}
 
       <PuntosMacros refrescarClave={prog.finalizados} />
 

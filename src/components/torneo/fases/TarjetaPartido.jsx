@@ -258,7 +258,13 @@ export default function TarjetaPartido({
     >
       <header className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 border-b border-white/5 px-4 py-2.5 text-xs text-slate-400">
         <span className="flex flex-wrap items-center gap-x-2 gap-y-1.5">
-          <span className="font-bold text-slate-200">Fecha {p.fecha_num}</span>
+          {p.fase === 'adicional' ? (
+            <span className="rounded-md bg-violet-500/25 px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide text-violet-200">
+              Adicional
+            </span>
+          ) : (
+            <span className="font-bold text-slate-200">Fecha {p.fecha_num}</span>
+          )}
           <BadgeCancha cancha={p.cancha} tamano="normal" />
           {hora && (
             <span className="inline-flex items-center gap-1">
@@ -266,7 +272,7 @@ export default function TarjetaPartido({
               {hora}
             </span>
           )}
-          {(resaltarFase || p.fase !== 'grupos') && (
+          {(resaltarFase || p.fase !== 'grupos' || p.fase === 'adicional') && (
             <span className="font-semibold text-slate-400">{nombreRonda(p)}</span>
           )}
         </span>
@@ -288,6 +294,11 @@ export default function TarjetaPartido({
           ganador={p.finalizado && p.ganador_id ? p.ganador_id === p.equipo_b_id : null}
           onEquipo={onEquipo}
         />
+        {p.fase === 'adicional' && (
+          <p className="text-center text-[11px] text-violet-300/80">
+            Suma puntos a su Macro-equipo · no cuenta para el campeonato
+          </p>
+        )}
         {p.fase_juego === 'penales' && p.pen_a != null && (
           <p className="rounded-lg bg-amber-400/10 py-1.5 text-center text-sm font-black tabular-nums text-amber-200">
             {p.goles_a}-{p.goles_b} ({p.pen_a}-{p.pen_b} pen.)

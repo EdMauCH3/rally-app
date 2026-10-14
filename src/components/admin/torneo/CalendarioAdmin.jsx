@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { AlertTriangle, Dices, Loader2, Plus, RotateCcw } from 'lucide-react';
+import { AlertTriangle, Dices, Loader2, Plus, RotateCcw, Sparkles } from 'lucide-react';
 import { useToast } from '../../../context/ToastContext';
 import TablaFase from '../../torneo/TablaFase';
 import {
@@ -32,6 +32,10 @@ export default function CalendarioAdmin({ equipos, partidos, tablas, onCambio })
   const progreso = resumenProgreso(partidos);
   const avisos = avisosFixture(partidos, tablas, equipos);
   const fechas = agruparPorFecha(partidos);
+  const adicionales = partidos
+    .filter((p) => p.fase === 'adicional')
+    .sort((a, b) => (a.hora_programada ?? '9').localeCompare(b.hora_programada ?? '9') || a.partido_num - b.partido_num);
+  const hayCampeonato = partidos.some((p) => p.fase !== 'adicional');
   const cerrar = () => setModal(null);
   const hecho = () => {
     setModal(null);
@@ -107,17 +111,47 @@ export default function CalendarioAdmin({ equipos, partidos, tablas, onCambio })
   const filasCuad = tablas.filter((t) => t.fase === 'cuadrangular');
   const empatesSorteo = (filas) => filas.filter((f) => f.desempate === 'sorteo');
 
-  if (partidos.length === 0) {
+  const seccionAdicionales = (
+    <section className="space-y-3">
+      <div className="flex items-center justify-between gap-3">
+        <h2 className="flex items-center gap-2 font-bold text-white">
+          <Sparkles size={16} className="text-violet-300" /> Partidos adicionales
+        </h2>
+        <button type="button" onClick={() => setModal({ tipo: 'agregar', modo: 'adicional' })} className="btn-secondary !px-3 !py-2 text-xs">
+          <Plus size={14} /> Partido adicional
+        </button>
+      </div>
+      <p className="text-xs text-slate-500">
+        Suman puntos (y rojas) al Macro-equipo de cada lado, pero no cuentan para las tablas ni las llaves del campeonato. El público los ve
+        en la pestaña Historial.
+      </p>
+      {adicionales.length === 0 ? (
+        <p className="glass-card p-3 text-center text-xs text-slate-500">Todavía no hay partidos adicionales.</p>
+      ) : (
+        adicionales.map((p) => (
+          <div key={p.id} className="space-y-1">
+            <p className="px-1 text-[10px] font-bold uppercase tracking-wide text-violet-300/80">{nombreRonda(p)}</p>
+            <FilaPartidoAdmin p={p} onHora={handleHora} acciones={acciones} />
+          </div>
+        ))
+      )}
+    </section>
+  );
+
+  if (!hayCampeonato) {
     return (
       <div className="glass-card mx-auto max-w-xl space-y-3 p-6 text-center">
         <p className="font-bold text-white">Todavía no hay partidos confirmados</p>
         <p className="text-sm text-slate-400">
           Arma los grupos (pestaña Grupos) y genera y confirma la Etapa 1 (pestaña Etapas). Aquí verás el calendario completo.
         </p>
-        <button type="button" onClick={() => setModal({ tipo: 'agregar' })} className="btn-secondary mx-auto">
+        <button type="button" onClick={() => setModal({ tipo: 'agregar', modo: 'campeonato' })} className="btn-secondary mx-auto">
           <Plus size={16} /> Agregar un partido a mano
         </button>
-        {modal?.tipo === 'agregar' && <ModalAgregar equipos={equipos} onCerrar={cerrar} onHecho={hecho} />}
+        <div className="space-y-3 border-t border-white/10 pt-4 text-left">{seccionAdicionales}</div>
+        {modal?.tipo === 'agregar' && <ModalAgregar equipos={equipos} modoInicial={modal.modo} onCerrar={cerrar} onHecho={hecho} />}
+        {modal?.tipo === 'mover' && <ModalMover partido={modal.partido} onCerrar={cerrar} onHecho={hecho} />}
+        {modal?.tipo === 'wo' && <ModalWO partido={modal.partido} onCerrar={cerrar} onHecho={hecho} />}
       </div>
     );
   }
@@ -159,7 +193,7 @@ export default function CalendarioAdmin({ equipos, partidos, tablas, onCambio })
       <section className="space-y-3">
         <div className="flex items-center justify-between gap-3">
           <h2 className="font-bold text-white">Calendario</h2>
-          <button type="button" onClick={() => setModal({ tipo: 'agregar' })} className="btn-secondary !px-3 !py-2 text-xs">
+          <button type="button" onClick={() => setModal({ tipo: 'agregar', modo: 'campeonato' })} className="btn-secondary !px-3 !py-2 text-xs">
             <Plus size={14} /> Agregar partido
           </button>
         </div>
@@ -182,6 +216,8 @@ export default function CalendarioAdmin({ equipos, partidos, tablas, onCambio })
           </div>
         ))}
       </section>
+
+      {seccionAdicionales}
 
       {(letras.length > 0 || filasCuad.length > 0) && (
         <section className="space-y-3">
@@ -263,7 +299,7 @@ export default function CalendarioAdmin({ equipos, partidos, tablas, onCambio })
       {modal?.tipo === 'wo' && <ModalWO partido={modal.partido} onCerrar={cerrar} onHecho={hecho} />}
       {modal?.tipo === 'cruce' && <ModalCruce partido={modal.partido} equipos={equipos} onCerrar={cerrar} onHecho={hecho} />}
       {modal?.tipo === 'mover' && <ModalMover partido={modal.partido} onCerrar={cerrar} onHecho={hecho} />}
-      {modal?.tipo === 'agregar' && <ModalAgregar equipos={equipos} onCerrar={cerrar} onHecho={hecho} />}
+      {modal?.tipo === 'agregar' && <ModalAgregar equipos={equipos} modoInicial={modal.modo} onCerrar={cerrar} onHecho={hecho} />}
     </div>
   );
 }

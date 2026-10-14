@@ -1,0 +1,27 @@
+/* ============================================================================
+   Contraste de los desplegables (<select>) y selectores nativos en PC.
+   El navegador pinta la lista de opciones sobre fondo blanco, pero el texto de la
+   app es claro: las opciones casi no se leían. Aquí se fuerza un fondo oscuro de la
+   marca con texto claro, y se pide al navegador que use su tema oscuro.
+   ============================================================================ */
+select,
+input[type='time'],
+input[type='date'],
+input[type='number'] {
+  color-scheme: dark;
+}
+
+select option,
+select optgroup {
+  background-color: #0b2a4a;
+  color: #f8fafc;
+}
+
+select option:checked {
+  background-color: #733f2d;
+  color: #ffffff;
+}
+
+select option:disabled {
+  color: #94a3b8;
+}

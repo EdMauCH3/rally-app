@@ -1,4 +1,4 @@
-import { CalendarDays, History, Layers, ListChecks, Loader2, ShieldHalf } from 'lucide-react';
+import { CalendarDays, History, Layers, ListChecks, Loader2, MapPin, ShieldHalf } from 'lucide-react';
 import { useEstadoPersistente } from '../../hooks/useEstadoPersistente';
 import { useTorneoFases } from '../../hooks/useTorneoFases';
 import HistorialEventosTorneo from './HistorialEventosTorneo';
@@ -6,12 +6,14 @@ import EquiposPorMacro from './torneo/EquiposPorMacro';
 import GruposAdmin from './torneo/GruposAdmin';
 import EtapasAdmin from './torneo/EtapasAdmin';
 import CalendarioAdmin from './torneo/CalendarioAdmin';
+import CanchasAdmin from './torneo/CanchasAdmin';
 
 const VISTAS = [
   { id: 'equipos', label: 'Equipos', icon: ShieldHalf },
   { id: 'grupos', label: 'Grupos', icon: Layers },
   { id: 'etapas', label: 'Etapas', icon: ListChecks },
   { id: 'calendario', label: 'Calendario', icon: CalendarDays },
+  { id: 'canchas', label: 'Canchas', icon: MapPin },
   { id: 'historial', label: 'Historial', icon: History },
 ];
 
@@ -37,7 +39,7 @@ export default function TorneoAdminTab() {
     return (
       <div className="glass-card mx-auto max-w-md space-y-3 p-6 text-center">
         <p className="text-slate-300">No se pudo cargar el torneo.</p>
-        <p className="text-xs text-slate-500">Si acabas de actualizar la app, verifica que ya ejecutaste los SQL 44 y 45 en Supabase.</p>
+        <p className="text-xs text-slate-500">Si acabas de actualizar la app, verifica que ya ejecutaste los SQL 44, 45 y 46 en Supabase.</p>
         <button type="button" onClick={recargar} className="btn-secondary mx-auto">
           Reintentar
         </button>
@@ -75,6 +77,7 @@ export default function TorneoAdminTab() {
         <EtapasAdmin equipos={equipos} partidos={partidos} borradores={borradores} etapas={etapas} onCambio={recargar} />
       )}
       {vista === 'calendario' && <CalendarioAdmin equipos={equipos} partidos={partidos} tablas={tablas} onCambio={recargar} />}
+      {vista === 'canchas' && <CanchasAdmin partidos={partidos} onCambio={recargar} />}
       {vista === 'historial' && <HistorialEventosTorneo modoPro />}
     </div>
   );

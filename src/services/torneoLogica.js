@@ -26,6 +26,7 @@ export const NOMBRE_FASE_PARTIDO = {
   eliminatoria: 'Eliminación directa',
   tercer_puesto: 'Tercer Puesto',
   final: 'Gran Final',
+  adicional: 'Partido adicional',
 };
 
 /** Nombre de la ronda: el que generó el sistema ("Semifinal") o, si falta, el de la fase. */
@@ -34,22 +35,44 @@ export function nombreRonda(partido) {
 }
 
 /** Fases donde no puede haber empate (se define por prórroga/penales). */
+export function esAdicional(partido) {
+  return partido.fase === 'adicional';
+}
+
 export function esEliminatoria(partido) {
   return ['eliminatoria', 'tercer_puesto', 'final'].includes(partido.fase);
 }
 
-/** Nombre oficial de cada cancha: la 1 es el Coliseo y la 2 la Cancha Azul. */
+/** Lugares de juego por defecto; el Admin / DT puede cambiarlos (ver registrarCanchas). */
 export const NOMBRES_CANCHA = { 1: 'Coliseo', 2: 'Cancha Azul' };
+let canchasRegistradas = null;
+
+/** La llama useCanchas cada vez que cambia la lista de lugares de juego. */
+export function registrarCanchas(lista) {
+  canchasRegistradas = lista;
+}
 
 export function nombreCancha(numero) {
-  return NOMBRES_CANCHA[numero] ?? `Cancha ${numero}`;
+  const c = canchasRegistradas?.find((x) => x.id === numero);
+  return c?.nombre ?? NOMBRES_CANCHA[numero] ?? `Cancha ${numero}`;
+}
+
+/** Texto negro o blanco según el brillo del color de fondo (para que siempre se lea). */
+export function colorTextoSobre(hex) {
+  const m = /^#?([0-9a-f]{6})$/i.exec(hex ?? '');
+  if (!m) return '#ffffff';
+  const n = parseInt(m[1], 16);
+  const luz = 0.299 * ((n >> 16) & 255) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255);
+  return luz > 150 ? '#0f172a' : '#ffffff';
 }
 
 /**
  * Pestaña pública a la que pertenece un partido:
- * 'grupos' (etapa 1) | 'cuadrangular' (todos contra todos de la etapa 2) | 'llaves' (eliminatorias y finales).
+ * 'grupos' (etapa 1) | 'cuadrangular' (todos contra todos de la etapa 2) | 'llaves' (eliminatorias y finales)
+ * | 'historial' (los partidos adicionales, que no pertenecen a ninguna etapa del campeonato).
  */
 export function pestanaDePartido(partido) {
+  if (partido.fase === 'adicional') return 'historial';
   if (partido.fase === 'grupos' || (partido.fase === 'eliminatoria' && partido.etapa === 1)) return 'grupos';
   if (partido.fase === 'cuadrangular') return 'cuadrangular';
   return 'llaves';
@@ -67,6 +90,8 @@ export function pestanasVisibles(partidos, equipos = []) {
       .every((p) => p.fase === 'final' || p.fase === 'tercer_puesto');
     lista.push({ id: 'llaves', label: soloFinales ? 'Fase Final' : 'Playoffs' });
   }
+  // Historial: todo lo jugado (incluidos los partidos adicionales) y los adicionales por jugar.
+  if (partidos.some((p) => p.finalizado || p.fase === 'adicional')) lista.push({ id: 'historial', label: 'Historial' });
   return lista;
 }
 
@@ -100,6 +125,7 @@ export function partidoJugable(partido) {
 export function agruparPorFecha(partidos) {
   const mapa = new Map();
   for (const p of partidos) {
+    if (p.fase === 'adicional') continue;
     if (!mapa.has(p.fecha_num)) mapa.set(p.fecha_num, []);
     mapa.get(p.fecha_num).push(p);
   }
@@ -313,7 +339,8 @@ export function avisosFixture(partidos, tablas = [], equipos = []) {
   return avisos;
 }
 
-export function resumenProgreso(partidos) {
+export function resumenProgreso(todos) {
+  const partidos = todos.filter((p) => p.fase !== 'adicional');
   const total = partidos.length;
   const finalizados = partidos.filter((p) => p.finalizado).length;
   const enVivo = partidos.filter((p) => !p.finalizado && (p.estado === 'en_vivo' || p.estado === 'pausado')).length;

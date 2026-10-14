@@ -1,3 +1,4 @@
+import '../../contraste-selects.css';
 import { Link, useLocation } from 'react-router-dom';
 import { LogOut, LogIn, ShieldCheck, Users } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';

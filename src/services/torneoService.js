@@ -176,6 +176,11 @@ export function asignarGrupo(equipoId, grupo) {
   return rpc('torneo_asignar_grupo', { p_equipo: equipoId, p_grupo: grupo });
 }
 
+/** Equipo que llega tarde (Etapa 1 ya confirmada): entra a un grupo y se generan sus partidos. Devuelve { grupo, partidos }. */
+export function incorporarEquipo(equipoId, grupo) {
+  return rpc('torneo_incorporar_equipo', { p_equipo: equipoId, p_grupo: grupo });
+}
+
 /** Genera la VISTA PREVIA de una etapa. Devuelve { partidos, ultima_fecha, advertencias }. */
 export function generarEtapa(etapa) {
   return rpc('torneo_generar_etapa', { p_etapa: etapa });
