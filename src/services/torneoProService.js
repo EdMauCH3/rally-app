@@ -8,6 +8,7 @@ export async function listarPartidosPro() {
   const { data, error } = await supabase
     .from('v_torneo_partidos')
     .select('*')
+    .eq('borrador', false)
     .order('partido_num', { ascending: true });
   if (error) throw error;
   return data;
@@ -113,7 +114,7 @@ export async function eliminarEventoAdmin(id) {
   if (error) throw error;
 }
 
-/** Solo Admin: reabre un partido finalizado por error. */
+/** Admin o Director Técnico: reabre un partido finalizado por error (o resuelto por W.O.). */
 export async function reabrirPartido(partidoId) {
   const { error } = await supabase.rpc('torneo_reabrir_partido', {
     p_partido_id: partidoId,

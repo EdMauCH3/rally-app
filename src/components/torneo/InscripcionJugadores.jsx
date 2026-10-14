@@ -20,7 +20,7 @@ import {
   eliminarJugador,
   suscribirseTorneoPro,
 } from '../../services/torneoProService';
-import { etiquetaGrupo } from '../../services/torneoLogica';
+import { etiquetaGrupoDe } from '../../services/torneoLogica';
 import { useEstadoPersistente } from '../../hooks/useEstadoPersistente';
 
 /** Tamaño de plantilla de referencia para el contador "8/12 jugadores". */
@@ -107,15 +107,24 @@ export default function InscripcionJugadores() {
   const grupos = useMemo(() => {
     const mapa = new Map();
     for (const e of roster) {
-      if (!e.grupo) continue;
-      if (!mapa.has(e.grupo)) {
-        mapa.set(e.grupo, { letra: e.grupo, nombre: e.macro_nombre, color: e.macro_color, equipos: [] });
-      }
-      mapa.get(e.grupo).equipos.push(e);
+      const clave = e.grupo || '—';
+      if (!mapa.has(clave)) mapa.set(clave, { letra: clave, equipos: [] });
+      mapa.get(clave).equipos.push(e);
     }
     return [...mapa.values()]
       .sort((a, b) => a.letra.localeCompare(b.letra))
-      .map((g) => ({ ...g, equipos: g.equipos.sort((a, b) => (a.slot ?? 0) - (b.slot ?? 0)) }));
+      .map((g) => {
+        const macros = new Set(g.equipos.map((e) => e.macro_equipo_id));
+        const unico = macros.size === 1 ? g.equipos[0] : null;
+        return {
+          ...g,
+          // Con un solo Macro-equipo: "Grupo A - Verde"; si el grupo mezcla macros: "Grupo A".
+          nombre: unico?.macro_nombre ?? null,
+          color: unico?.macro_color ?? null,
+          etiqueta: g.letra === '—' ? 'Sin grupo' : etiquetaGrupoDe(g.letra, g.equipos),
+          equipos: g.equipos.sort((a, b) => a.nombre.localeCompare(b.nombre)),
+        };
+      });
   }, [roster]);
 
   const contador = useMemo(() => {
@@ -258,7 +267,7 @@ export default function InscripcionJugadores() {
 
   // ───────────────────────── Vista 2: planilla de un equipo ─────────────────────────
   if (equipo) {
-    const etiqueta = etiquetaGrupo(equipo.grupo, equipo.macro_nombre);
+    const etiqueta = equipo.grupo ? etiquetaGrupoDe(equipo.grupo, roster.filter((e) => e.grupo === equipo.grupo)) : `Sin grupo · ${equipo.macro_nombre}`;
     return (
       <div className="mx-auto max-w-3xl space-y-4 px-4 animate-fade-up">
         <button
@@ -499,7 +508,7 @@ export default function InscripcionJugadores() {
 
       {grupos.length === 0 ? (
         <p className="glass-card p-5 text-center text-sm text-slate-400">
-          Aún no hay equipos del torneo. El Admin debe crearlos (Admin → Torneo → Equipos y plantillas).
+          Aún no hay equipos del torneo. El Admin o el Director Técnico debe crearlos (Torneo → Equipos).
         </p>
       ) : (
         <>
@@ -523,7 +532,7 @@ export default function InscripcionJugadores() {
                     style={{ backgroundColor: g.color ?? '#475569' }}
                     aria-hidden="true"
                   />
-                  {etiquetaGrupo(g.letra, g.nombre)}
+                  {g.etiqueta}
                 </button>
               );
             })}
@@ -548,6 +557,9 @@ export default function InscripcionJugadores() {
                         aria-hidden="true"
                       />
                       <span className="min-w-0 flex-1 truncate font-black text-white">{eq.nombre}</span>
+                      {eq.estado === 'retirado' && (
+                        <span className="shrink-0 rounded bg-red-500/20 px-1.5 py-0.5 text-[10px] font-bold uppercase text-red-300">Retirado</span>
+                      )}
                       <ChevronRight
                         size={18}
                         className="shrink-0 text-slate-500 transition group-hover:translate-x-0.5 group-hover:text-white"

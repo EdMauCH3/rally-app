@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import { AlertTriangle, ChevronDown, Clock, Radio } from 'lucide-react';
 import {
-  NOMBRE_FASE_PARTIDO,
   formatoHora,
   nombreLado,
+  nombreRonda,
   ladoDefinido,
 } from '../../../services/torneoLogica';
 import { EMOJI_TIPO, ETIQUETA_TIPO } from '../publico/utilsTorneo';
@@ -33,6 +33,13 @@ function useMinuto(p, desfaseMs) {
 
 function EstadoChip({ p, desfaseMs }) {
   const minuto = useMinuto(p, desfaseMs);
+  if (p.walkover) {
+    return (
+      <span className="rounded-full bg-fuchsia-500/20 px-2.5 py-0.5 text-[11px] font-bold text-fuchsia-300">
+        W.O.
+      </span>
+    );
+  }
   if (p.finalizado) {
     return (
       <span className="rounded-full bg-white/10 px-2.5 py-0.5 text-[11px] font-bold text-slate-300">
@@ -97,7 +104,12 @@ function FilaEquipo({ p, lado, mostrarMarcador, ganador, onEquipo }) {
           </span>
         )}
         {definido && (
-          <span className="block truncate text-[11px] text-slate-500">{p[`${lado}_macro_nombre`]}</span>
+          <span className="flex items-center gap-1.5 text-[11px] text-slate-500">
+            <span className="truncate">{p[`${lado}_macro_nombre`]}</span>
+            {p[`${lado}_estado`] === 'retirado' && (
+              <span className="shrink-0 rounded bg-red-500/20 px-1 font-bold uppercase text-red-300">Retirado</span>
+            )}
+          </span>
         )}
       </div>
       <div className="flex w-12 shrink-0 items-baseline justify-end gap-1 tabular-nums">
@@ -117,7 +129,19 @@ function Resumen({ p, eventos, penales, jugadores }) {
   const nombreEquipo = (id) => (id === p.equipo_a_id ? p.a_nombre : p.b_nombre);
 
   if (!p.equipo_a_id || !p.equipo_b_id) {
-    return <p className="text-sm text-slate-500">Este cruce se define cuando termine la fase anterior.</p>;
+    return <p className="text-sm text-slate-500">Este cruce se define cuando termine el partido o la fase anterior.</p>;
+  }
+
+  if (p.walkover) {
+    return (
+      <div className="space-y-1.5 rounded-xl border border-fuchsia-500/30 bg-fuchsia-500/[0.07] px-3 py-2.5 text-sm text-fuchsia-100">
+        <p className="font-semibold">Partido resuelto por W.O. (derrota técnica)</p>
+        <p className="text-xs text-fuchsia-100/80">
+          Marcador técnico {p.goles_a} - {p.goles_b} a favor de {p.ganador_id === p.equipo_a_id ? p.a_nombre : p.b_nombre}.
+          {p.wo_motivo ? ` Motivo: ${p.wo_motivo}.` : ''}
+        </p>
+      </div>
+    );
   }
 
   return (
@@ -242,7 +266,9 @@ export default function TarjetaPartido({
               {hora}
             </span>
           )}
-          {resaltarFase && <span className="text-slate-500">{NOMBRE_FASE_PARTIDO[p.fase]}</span>}
+          {(resaltarFase || p.fase !== 'grupos') && (
+            <span className="font-semibold text-slate-400">{nombreRonda(p)}</span>
+          )}
         </span>
         <EstadoChip p={p} desfaseMs={desfaseMs} />
       </header>

@@ -52,6 +52,9 @@ export default function TablaFase({ filas, equipos, resaltar = 0, compacta = fal
                       </span>
                       <span className="flex items-center gap-1.5 text-[11px] text-slate-500">
                         <span className="truncate">{eq?.macro_nombre}</span>
+                        {eq?.estado === 'retirado' && (
+                          <span className="shrink-0 rounded bg-red-500/20 px-1 font-semibold uppercase text-red-300">Retirado</span>
+                        )}
                         {f.desempate && f.pos > 1 && (
                           <span
                             title={`Desempate: ${TEXTO_DESEMPATE[f.desempate]}`}

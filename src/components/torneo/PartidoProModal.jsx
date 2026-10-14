@@ -122,7 +122,7 @@ export default function PartidoProModal({ partidoId, etiquetaFase, onCerrar }) {
         setPartido(p);
         return;
       }
-      const decisivo = p.fase === 'tercer_puesto' || p.fase === 'final';
+      const decisivo = ['eliminatoria', 'tercer_puesto', 'final'].includes(p.fase);
       const [ev, j, pen] = await Promise.all([
         listarEventosDePartido(partidoId),
         listarEstadoJugadoresDeEquipos([p.equipo_a_id, p.equipo_b_id]),
@@ -306,7 +306,7 @@ export default function PartidoProModal({ partidoId, etiquetaFase, onCerrar }) {
   }
 
   const finalizado = partido.finalizado;
-  const decisivo = partido.fase === 'tercer_puesto' || partido.fase === 'final';
+  const decisivo = ['eliminatoria', 'tercer_puesto', 'final'].includes(partido.fase);
   const empatado = partido.goles_a === partido.goles_b;
   const enPenales = partido.fase_juego === 'penales';
   const enProrroga = partido.fase_juego === 'prorroga';
@@ -511,7 +511,7 @@ export default function PartidoProModal({ partidoId, etiquetaFase, onCerrar }) {
                     ? 'Empate en la Gran Final'
                     : partido.fase === 'final'
                       ? 'Sigue el empate tras el suplementario'
-                      : 'Empate en el Tercer Puesto'}
+                      : 'Empate en eliminación directa'}
                 </p>
                 <p className="text-sm text-amber-100/80">
                   {partido.fase === 'final' && !enProrroga
@@ -727,7 +727,7 @@ export default function PartidoProModal({ partidoId, etiquetaFase, onCerrar }) {
           <div className="rounded-2xl border border-white/15 bg-black/25 p-5 text-center space-y-3 pb-6">
             <p className="text-lg font-bold text-white">Este partido ya terminó.</p>
             <p className="text-sm text-slate-400">
-              Si hay que corregir algo, el Admin puede editar el historial o reabrir el partido.
+              Si hay que corregir algo, el Admin o el Director Técnico puede editar el historial o reabrir el partido.
             </p>
             <button type="button" onClick={onCerrar} className="btn-secondary mx-auto">
               Cerrar

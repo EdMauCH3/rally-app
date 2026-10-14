@@ -14,6 +14,7 @@ export const RUTA_POR_ROL = {
   staff_tesoro: '/panel',
   arbitro: '/panel',
   formacion: '/panel',
+  director_tecnico: '/panel',
 };
 
 // Prefijo de las claves de sessionStorage donde se recuerda en qué parte

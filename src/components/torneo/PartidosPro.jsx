@@ -3,8 +3,8 @@ import { Clock, Eye, Hourglass, Loader2, Play } from 'lucide-react';
 import { useTorneoFases } from '../../hooks/useTorneoFases';
 import { useEstadoPersistente } from '../../hooks/useEstadoPersistente';
 import {
-  NOMBRE_FASE_PARTIDO,
   agruparPorFecha,
+  nombreRonda,
   etiquetaGrupoDe,
   formatoHora,
   nombreCancha,
@@ -106,7 +106,7 @@ export default function PartidosPro() {
 
       {partidos.length === 0 ? (
         <p className="glass-card p-5 text-center text-sm text-slate-400">
-          Aún no hay partidos. El Admin debe generar el fixture (Admin → Torneo → Fixture).
+          Aún no hay partidos confirmados. El Admin o el Director Técnico debe generar y confirmar la primera etapa del torneo.
         </p>
       ) : (
         <>
@@ -179,7 +179,7 @@ export default function PartidosPro() {
             Fecha {fecha}
             {grupoFecha?.partidos[0] && (
               <span className="ml-2 normal-case text-slate-500">
-                · {NOMBRE_FASE_PARTIDO[grupoFecha.partidos[0].fase]}
+                · {nombreRonda(grupoFecha.partidos[0])}
               </span>
             )}
           </p>
@@ -191,7 +191,9 @@ export default function PartidosPro() {
           )}
 
           {lista.map((p) => {
-            const estado = ESTADOS[p.estado] ?? ESTADOS.pendiente;
+            const estado = p.walkover
+              ? { texto: 'W.O.', clase: 'bg-fuchsia-500/15 text-fuchsia-300 border border-fuchsia-500/30' }
+              : (ESTADOS[p.estado] ?? ESTADOS.pendiente);
             const terminado = p.estado === 'finalizado';
             const jugable = partidoJugable(p);
             const hora = formatoHora(p.hora_programada);
@@ -211,7 +213,7 @@ export default function PartidosPro() {
                         {hora}
                       </span>
                     )}
-                    <span className="text-slate-500">{p.grupo ? etiquetaGrupoDe(p.grupo, equipos) : NOMBRE_FASE_PARTIDO[p.fase]}</span>
+                    <span className="text-slate-500">{p.fase === 'grupos' && p.grupo ? etiquetaGrupoDe(p.grupo, equipos.filter((e) => e.grupo === p.grupo)) : nombreRonda(p)}</span>
                   </span>
                   <span className={`shrink-0 rounded-full px-2.5 py-0.5 text-[10px] font-bold ${estado.clase}`}>
                     {estado.texto}
@@ -239,12 +241,12 @@ export default function PartidosPro() {
                     className={terminado ? 'btn-secondary w-full' : 'btn-primary w-full !py-3.5'}
                   >
                     {terminado ? <Eye size={18} /> : <Play size={18} />}
-                    {terminado ? 'Ver partido' : p.estado === 'pendiente' ? 'Abrir partido' : 'Retomar partido'}
+                    {terminado ? (p.walkover ? 'Ver W.O.' : 'Ver partido') : p.estado === 'pendiente' ? 'Abrir partido' : 'Retomar partido'}
                   </button>
                 ) : (
                   <p className="flex items-center justify-center gap-2 rounded-xl border border-white/10 py-3 text-sm text-slate-400">
                     <Hourglass size={16} />
-                    Esperando a que termine la fase anterior
+                    Esperando a que se definan los equipos
                   </p>
                 )}
               </div>
@@ -258,7 +260,7 @@ export default function PartidosPro() {
           partidoId={abiertoId}
           etiquetaFase={(() => {
             const ab = partidos.find((x) => x.id === abiertoId);
-            return ab?.grupo ? etiquetaGrupoDe(ab.grupo, equipos) : undefined;
+            return ab?.fase === 'grupos' && ab?.grupo ? etiquetaGrupoDe(ab.grupo, equipos.filter((e) => e.grupo === ab.grupo)) : undefined;
           })()}
           onCerrar={() => setAbiertoId(null)}
         />

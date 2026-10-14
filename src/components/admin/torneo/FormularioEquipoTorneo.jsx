@@ -11,7 +11,7 @@ export default function FormularioEquipoTorneo({
   macros,
   equipo = null,
   macroInicialId = null,
-  fixtureGenerado,
+  macroBloqueadoPorPartidos = false,
   onCerrar,
   onGuardado,
 }) {
@@ -22,7 +22,7 @@ export default function FormularioEquipoTorneo({
   const [macroEquipoId, setMacroEquipoId] = useState(equipo?.macro_equipo_id ?? macroInicialId ?? '');
   const [guardando, setGuardando] = useState(false);
 
-  const macroBloqueado = Boolean(equipo) && fixtureGenerado;
+  const macroBloqueado = Boolean(equipo) && macroBloqueadoPorPartidos;
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -66,7 +66,7 @@ export default function FormularioEquipoTorneo({
         </div>
 
         <div>
-          <label className="field-label">Macro-equipo (grupo)</label>
+          <label className="field-label">Macro-equipo al que pertenece</label>
           <select
             value={macroEquipoId}
             onChange={(e) => setMacroEquipoId(e.target.value)}
@@ -82,7 +82,7 @@ export default function FormularioEquipoTorneo({
           </select>
           {macroBloqueado && (
             <p className="mt-1 text-xs text-amber-400">
-              El fixture ya está generado: para cambiar el macro, reinicia el fixture.
+              El equipo ya tiene partidos: no se puede cambiar de Macro-equipo. Retíralo y crea uno nuevo si hace falta.
             </p>
           )}
         </div>

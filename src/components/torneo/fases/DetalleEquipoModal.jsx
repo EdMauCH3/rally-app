@@ -2,10 +2,10 @@ import { useEffect } from 'react';
 import { X, ShieldAlert } from 'lucide-react';
 import InsigniaEquipo from './InsigniaEquipo';
 import { EMOJI_TIPO } from '../publico/utilsTorneo';
-import { etiquetaGrupo } from '../../../services/torneoLogica';
+import { etiquetaGrupoDe } from '../../../services/torneoLogica';
 
 /** Ficha de un equipo: descripción, macro-equipo, plantilla con goles, tarjetas y sanciones. */
-export default function DetalleEquipoModal({ equipo, jugadores, tablas, onCerrar }) {
+export default function DetalleEquipoModal({ equipo, equipos = [], jugadores, tablas, onCerrar }) {
   useEffect(() => {
     const tecla = (e) => e.key === 'Escape' && onCerrar();
     window.addEventListener('keydown', tecla);
@@ -40,7 +40,10 @@ export default function DetalleEquipoModal({ equipo, jugadores, tablas, onCerrar
           <div className="min-w-0 flex-1">
             <h2 className="text-lg font-black leading-tight text-white">{equipo.nombre}</h2>
             <p className="text-xs text-slate-400">
-              {etiquetaGrupo(equipo.grupo, equipo.macro_nombre)}
+              {equipo.macro_nombre} · {equipo.grupo ? etiquetaGrupoDe(equipo.grupo, equipos.filter((e) => e.grupo === equipo.grupo)) : 'Sin grupo'}
+              {equipo.estado === 'retirado' && (
+                <span className="ml-2 rounded bg-red-500/20 px-1.5 py-0.5 text-[10px] font-bold uppercase text-red-300">Retirado</span>
+              )}
             </p>
             {filaGrupo && filaGrupo.pj > 0 && (
               <p className="mt-1 text-xs text-slate-300">
