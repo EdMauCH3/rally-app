@@ -132,7 +132,7 @@ function FichaEstacion({ etiqueta, estacion, lugar, equiposDeEstacion }) {
       )}
       {estacion.choque && (
         <p className="flex items-center gap-1 text-xs font-semibold text-red-300">
-          <AlertTriangle size={12} /> Dos parejas a la vez
+          <AlertTriangle size={12} /> Dos duplas a la vez
         </p>
       )}
     </div>
@@ -226,8 +226,9 @@ export default function RadarAdmin({
   }
 
   const subPorId = new Map(subs.map((s) => [s.id, s]));
-  const filaGym = (macroId) =>
-    calculos.gymFilas.find((f) => subPorId.get(f.equipo.id)?.macro_equipo_id === macroId);
+  // Cada macro-equipo tiene DOS escuadras en la Gymkana (p. ej. Verde 1 y Verde 2).
+  const filasGym = (macroId) =>
+    calculos.gymFilas.filter((f) => subPorId.get(f.equipo.id)?.macro_equipo_id === macroId);
   const filaTes = (macroId) =>
     calculos.tesFilas.find((f) => subPorId.get(f.equipo.id)?.macro_equipo_id === macroId);
 
@@ -271,12 +272,12 @@ export default function RadarAdmin({
                 <Flag size={13} /> Gymkana
               </span>
               <span className="flex items-center gap-1.5">
-                <Amphora size={13} /> Búsqueda del Tesoro
+                <Amphora size={13} /> Las Tinajas Perdidas
               </span>
             </div>
 
             {macros.map((m) => {
-              const g = filaGym(m.id);
+              const gs = filasGym(m.id);
               const t = filaTes(m.id);
               return (
                 <div
@@ -290,19 +291,27 @@ export default function RadarAdmin({
                       Gymkana
                     </p>
                     {gymkanaIniciada || gym.rutas.length > 0 ? (
-                      <CeldaEquipo
-                        fila={g}
-                        unidad="la Base"
-                        lugar={g?.destino ? bases[g.destino]?.lugar?.trim() : null}
-                        icono={MapPin}
-                      />
+                      <div className="space-y-2">
+                        {gs.length === 0 && (
+                          <CeldaEquipo fila={undefined} unidad="la Base" icono={MapPin} />
+                        )}
+                        {gs.map((g) => (
+                          <CeldaEquipo
+                            key={g.equipo.id}
+                            fila={g}
+                            unidad="la Base"
+                            lugar={g?.destino ? bases[g.destino]?.lugar?.trim() : null}
+                            icono={MapPin}
+                          />
+                        ))}
+                      </div>
                     ) : (
                       <p className="text-sm text-slate-500">Aún no se inicia</p>
                     )}
                   </div>
                   <div>
                     <p className="mb-1 text-xs font-bold uppercase tracking-wide text-slate-500 md:hidden">
-                      Búsqueda del Tesoro
+                      Las Tinajas Perdidas
                     </p>
                     {hayTesoro ? (
                       <CeldaEquipo fila={t} unidad="la Tinaja" icono={Amphora} />
@@ -337,7 +346,7 @@ export default function RadarAdmin({
 
       <section className="space-y-3">
         <h2 className="flex items-center gap-2 font-semibold text-white">
-          <Amphora size={16} className="text-amber-300" /> Tinajas del Tesoro
+          <Amphora size={16} className="text-cyan-300" /> Las Tinajas Perdidas
         </h2>
         <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-5">
           {calculos.tinajas.map((t) => (
@@ -384,7 +393,7 @@ export default function RadarAdmin({
 
         <details className="glass-card group p-4">
           <summary className="cursor-pointer select-none font-semibold text-slate-200">
-            Tesoro: avance por equipo y recalificación
+            Las Tinajas Perdidas: avance por equipo y recalificación
           </summary>
           <div className="mt-4">
             <SupervisionTesoroAdmin />

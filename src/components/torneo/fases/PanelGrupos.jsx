@@ -3,6 +3,7 @@ import { ArrowRight } from 'lucide-react';
 import TablaFase from '../TablaFase';
 import TarjetaPartido from './TarjetaPartido';
 import { useEstadoPersistente } from '../../../hooks/useEstadoPersistente';
+import { etiquetaGrupo } from '../../../services/torneoLogica';
 
 const LETRAS = ['A', 'B', 'C', 'D'];
 
@@ -46,7 +47,7 @@ export default function PanelGrupos({ ctx }) {
               filtro === id ? 'bg-white text-slate-900' : 'bg-white/10 text-slate-300 hover:bg-white/15'
             }`}
           >
-            {id === 'todos' ? 'Todos' : `Grupo ${id}`}
+            {id === 'todos' ? 'Todos' : etiquetaGrupo(id, grupos.find((g) => g.letra === id)?.macro?.nombre)}
           </button>
         ))}
       </div>
@@ -54,7 +55,7 @@ export default function PanelGrupos({ ctx }) {
       {visibles.map((g) => {
         const completo = g.filas.length > 0 && g.filas.every((f) => f.completo);
         return (
-          <section key={g.letra} className="space-y-3" aria-label={`Grupo ${g.letra}`}>
+          <section key={g.letra} className="space-y-3" aria-label={etiquetaGrupo(g.letra, g.macro?.nombre)}>
             <div className="glass-card overflow-hidden">
               <div
                 className="flex items-center justify-between gap-3 px-4 py-2.5"
@@ -67,7 +68,7 @@ export default function PanelGrupos({ ctx }) {
                   >
                     {g.letra}
                   </span>
-                  <span className="truncate">{g.macro?.nombre ?? `Grupo ${g.letra}`}</span>
+                  <span className="truncate">{etiquetaGrupo(g.letra, g.macro?.nombre)}</span>
                 </h3>
                 <span className="flex shrink-0 items-center gap-1 text-[11px] font-semibold text-emerald-300">
                   Avanza el 1.º <ArrowRight size={12} />

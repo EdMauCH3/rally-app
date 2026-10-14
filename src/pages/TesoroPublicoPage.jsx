@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Loader2, Amphora, Compass, Clock, MapPin, Check } from 'lucide-react';
-import IconoCopaVino from '../components/tesoro/IconoCopaVino';
+import IconoGota from '../components/tesoro/IconoGota';
 import { listarSubEquiposColorPorActividad } from '../services/subEquiposColorService';
 import { listarEstadoActividades, suscribirseEstadoActividades } from '../services/estadoActividadesService';
 import {
@@ -53,13 +53,11 @@ function TarjetaDestino({ destino, llenas, total, color }) {
             <Amphora size={28} />
           </span>
           <div className="min-w-0">
-            <p className="text-xs font-bold uppercase tracking-widest text-slate-300">
-              {estado === 'en_camino' ? 'Tu siguiente destino' : 'Ya llegaste'}
+            <p className="text-xs font-bold uppercase tracking-widest text-cyan-200">
+              {estado === 'en_camino' ? `Tinaja ${destino.tinaja} · tu siguiente destino` : `Ya llegaste · Tinaja ${destino.tinaja}`}
             </p>
-            <p className="text-2xl font-black leading-tight text-white">
-              {estado === 'en_camino'
-                ? `Dirígete a la Tinaja ${destino.tinaja}`
-                : `Estás en la Tinaja ${destino.tinaja}`}
+            <p className="break-words text-2xl font-black leading-tight text-white">
+              Destino: {destino.nombre?.trim() || `Tinaja ${destino.tinaja}`}
             </p>
             {estado === 'en_tinaja' && (
               <p className="text-sm text-slate-300">El juez de la tinaja te está calificando.</p>
@@ -70,7 +68,7 @@ function TarjetaDestino({ destino, llenas, total, color }) {
 
       {estado === 'en_camino' && (
         <div className="rounded-2xl bg-black/30 p-4">
-          <p className="mb-1.5 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-amber-200">
+          <p className="mb-1.5 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-cyan-200">
             <MapPin size={13} /> Pista desbloqueada
           </p>
           <p className="whitespace-pre-wrap text-base leading-relaxed text-white">
@@ -207,7 +205,7 @@ export default function TesoroPublicoPage() {
   const total = progreso?.total ?? 0;
   const llenas = registros.filter((r) => r.puntos_evaluacion != null).length;
   const porLlenar = Math.max(0, total - llenas);
-  const copasDeVino = registros.reduce((t, r) => t + (r.puntos_totales ?? 0), 0);
+  const gotas = registros.reduce((t, r) => t + (r.puntos_totales ?? 0), 0);
 
   function registroDeBase(baseId) {
     return registros.find((r) => r.base_id === baseId) ?? null;
@@ -217,9 +215,9 @@ export default function TesoroPublicoPage() {
     <main className="max-w-2xl mx-auto px-4 py-6 space-y-6">
       <PausaActividadOverlay actividad="tesoro" />
       <div className="text-center space-y-1">
-        <h1 className="text-xl font-black text-white">Búsqueda del Tesoro</h1>
-        <p className="text-xs text-rose-200/70 uppercase tracking-widest font-semibold">
-          Encuentra las tinajas y llénalas de vino
+        <h1 className="text-xl font-black text-white">Las Tinajas Perdidas</h1>
+        <p className="text-xs text-cyan-200/80 uppercase tracking-widest font-semibold">
+          Encuentra las tinajas y llénalas de gotas
         </p>
       </div>
 
@@ -246,7 +244,7 @@ export default function TesoroPublicoPage() {
 
           <div className="grid grid-cols-3 gap-3">
             <div className="glass-card p-4 text-center">
-              <Amphora className="mx-auto text-orange-300 mb-1" size={22} />
+              <Amphora className="mx-auto text-sky-300 mb-1" size={22} />
               <p className="text-2xl font-black text-white">
                 {llenas}
                 <span className="text-sm font-bold text-slate-400"> de {total}</span>
@@ -254,19 +252,19 @@ export default function TesoroPublicoPage() {
               <p className="text-xs text-slate-400">Tinajas llenas</p>
             </div>
             <div className="glass-card p-4 text-center">
-              <Compass className="mx-auto text-orange-300 mb-1" size={22} />
+              <Compass className="mx-auto text-sky-300 mb-1" size={22} />
               <p className="text-2xl font-black text-white">{porLlenar}</p>
               <p className="text-xs text-slate-400">Por llenar</p>
             </div>
             <div className="glass-card p-4 text-center">
-              <IconoCopaVino className="mx-auto text-rose-300 mb-1" size={22} />
-              <p className="text-2xl font-black text-white">{copasDeVino}</p>
-              <p className="text-xs text-slate-400">Copas de vino</p>
+              <IconoGota className="mx-auto mb-1 text-cyan-400" size={22} />
+              <p className="text-2xl font-black text-white">{gotas}</p>
+              <p className="text-xs text-slate-400">Gotas</p>
             </div>
           </div>
 
-          {/* Una casilla por cada tinaja del equipo; se "llena" de vino al calificarla */}
-          <div className="relative rounded-3xl border-2 border-orange-900/40 bg-gradient-to-br from-orange-950/50 via-brand-navy/50 to-rose-950/30 p-6 shadow-2xl shadow-black/40">
+          {/* Una casilla por cada tinaja del equipo; se "llena" de gotas al calificarla */}
+          <div className="relative rounded-3xl border-2 border-cyan-900/50 bg-gradient-to-br from-sky-950/60 via-brand-navy/50 to-cyan-950/30 p-6 shadow-2xl shadow-black/40">
             <div className="grid grid-cols-5 gap-3">
               {tinajas.map((baseId) => {
                 const registro = registroDeBase(baseId);
@@ -277,18 +275,17 @@ export default function TesoroPublicoPage() {
                     key={baseId}
                     className={`aspect-square rounded-xl flex flex-col items-center justify-center gap-1 border-2 transition-all duration-300 ${
                       llena
-                        ? 'bg-rose-600/20 border-rose-500/60'
+                        ? 'bg-cyan-500/15 border-cyan-400/60'
                         : enProgreso
-                          ? 'bg-orange-500/10 border-orange-600/40 animate-pulse'
+                          ? 'bg-sky-500/10 border-sky-500/40 animate-pulse'
                           : 'bg-white/[0.03] border-white/10'
                     }`}
                   >
-                    <Amphora
-                      size={20}
-                      className={llena ? 'text-rose-400' : enProgreso ? 'text-orange-400/70' : 'text-white/20'}
-                      fill={llena ? 'currentColor' : 'none'}
-                      fillOpacity={llena ? 0.35 : 0}
-                    />
+                    {llena ? (
+                      <IconoGota size={20} />
+                    ) : (
+                      <Amphora size={20} className={enProgreso ? 'text-sky-400/70' : 'text-white/20'} />
+                    )}
                     <span className="text-[10px] font-bold text-white/70">{baseId}</span>
                   </div>
                 );

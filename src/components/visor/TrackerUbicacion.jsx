@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { MapPin } from 'lucide-react';
 import { useBasesGymkana } from '../../hooks/useBasesGymkana';
-import IconoCopaVino from '../tesoro/IconoCopaVino';
+import IconoGota from '../tesoro/IconoGota';
 
 const TABS = [
   { id: 'gymkana', label: 'Ubicación en Gymkana' },
-  { id: 'tesoro', label: 'Ubicación en Búsqueda del Tesoro' },
+  { id: 'tesoro', label: 'Ubicación en Las Tinajas Perdidas' },
 ];
 
 export default function TrackerUbicacion({ equiposGenerales, ubicacionesGymkana, ubicacionesTesoro }) {
@@ -16,6 +16,13 @@ export default function TrackerUbicacion({ equiposGenerales, ubicacionesGymkana,
 
   function ubicacionDe(equipoId) {
     return ubicaciones.find((u) => u.equipo_id === equipoId) ?? null;
+  }
+
+  // Gymkana: cada macro-equipo tiene 2 escuadras; se muestran las dos.
+  function escuadrasDe(equipoId) {
+    return ubicaciones
+      .filter((u) => u.equipo_id === equipoId)
+      .sort((a, b) => String(a.sub_nombre).localeCompare(String(b.sub_nombre)));
   }
 
   return (
@@ -51,27 +58,35 @@ export default function TrackerUbicacion({ equiposGenerales, ubicacionesGymkana,
                   <span className="text-xs sm:text-sm">Sin iniciar</span>
                 </div>
               ) : tab === 'gymkana' ? (
-                <>
-                  <div className="flex items-center justify-center gap-1 mt-2 text-slate-400">
-                    <MapPin size={14} />
-                    <span className="text-xs sm:text-sm">Base {ubicacion.base_id}</span>
-                  </div>
-                  {basesGymkana[ubicacion.base_id]?.lugar && (
-                    <p className="mt-0.5 truncate text-[11px] sm:text-xs text-slate-500">
-                      {basesGymkana[ubicacion.base_id].lugar}
-                    </p>
-                  )}
-                  {/* Cuántas bases lleva sobre el total de su recorrido */}
-                  <p className="mt-1.5 text-xs sm:text-sm font-semibold text-slate-300">
-                    <span className="font-black text-white">{ubicacion.completadas ?? 0}</span> de{' '}
-                    {ubicacion.total ?? '—'} bases
-                  </p>
-                </>
+                <div className="mt-2 space-y-2">
+                  {escuadrasDe(eq.equipo_id).map((u) => (
+                    <div key={u.sub_nombre ?? u.base_id} className="rounded-lg bg-white/[0.04] px-2 py-1.5">
+                      {u.sub_nombre && (
+                        <p className="truncate text-[11px] font-bold uppercase tracking-wide text-slate-300">
+                          {u.sub_nombre}
+                        </p>
+                      )}
+                      <div className="flex items-center justify-center gap-1 text-slate-400">
+                        <MapPin size={13} />
+                        <span className="text-xs sm:text-sm">Base {u.base_id}</span>
+                        {basesGymkana[u.base_id]?.lugar && (
+                          <span className="truncate text-[11px] text-slate-500">
+                            · {basesGymkana[u.base_id].lugar}
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-xs font-semibold text-slate-300">
+                        <span className="font-black text-white">{u.completadas ?? 0}</span> de{' '}
+                        {u.total ?? '—'} bases
+                      </p>
+                    </div>
+                  ))}
+                </div>
               ) : (
                 <>
-                  {/* Tesoro: cuántas tinajas de vino ha encontrado y cuál fue la última */}
+                  {/* Tinajas: cuántas tinajas ha encontrado y cuál fue la última */}
                   <div className="flex items-center justify-center gap-1.5 mt-2 text-slate-300">
-                    <IconoCopaVino size={15} className="text-rose-300" />
+                    <IconoGota size={15} className="text-cyan-400" />
                     <span className="text-xs sm:text-sm font-semibold">
                       <span className="font-black text-white">{ubicacion.encontradas ?? 0}</span> de{' '}
                       {ubicacion.total ?? '—'} tinajas

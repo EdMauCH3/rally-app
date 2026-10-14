@@ -2,11 +2,14 @@ import { useState } from 'react';
 import { AlertTriangle, Check, Dices, Loader2, RotateCcw, Shuffle, X } from 'lucide-react';
 import { useToast } from '../../../context/ToastContext';
 import TablaFase from '../../torneo/TablaFase';
+import BadgeCancha from '../../torneo/BadgeCancha';
 import {
   NOMBRE_FASE_PARTIDO,
   agruparPorFecha,
   avisosFixture,
   combinarFechaHora,
+  etiquetaGrupo,
+  etiquetaGrupoDe,
   horaParaInput,
   nombreLado,
   resumenProgreso,
@@ -34,9 +37,7 @@ function FilaPartido({ p, onHora }) {
   const conMarcador = p.finalizado || p.estado === 'en_vivo' || p.estado === 'pausado';
   return (
     <div className="glass-row flex flex-wrap items-center gap-x-3 gap-y-1.5 px-3 py-2.5">
-      <span className="rounded bg-white/10 px-1.5 py-0.5 text-[11px] font-bold text-slate-200">
-        Cancha {p.cancha}
-      </span>
+      <BadgeCancha cancha={p.cancha} tamano="mini" />
       <span className="flex min-w-0 flex-1 basis-40 flex-wrap items-center gap-x-1.5 text-sm font-semibold leading-tight text-white">
         <span className="inline-flex items-center gap-1.5">
           {p.a_color && <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: p.a_color }} />}
@@ -157,7 +158,7 @@ export default function FixtureAdmin({ macros, equipos, partidos, tablas, onCamb
           <h2 className="font-bold text-white">Generar el fixture</h2>
           <p className="mt-1 text-sm text-slate-400">
             20 partidos: Fase de Grupos (12), Cuadrangular de líderes (6), Tercer Puesto y Gran
-            Final. 11 fechas en 2 canchas.
+            Final. 11 fechas en 2 canchas (Coliseo y Cancha Azul).
           </p>
         </div>
 
@@ -170,7 +171,7 @@ export default function FixtureAdmin({ macros, equipos, partidos, tablas, onCamb
                 <X size={16} className="text-red-400" />
               )}
               <span className="text-slate-200">
-                Grupo {g.letra} · {g.macro.nombre}
+                {etiquetaGrupo(g.letra, g.macro.nombre)}
               </span>
               <span className="ml-auto text-xs text-slate-500">{g.total}/3 equipos</span>
             </li>
@@ -283,7 +284,7 @@ export default function FixtureAdmin({ macros, equipos, partidos, tablas, onCamb
             const sorteos = empatesSorteo(filas);
             return (
               <div key={letra} className="glass-card space-y-2 p-3">
-                <p className="text-sm font-bold text-white">Grupo {letra}</p>
+                <p className="text-sm font-bold text-white">{etiquetaGrupoDe(letra, equipos)}</p>
                 <TablaFase filas={filas} equipos={equipos} resaltar={filas[0]?.completo ? 1 : 0} compacta />
                 {sorteos.length > 0 && (
                   <button

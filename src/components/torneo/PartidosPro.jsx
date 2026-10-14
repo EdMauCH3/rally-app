@@ -5,11 +5,14 @@ import { useEstadoPersistente } from '../../hooks/useEstadoPersistente';
 import {
   NOMBRE_FASE_PARTIDO,
   agruparPorFecha,
+  etiquetaGrupoDe,
   formatoHora,
+  nombreCancha,
   nombreLado,
   partidoJugable,
 } from '../../services/torneoLogica';
 import PartidoProModal from './PartidoProModal';
+import BadgeCancha from './BadgeCancha';
 
 const ESTADOS = {
   en_vivo: {
@@ -22,9 +25,9 @@ const ESTADOS = {
 };
 
 const CANCHAS = [
-  { id: 0, label: 'Todas' },
-  { id: 1, label: 'Cancha 1' },
-  { id: 2, label: 'Cancha 2' },
+  { id: 0, label: 'Todas', activa: 'border-white bg-white text-slate-900' },
+  { id: 1, label: 'Coliseo', activa: 'border-amber-300 bg-amber-400 text-slate-950' },
+  { id: 2, label: 'Cancha Azul', activa: 'border-sky-300 bg-sky-500 text-white' },
 ];
 
 /** Fecha que el árbitro probablemente necesita: la que está en vivo, o la primera con algo pendiente. */
@@ -59,7 +62,7 @@ function EquipoBloque({ p, lado }) {
 }
 
 export default function PartidosPro() {
-  const { partidos, cargando, error } = useTorneoFases();
+  const { partidos, equipos, cargando, error } = useTorneoFases();
   const [abiertoId, setAbiertoId] = useEstadoPersistente('rally_ui_torneo_partido', null);
   const [fechaElegida, setFechaElegida] = useEstadoPersistente('rally_ui_torneo_fecha', null);
   const [cancha, setCancha] = useEstadoPersistente('rally_ui_torneo_cancha', 0, (v) => [0, 1, 2].includes(v));
@@ -149,10 +152,10 @@ export default function PartidosPro() {
                   role="tab"
                   aria-selected={cancha === c.id}
                   onClick={() => setCancha(c.id)}
-                  className={`rounded-xl border-2 py-2 text-sm font-semibold transition-all duration-300 ${
+                  className={`rounded-xl border-2 px-1 py-2.5 text-sm font-black uppercase leading-tight tracking-wide transition-all duration-300 sm:text-base ${
                     cancha === c.id
-                      ? 'border-brand-brown bg-brand-brown/15 text-white'
-                      : 'border-white/10 text-slate-400 hover:border-white/20'
+                      ? c.activa
+                      : 'border-white/15 text-slate-300 hover:border-white/30'
                   }`}
                 >
                   {c.label}
@@ -183,7 +186,7 @@ export default function PartidosPro() {
 
           {lista.length === 0 && (
             <p className="glass-card p-5 text-center text-sm text-slate-400">
-              En esta fecha no hay partido en la Cancha {cancha}.
+              En esta fecha no hay partido en {nombreCancha(cancha)}.
             </p>
           )}
 
@@ -201,14 +204,14 @@ export default function PartidosPro() {
               >
                 <div className="flex items-center justify-between gap-2 text-xs text-slate-400">
                   <span className="flex flex-wrap items-center gap-x-2">
-                    <span className="font-bold text-slate-200">Cancha {p.cancha}</span>
+                    <BadgeCancha cancha={p.cancha} tamano="grande" />
                     {hora && (
                       <span className="inline-flex items-center gap-1">
                         <Clock size={12} />
                         {hora}
                       </span>
                     )}
-                    <span className="text-slate-500">{NOMBRE_FASE_PARTIDO[p.fase]}{p.grupo ? ` ${p.grupo}` : ''}</span>
+                    <span className="text-slate-500">{p.grupo ? etiquetaGrupoDe(p.grupo, equipos) : NOMBRE_FASE_PARTIDO[p.fase]}</span>
                   </span>
                   <span className={`shrink-0 rounded-full px-2.5 py-0.5 text-[10px] font-bold ${estado.clase}`}>
                     {estado.texto}
@@ -250,7 +253,16 @@ export default function PartidosPro() {
         </>
       )}
 
-      {abiertoId && <PartidoProModal partidoId={abiertoId} onCerrar={() => setAbiertoId(null)} />}
+      {abiertoId && (
+        <PartidoProModal
+          partidoId={abiertoId}
+          etiquetaFase={(() => {
+            const ab = partidos.find((x) => x.id === abiertoId);
+            return ab?.grupo ? etiquetaGrupoDe(ab.grupo, equipos) : undefined;
+          })()}
+          onCerrar={() => setAbiertoId(null)}
+        />
+      )}
     </div>
   );
 }

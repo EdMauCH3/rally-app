@@ -35,7 +35,7 @@ export default function ReiniciarEvento({ onCambio }) {
         Zona de peligro
       </div>
       <p className="text-sm text-red-300/80">
-        Reiniciar el evento borra TODAS las puntuaciones de Gymkana, Tesoro y los partidos del
+        Reiniciar el evento borra TODAS las puntuaciones de Gymkana, Las Tinajas Perdidas y los partidos del
         Torneo, y también el historial de ajustes manuales y de alertas de Gymkana. Los
         equipos y los usuarios se conservan.
       </p>

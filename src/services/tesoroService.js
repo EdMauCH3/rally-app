@@ -1,6 +1,21 @@
 import { supabase } from './supabaseClient';
 import { nombreCanalUnico } from './canalUnico';
 
+/** Los mensajes del servidor hablan del "Tesoro"; la actividad ahora se llama Las Tinajas Perdidas. */
+export function limpiarMensajeTinajas(texto) {
+  return String(texto ?? '')
+    .replace(/b[uú]squeda del tesoro/gi, 'Las Tinajas Perdidas')
+    .replace(/tesoro/gi, 'Tinajas');
+}
+
+function lanzar(error) {
+  throw Object.assign(new Error(limpiarMensajeTinajas(error.message)), { code: error.code });
+}
+
+function limpiarResultado(r) {
+  return r?.mensaje ? { ...r, mensaje: limpiarMensajeTinajas(r.mensaje) } : r;
+}
+
 export const BASES_TESORO = Array.from({ length: 10 }, (_, i) => i + 1);
 
 export async function obtenerPuntuacionesTesoro(equipoId) {
@@ -18,8 +33,8 @@ export async function marcarLlegadaTesoro(equipoId, baseId) {
     p_equipo_id: equipoId,
     p_base_id: baseId,
   });
-  if (error) throw error;
-  return data?.[0];
+  if (error) lanzar(error);
+  return limpiarResultado(data?.[0]);
 }
 
 export async function calificarBaseTesoro(equipoId, baseId, puntos) {
@@ -28,8 +43,8 @@ export async function calificarBaseTesoro(equipoId, baseId, puntos) {
     p_base_id: baseId,
     p_puntos: puntos,
   });
-  if (error) throw error;
-  return data?.[0];
+  if (error) lanzar(error);
+  return limpiarResultado(data?.[0]);
 }
 
 // ---------- Recorridos y flujo por tinajas ----------
@@ -93,7 +108,7 @@ export async function listarAsignacionesTesoro() {
 }
 
 /**
- * Lo que ve el equipo en su pantalla pública: { estado, tinaja, pista, completadas,
+ * Lo que ve el equipo en su pantalla pública: { estado, tinaja, nombre, pista, completadas,
  * total } con estado 'en_camino' | 'en_tinaja' | 'espera' | 'termino'. Solo trae la
  * pista de SU tinaja actual; null si la búsqueda aún no tiene recorrido.
  */
@@ -106,13 +121,13 @@ export async function obtenerPistaTesoroEquipo(equipoId) {
 /** Genera los recorridos aleatorios y enciende la actividad (solo Admin). */
 export async function iniciarBusquedaTesoro() {
   const { error } = await supabase.rpc('iniciar_busqueda_tesoro');
-  if (error) throw error;
+  if (error) lanzar(error);
 }
 
 /** Borra recorridos y puntuaciones del Tesoro y la apaga; las pistas se conservan (solo Admin). */
 export async function reiniciarBusquedaTesoro() {
   const { error } = await supabase.rpc('reiniciar_busqueda_tesoro');
-  if (error) throw error;
+  if (error) lanzar(error);
 }
 
 export async function deshacerLlegadaTesoro(equipoId, baseId) {
@@ -120,8 +135,8 @@ export async function deshacerLlegadaTesoro(equipoId, baseId) {
     p_equipo_id: equipoId,
     p_base_id: baseId,
   });
-  if (error) throw error;
-  return data?.[0];
+  if (error) lanzar(error);
+  return limpiarResultado(data?.[0]);
 }
 
 /** Solo Admin: corrige el puntaje (1 a 3) de una tinaja ya calificada. */
@@ -131,8 +146,8 @@ export async function recalificarTinajaTesoro(equipoId, baseId, puntos) {
     p_base_id: baseId,
     p_puntos: puntos,
   });
-  if (error) throw error;
-  return data?.[0];
+  if (error) lanzar(error);
+  return limpiarResultado(data?.[0]);
 }
 
 /** Avisa cuando cambia cualquier puntuación o recorrido del Tesoro (de cualquier equipo). */

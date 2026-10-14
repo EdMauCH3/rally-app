@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { X, ShieldAlert } from 'lucide-react';
 import InsigniaEquipo from './InsigniaEquipo';
 import { EMOJI_TIPO } from '../publico/utilsTorneo';
+import { etiquetaGrupo } from '../../../services/torneoLogica';
 
 /** Ficha de un equipo: descripción, macro-equipo, plantilla con goles, tarjetas y sanciones. */
 export default function DetalleEquipoModal({ equipo, jugadores, tablas, onCerrar }) {
@@ -39,7 +40,7 @@ export default function DetalleEquipoModal({ equipo, jugadores, tablas, onCerrar
           <div className="min-w-0 flex-1">
             <h2 className="text-lg font-black leading-tight text-white">{equipo.nombre}</h2>
             <p className="text-xs text-slate-400">
-              {equipo.macro_nombre} · Grupo {equipo.grupo}
+              {etiquetaGrupo(equipo.grupo, equipo.macro_nombre)}
             </p>
             {filaGrupo && filaGrupo.pj > 0 && (
               <p className="mt-1 text-xs text-slate-300">

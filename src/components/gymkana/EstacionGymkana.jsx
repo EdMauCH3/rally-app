@@ -19,8 +19,8 @@ import { EncabezadoEstacion, EstacionCerrada, EstacionEnEspera } from '../estaci
 
 /**
  * Pantalla del juez FIJO de una Base. El juez no acompaña a nadie: se queda en
- * su base y la pantalla le dice cuándo viene una pareja, le deja marcar la
- * llegada y calificar. Al calificar, el sistema manda a esa pareja a su
+ * su base y la pantalla le dice cuándo viene una dupla, le deja marcar la
+ * llegada y calificar. Al calificar, el sistema manda a esa dupla a su
  * siguiente base y la tuya queda libre para la siguiente.
  */
 export default function EstacionGymkana({ base }) {
@@ -120,7 +120,7 @@ export default function EstacionGymkana({ base }) {
       lugar={lugar}
       pasaron={estacion.finalizados}
       total={estacion.total}
-      unidad="Parejas"
+      unidad="Duplas"
     />
   );
 
@@ -159,7 +159,7 @@ export default function EstacionGymkana({ base }) {
     cuerpo = (
       <div className="space-y-4 animate-fade-up">
         <TarjetaLlegadaEquipo
-          titulo={llego ? 'En tu base' : 'Vienen los equipos'}
+          titulo={llego ? 'Encuentro · En tu base' : 'Encuentro · Vienen a tu base'}
           equipos={[equipoA, equipoB]}
           alertando={alertando && !llego}
           detalle={
@@ -171,7 +171,7 @@ export default function EstacionGymkana({ base }) {
 
         {esperando > 0 && (
           <p className="rounded-xl border border-amber-400/30 bg-amber-500/10 px-3 py-2 text-sm text-amber-200">
-            Hay otra pareja esperando esta misma base. Atiende primero a la que llegó antes.
+            Hay otra dupla esperando esta misma base. Atiende primero a la que llegó antes.
           </p>
         )}
 

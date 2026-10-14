@@ -10,7 +10,7 @@ const VISTAS = [
 ];
 
 /**
- * Búsqueda del Tesoro dentro de Animación (Admin):
+ * Las Tinajas Perdidas dentro de Animación (Admin):
  *  - Pistas y lanzamiento: escribir las pistas e iniciar la búsqueda.
  *  - Supervisión: avance de cada equipo y recalificación.
  *  - Vista del animador: el mismo flujo guiado, por si el Admin tiene que operarlo.

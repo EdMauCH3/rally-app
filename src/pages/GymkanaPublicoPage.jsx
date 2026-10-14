@@ -32,7 +32,7 @@ function calcularPuntos(recorrido, equipoId) {
  * insignia de la base; el fondo es oscuro y el texto blanco, así el contraste no depende
  * del color del equipo.
  */
-function TarjetaSiguienteBase({ partido, info, rival, color }) {
+function TarjetaSiguienteBase({ partido, info, miEquipo, rival, color }) {
   const lugar = info?.lugar?.trim();
   const descripcion = info?.descripcion?.trim();
   const estaAhi = !!partido.llegada_en;
@@ -56,8 +56,17 @@ function TarjetaSiguienteBase({ partido, info, rival, color }) {
             {lugar ? ` - ${lugar}` : ''}
           </p>
           {rival && (
-            <p className="mt-1 text-sm text-slate-300">
-              Compites contra <span className="font-bold text-white">{rival.nombre}</span>
+            <p className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-base text-slate-200">
+              <span className="text-xs font-bold uppercase tracking-widest text-slate-400">Encuentro:</span>
+              <span className="inline-flex items-center gap-1.5 font-black text-white">
+                <span className="h-3.5 w-3.5 rounded-full border border-white/40" style={{ backgroundColor: color }} />
+                {miEquipo?.nombre}
+              </span>
+              <span className="text-slate-400">vs</span>
+              <span className="inline-flex items-center gap-1.5 font-black text-white">
+                <span className="h-3.5 w-3.5 rounded-full border border-white/40" style={{ backgroundColor: rival.color_hex }} />
+                {rival.nombre}
+              </span>
             </p>
           )}
         </div>
@@ -156,6 +165,7 @@ export default function GymkanaPublicoPage() {
             <TarjetaSiguienteBase
               partido={estado.actual}
               info={bases[estado.actual.base_id]}
+              miEquipo={equipoSeleccionado}
               rival={estado.rival}
               color={equipoSeleccionado.color_hex}
             />

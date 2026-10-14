@@ -11,6 +11,7 @@ import {
   Play,
   RotateCcw,
   Settings,
+  Target,
   X,
 } from 'lucide-react';
 import { useToast } from '../../context/ToastContext';
@@ -36,6 +37,7 @@ import {
 import { useRelojPartido, formatoMMSS } from '../../hooks/useRelojPartido';
 import SelectorJugadorModal from './SelectorJugadorModal';
 import PanelPenales from './PanelPenales';
+import BadgeCancha from './BadgeCancha';
 
 const ACCIONES = [
   { tipo: 'gol', emoji: '⚽', label: 'GOL', clase: 'from-emerald-500 to-emerald-700 text-white' },
@@ -52,7 +54,7 @@ const ESTADOS = {
 
 const EMOJI_TIPO = { gol: '⚽', amarilla: '🟨', roja: '🟥' };
 
-export default function PartidoProModal({ partidoId, onCerrar }) {
+export default function PartidoProModal({ partidoId, etiquetaFase, onCerrar }) {
   const { showToast } = useToast();
   const [partido, setPartido] = useState(null);
   const [eventos, setEventos] = useState([]);
@@ -404,11 +406,12 @@ export default function PartidoProModal({ partidoId, onCerrar }) {
       <div className="relative mx-auto flex min-h-full w-full max-w-5xl flex-col gap-5 px-4 py-4 sm:py-6">
         {!proyeccion && (
           <div className="flex items-center justify-between gap-3">
-            <div className="flex items-center gap-3 min-w-0">
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-2 min-w-0">
+              <BadgeCancha cancha={partido.cancha} tamano="grande" />
               <span className="text-sm font-bold text-slate-300 shrink-0">
-                Fecha {partido.fecha_num} · Cancha {partido.cancha}
+                Fecha {partido.fecha_num}
                 <span className="ml-2 hidden font-medium text-slate-400 sm:inline">
-                  {NOMBRE_FASE_PARTIDO[partido.fase]}
+                  {etiquetaFase ?? NOMBRE_FASE_PARTIDO[partido.fase]}
                 </span>
               </span>
               <span
@@ -522,8 +525,14 @@ export default function PartidoProModal({ partidoId, onCerrar }) {
                     Iniciar tiempo suplementario
                   </button>
                 ) : (
-                  <button type="button" onClick={irAPenales} disabled={bloqueado} className="btn-primary mx-auto !py-3">
-                    Ir a penales
+                  <button
+                    type="button"
+                    onClick={irAPenales}
+                    disabled={bloqueado}
+                    className="mx-auto inline-flex w-full max-w-sm items-center justify-center gap-2 rounded-2xl bg-amber-400 px-5 py-4 text-lg font-black uppercase tracking-wide text-slate-950 shadow-lg shadow-amber-900/40 transition hover:bg-amber-300 disabled:opacity-50"
+                  >
+                    <Target size={22} aria-hidden="true" />
+                    Definición por Penales
                   </button>
                 )}
               </div>

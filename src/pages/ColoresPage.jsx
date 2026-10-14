@@ -8,6 +8,7 @@ import {
   Timer,
   Flame,
   PartyPopper,
+  Footprints,
 } from 'lucide-react';
 import {
   obtenerConfiguracion,
@@ -15,6 +16,8 @@ import {
   listarEquipos,
   suscribirseColores,
 } from '../services/coloresService';
+import { obtenerDesfaseConServidor } from '../services/horaServidorService';
+import { useFaseRotacion } from '../hooks/useRotacionFormacion';
 
 const LS_KEY = 'colores_equipo_seleccionado';
 // También se recuerda el nombre: si el Admin reconfigura la rotación, el equipo se
@@ -45,13 +48,26 @@ export default function ColoresPage() {
   const [equipoId, setEquipoId] = useState(() => localStorage.getItem(LS_KEY));
   const [equipoNombre, setEquipoNombre] = useState(() => localStorage.getItem(LS_NOMBRE));
   const [flasheando, setFlasheando] = useState(false);
+  const [desfaseMs, setDesfaseMs] = useState(0);
+  const faseInfo = useFaseRotacion(config, desfaseMs);
+  const faseAnteriorRef = useRef(null);
 
   const rondaAnteriorRef = useRef(null);
   const audioRef = useRef(null);
 
   useEffect(() => {
     audioRef.current = new Audio('/sonido-rotacion.mp3');
+    obtenerDesfaseConServidor().then(setDesfaseMs).catch(() => {});
   }, []);
+
+  // Aviso sonoro también cuando termina el desplazamiento y empieza la formación.
+  useEffect(() => {
+    const anterior = faseAnteriorRef.current;
+    faseAnteriorRef.current = faseInfo.fase;
+    if (anterior === 'desplazamiento' && faseInfo.fase === 'formacion' && config?.estado === 'en_curso') {
+      dispararEfectoRotacion();
+    }
+  }, [faseInfo.fase, config?.estado]);
 
   useEffect(() => {
     function cargarTodo() {
@@ -137,6 +153,8 @@ export default function ColoresPage() {
             config={config}
             equipoActual={equipoActual}
             baseActual={baseActual}
+            faseInfo={faseInfo}
+            desfaseMs={desfaseMs}
             onCambiarEquipo={cambiarEquipo}
           />
         )}
@@ -253,7 +271,8 @@ function PantallaSeleccion({ equipos, onElegir }) {
 /* ============================================
    ESTADO: ACTIVA (equipo ya eligio, se le muestra su base)
    ============================================ */
-function PantallaActiva({ config, equipoActual, baseActual, onCambiarEquipo }) {
+function PantallaActiva({ config, equipoActual, baseActual, faseInfo, desfaseMs, onCambiarEquipo }) {
+  const desplazando = faseInfo.fase === 'desplazamiento';
   return (
     <div className="space-y-5 animate-fade-up">
       {config.ultima_base && <BannerUltimaBase />}
@@ -263,6 +282,11 @@ function PantallaActiva({ config, equipoActual, baseActual, onCambiarEquipo }) {
         className="rounded-3xl border-2 p-8 sm:p-10 backdrop-blur-xl shadow-2xl shadow-black/60 bg-gradient-to-b from-brand-brown/20 via-brand-navy/40 to-brand-navy/60 transition-all duration-300"
         style={{ borderColor: `${equipoActual.color_hex}80` }}
       >
+        {desplazando && (
+          <p className="mb-3 inline-flex items-center gap-2 rounded-full bg-amber-400/15 px-4 py-1.5 text-sm font-black uppercase tracking-widest text-amber-300">
+            <Footprints size={16} /> Desplazándose a la siguiente base
+          </p>
+        )}
         <p className="text-lg sm:text-xl text-white/70 font-medium">Dirígete a la</p>
 
         <p
@@ -302,13 +326,31 @@ function PantallaActiva({ config, equipoActual, baseActual, onCambiarEquipo }) {
         </p>
       </div>
 
-      {/* Tarjeta 2: Cronometro */}
-      <div className="rounded-3xl border border-white/10 p-8 backdrop-blur-xl shadow-2xl shadow-black/60 bg-brand-navy/40 space-y-3">
-        <p className="flex items-center justify-center gap-2 text-sm sm:text-base uppercase tracking-widest text-white/60 font-semibold">
-          <Timer size={18} /> Tiempo restante para la rotación:
-        </p>
-        <Cronometro tiempoFin={config.tiempo_fin} duracionSegundos={config.duracion_segundos} />
-      </div>
+      {/* Tarjeta 2: Cronometro (desplazamiento de 2:00 y luego formación) */}
+      {desplazando ? (
+        <div
+          className="rounded-3xl border-2 border-amber-400/50 p-8 backdrop-blur-xl shadow-2xl shadow-black/60 bg-amber-500/10 space-y-3"
+          role="timer"
+          aria-live="off"
+        >
+          <p className="flex items-center justify-center gap-2 text-sm sm:text-base uppercase tracking-widest text-amber-200 font-bold">
+            <Footprints size={18} /> Camina a tu base: llegan en
+          </p>
+          <p className="font-mono font-black tabular-nums text-6xl sm:text-8xl text-amber-300">
+            {formatoRestante(faseInfo.desplazamientoMs)}
+          </p>
+          <p className="text-sm text-white/70">
+            Al llegar, la formación empieza sola ({Math.round((config.duracion_segundos ?? 0) / 60)} min).
+          </p>
+        </div>
+      ) : (
+        <div className="rounded-3xl border border-white/10 p-8 backdrop-blur-xl shadow-2xl shadow-black/60 bg-brand-navy/40 space-y-3">
+          <p className="flex items-center justify-center gap-2 text-sm sm:text-base uppercase tracking-widest text-white/60 font-semibold">
+            <Timer size={18} /> Tiempo restante para la rotación:
+          </p>
+          <Cronometro tiempoFin={config.tiempo_fin} duracionSegundos={config.duracion_segundos} desfaseMs={desfaseMs} />
+        </div>
+      )}
 
       <button
         onClick={onCambiarEquipo}
@@ -335,7 +377,12 @@ function BannerUltimaBase() {
    Cambia de color segun el % de tiempo restante:
    normal (blanco) -> aviso (ambar, <30%) -> critico (rojo, <10% o <=10s)
    ============================================ */
-function Cronometro({ tiempoFin, duracionSegundos }) {
+function formatoRestante(ms) {
+  const total = Math.ceil(ms / 1000);
+  return `${String(Math.floor(total / 60)).padStart(2, '0')}:${String(total % 60).padStart(2, '0')}`;
+}
+
+function Cronometro({ tiempoFin, duracionSegundos, desfaseMs = 0 }) {
   const [restanteMs, setRestanteMs] = useState(0);
 
   useEffect(() => {
@@ -344,12 +391,12 @@ function Cronometro({ tiempoFin, duracionSegundos }) {
         setRestanteMs(0);
         return;
       }
-      setRestanteMs(Math.max(0, new Date(tiempoFin).getTime() - Date.now()));
+      setRestanteMs(Math.max(0, new Date(tiempoFin).getTime() - (Date.now() + desfaseMs)));
     }
     tick();
     const id = setInterval(tick, 250);
     return () => clearInterval(id);
-  }, [tiempoFin]);
+  }, [tiempoFin, desfaseMs]);
 
   const totalSeg = Math.ceil(restanteMs / 1000);
   const m = Math.floor(totalSeg / 60).toString().padStart(2, '0');

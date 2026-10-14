@@ -6,7 +6,7 @@ const ETIQUETAS_ROL = {
   admin: 'Admin',
   animador: 'Animador',
   staff_gymkana: 'Staff Gymkana',
-  staff_tesoro: 'Staff Tesoro',
+  staff_tesoro: 'Staff Tinajas',
   arbitro: 'Árbitro',
   formacion: 'Formación',
 };

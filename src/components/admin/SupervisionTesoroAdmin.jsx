@@ -8,10 +8,10 @@ import {
   recalificarTinajaTesoro,
   suscribirseTesoroGlobal,
 } from '../../services/tesoroService';
-import IconoCopaVino from '../tesoro/IconoCopaVino';
+import IconoGota from '../tesoro/IconoGota';
 
 /**
- * Resumen de la Búsqueda del Tesoro para el Admin: por cada equipo, las
+ * Resumen de Las Tinajas Perdidas para el Admin: por cada equipo, las
  * tinajas que ya encontró y los puntos de cada una. Cualquier tinaja ya
  * calificada se puede corregir (reclamos, errores del animador).
  */
@@ -34,7 +34,7 @@ export default function SupervisionTesoroAdmin() {
         setRutas(r);
         setPuntuaciones(p);
       })
-      .catch(() => showToast('No se pudo cargar la supervisión del Tesoro', 'error'))
+      .catch(() => showToast('No se pudo cargar la supervisión de Las Tinajas Perdidas', 'error'))
       .finally(() => setCargando(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -74,7 +74,7 @@ export default function SupervisionTesoroAdmin() {
   if (rutas.length === 0) {
     return (
       <p className="glass-card mx-auto max-w-2xl p-5 text-center text-sm text-slate-400">
-        La Búsqueda del Tesoro aún no ha iniciado. Cuando la inicies, aquí verás el avance de cada
+        Las Tinajas Perdidas aún no han iniciado. Cuando la inicies, aquí verás el avance de cada
         equipo y podrás corregir cualquier calificación.
       </p>
     );
@@ -114,7 +114,7 @@ export default function SupervisionTesoroAdmin() {
               </span>
               <span className="text-sm text-slate-300">
                 <span className="font-bold text-white">{completadas}</span> de {total} tinajas ·{' '}
-                <span className="font-bold text-white">{puntos}</span> pts
+                <span className="font-bold text-white">{puntos}</span> gotas
               </span>
             </div>
 
@@ -134,7 +134,7 @@ export default function SupervisionTesoroAdmin() {
                         <p className="font-semibold text-white">Tinaja {registro.base_id}</p>
                         <p className="text-xs text-slate-400">
                           {calificada
-                            ? `Llegada +1 · calificación +${registro.puntos_evaluacion} = ${registro.puntos_totales} pts`
+                            ? `Llegada +1 · calificación +${registro.puntos_evaluacion} = ${registro.puntos_totales} gotas`
                             : 'Llegó, pero aún no se califica'}
                         </p>
                       </div>
@@ -153,12 +153,12 @@ export default function SupervisionTesoroAdmin() {
                                 aria-label={`Calificar con ${n}`}
                                 className={`flex h-10 w-10 flex-col items-center justify-center rounded-lg border-2 text-sm font-black transition-all duration-200 disabled:opacity-50 ${
                                   activo
-                                    ? 'border-rose-400 bg-rose-500/20 text-white'
+                                    ? 'border-cyan-400 bg-cyan-500/20 text-white'
                                     : 'border-white/10 text-slate-400 hover:border-white/30 hover:text-white'
                                 }`}
                               >
                                 {n}
-                                {activo && <IconoCopaVino size={10} className="text-rose-300" />}
+                                {activo && <IconoGota size={10} className="text-cyan-300" />}
                               </button>
                             );
                           })}

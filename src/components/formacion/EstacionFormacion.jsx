@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
-import { Check, Clock, Hourglass, MapPin, Sunrise, Users } from 'lucide-react';
+import { Check, Clock, Footprints, Hourglass, MapPin, Sunrise, Users } from 'lucide-react';
 import { useAlertaLlegada } from '../../hooks/useAlertaLlegada';
-import { formatoMMSS, useRestanteMs } from '../../hooks/useRotacionFormacion';
+import { formatoMMSS, useFaseRotacion, useRestanteMs } from '../../hooks/useRotacionFormacion';
 import { calcularEstacionFormacion } from '../../services/formacionLogica';
 import TarjetaLlegadaEquipo from '../estacion/TarjetaLlegadaEquipo';
 import ChipsSubgrupos from './ChipsSubgrupos';
@@ -21,6 +21,8 @@ export default function EstacionFormacion({ indiceBase, rotacion }) {
   const { base, actual, siguiente, faltan, estado } = estacion;
 
   const restanteMs = useRestanteMs(config?.tiempo_fin, desfaseMs);
+  const { fase, desplazamientoMs } = useFaseRotacion(config, desfaseMs);
+  const desplazando = fase === 'desplazamiento';
 
   // Suena y parpadea cuando, al rotar, llega un equipo NUEVO a tu base.
   const clave = actual ? `${estacion.ronda}:${actual.id}` : null;
@@ -54,7 +56,27 @@ export default function EstacionFormacion({ indiceBase, rotacion }) {
 
       {estado === 'en_curso' && (
         <>
+          {desplazando && (
+            <div
+              className="flex items-center justify-between gap-3 rounded-2xl border-2 border-amber-400/50 bg-amber-500/10 px-4 py-3"
+              role="status"
+            >
+              <div className="min-w-0">
+                <p className="flex items-center gap-1.5 text-xs font-black uppercase tracking-widest text-amber-300">
+                  <Footprints size={14} /> Los grupos se están desplazando
+                </p>
+                <p className="text-xs text-amber-100/80">
+                  Se acerca el siguiente equipo; la formación empieza sola al llegar.
+                </p>
+              </div>
+              <p className="font-mono text-3xl font-black tabular-nums text-amber-300">
+                {formatoMMSS(desplazamientoMs)}
+              </p>
+            </div>
+          )}
+
           <RelojCambio
+            desplazando={desplazando}
             restanteMs={restanteMs}
             ultimaBase={estacion.ultimaBase}
             ronda={estacion.ronda}
@@ -64,7 +86,7 @@ export default function EstacionFormacion({ indiceBase, rotacion }) {
           {actual ? (
             <div className="space-y-3">
               <TarjetaLlegadaEquipo
-                titulo="En tu base ahora"
+                titulo={desplazando ? 'Llegando a tu base' : 'En tu base ahora'}
                 equipos={[actual]}
                 alertando={alertando}
                 detalle={`Ronda ${estacion.ronda} de ${estacion.totalRondas}`}
@@ -136,13 +158,13 @@ function Encabezado({ estacion, indiceBase }) {
   );
 }
 
-function RelojCambio({ restanteMs, ultimaBase, ronda, totalRondas }) {
+function RelojCambio({ restanteMs, ultimaBase, ronda, totalRondas, desplazando = false }) {
   const agotado = restanteMs <= 0;
   return (
     <div className="glass-card flex items-center justify-between gap-3 px-4 py-3">
       <div className="min-w-0">
         <p className="text-xs font-bold uppercase tracking-widest text-slate-400">
-          {ultimaBase ? 'Última base · cierre en' : 'Cambio de base en'}
+          {ultimaBase ? 'Última base · cierre en' : desplazando ? 'Formación y cambio de base en' : 'Cambio de base en'}
         </p>
         <p className="text-xs text-slate-400">
           Ronda {ronda} de {totalRondas} ·{' '}

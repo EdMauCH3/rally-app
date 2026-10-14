@@ -1,25 +1,32 @@
 import { supabase } from './supabaseClient';
 import { nombreCanalUnico } from './canalUnico';
 
-/** Largo máximo de una pista (el SQL lo exige también). */
+/** Largo máximo de una pista y de un nombre de tinaja (el SQL lo exige también). */
 export const MAX_PISTA = 1000;
+export const MAX_NOMBRE_TINAJA = 60;
+
+/** "Tinaja 3: Fuente de Caná" (o solo "Tinaja 3" si aún no tiene nombre). */
+export function etiquetaTinaja(numero, nombre) {
+  const n = (nombre ?? '').trim();
+  return n ? `Tinaja ${numero}: ${n}` : `Tinaja ${numero}`;
+}
 
 /**
- * Las pistas completas: [{ numero, pista }] de las 10 tinajas.
+ * Las tinajas completas: [{ numero, nombre, pista }] de las 10 tinajas.
  * SOLO las puede leer el Admin y el staff del Tesoro. Para el público la
  * base de datos devuelve 0 filas (las pistas no son públicas).
  */
 export async function listarPistasTesoro() {
   const { data, error } = await supabase
     .from('tesoro_tinajas')
-    .select('numero, pista')
+    .select('numero, nombre, pista')
     .order('numero', { ascending: true });
   if (error) throw error;
   return data;
 }
 
 /**
- * Guarda todas las pistas de una vez, en UNA sola petición: o se guardan
+ * Guarda los nombres y las pistas de una vez, en UNA sola petición: o se guardan
  * todas o ninguna, nunca a medias. Las 10 filas ya existen (el SQL las crea
  * vacías), así que esto solo las actualiza. Solo el Admin puede escribir.
  */
@@ -27,6 +34,7 @@ export async function guardarPistasTesoro(pistas) {
   const ahora = new Date().toISOString();
   const filas = pistas.map((p) => ({
     numero: p.numero,
+    nombre: (p.nombre ?? '').trim(),
     pista: p.pista.trim(),
     actualizado_en: ahora,
   }));

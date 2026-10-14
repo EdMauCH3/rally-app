@@ -4,6 +4,7 @@ import {
   formatoMMSS,
   useAtrasoMs,
   useRestanteMs,
+  useFaseRotacion,
   useRotacionFormacion,
 } from '../../hooks/useRotacionFormacion';
 import {
@@ -36,6 +37,8 @@ export default function RadarFormacion({ onIrAControl }) {
 
   const restanteMs = useRestanteMs(config?.tiempo_fin, desfaseMs);
   const atrasoMs = useAtrasoMs(config?.tiempo_fin, desfaseMs);
+  const { fase, desplazamientoMs } = useFaseRotacion(config, desfaseMs);
+  const desplazando = fase === 'desplazamiento';
 
   if (cargando) {
     return (
@@ -94,6 +97,11 @@ export default function RadarFormacion({ onIrAControl }) {
 
         {enCurso && (
           <div className="text-right">
+            {desplazando && (
+              <p className="mb-1 text-xs font-black uppercase tracking-widest text-amber-300">
+                Desplazamiento · llegan en {formatoMMSS(desplazamientoMs)}
+              </p>
+            )}
             <p className="text-xs font-bold uppercase tracking-widest text-slate-400">
               Próximo cambio de base
             </p>

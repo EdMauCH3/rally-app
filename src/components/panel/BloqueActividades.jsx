@@ -19,7 +19,7 @@ const MODULOS = {
     Componente: TorneoModulo,
   },
   tesoro: {
-    nombre: 'Búsqueda del Tesoro',
+    nombre: 'Las Tinajas Perdidas',
     icon: Map,
     clases: 'from-amber-500 to-amber-700',
     Componente: TesoroPage,

@@ -3,6 +3,7 @@ import { Amphora, Check, Loader2, Play, RotateCcw, Save } from 'lucide-react';
 import { useToast } from '../../context/ToastContext';
 import {
   MAX_PISTA,
+  MAX_NOMBRE_TINAJA,
   listarPistasTesoro,
   guardarPistasTesoro,
 } from '../../services/tesoroPistasService';
@@ -20,7 +21,7 @@ const instantanea = (pistas) => JSON.stringify(pistas);
 const tienePista = (p) => p.pista.trim().length > 0;
 
 /**
- * Pistas de las tinajas + lanzamiento de la Búsqueda del Tesoro.
+ * Nombre y pista de las tinajas + lanzamiento de Las Tinajas Perdidas.
  *
  * - Las pistas se guardan como BORRADOR en la base de datos: no hace falta
  *   iniciar la búsqueda para que queden guardadas, y sobreviven a recargar.
@@ -30,7 +31,7 @@ const tienePista = (p) => p.pista.trim().length > 0;
  */
 export default function GestionTinajasPistas() {
   const { showToast } = useToast();
-  const [pistas, setPistas] = useState(() => NUMEROS.map((n) => ({ numero: n, pista: '' })));
+  const [pistas, setPistas] = useState(() => NUMEROS.map((n) => ({ numero: n, nombre: '', pista: '' })));
   const [guardado, setGuardado] = useState(null); // null = aún no se pudo leer
   const [equiposConRuta, setEquiposConRuta] = useState(0);
   const [equiposTesoro, setEquiposTesoro] = useState(0);
@@ -53,13 +54,17 @@ export default function GestionTinajasPistas() {
     // pisar el texto que el Admin esté escribiendo.
     listarPistasTesoro()
       .then((lista) => {
-        const porNumero = new Map(lista.map((p) => [p.numero, p.pista]));
-        const cargadas = NUMEROS.map((n) => ({ numero: n, pista: porNumero.get(n) ?? '' }));
+        const porNumero = new Map(lista.map((p) => [p.numero, p]));
+        const cargadas = NUMEROS.map((n) => ({
+          numero: n,
+          nombre: porNumero.get(n)?.nombre ?? '',
+          pista: porNumero.get(n)?.pista ?? '',
+        }));
         setPistas(cargadas);
         setGuardado(instantanea(cargadas));
       })
       .catch(() =>
-        showToast('No se pudieron cargar las pistas. ¿Ya corriste el SQL de las tinajas?', 'error')
+        showToast('No se pudieron cargar las tinajas. ¿Ya corriste el SQL 42 de las tinajas?', 'error')
       )
       .finally(() => setCargando(false));
 
@@ -73,8 +78,8 @@ export default function GestionTinajasPistas() {
   const hayCambios = guardado !== null && instantanea(pistas) !== guardado;
   const configuradas = pistas.filter(tienePista).length;
 
-  function actualizar(numero, texto) {
-    setPistas((prev) => prev.map((p) => (p.numero === numero ? { ...p, pista: texto } : p)));
+  function actualizar(numero, campo, texto) {
+    setPistas((prev) => prev.map((p) => (p.numero === numero ? { ...p, [campo]: texto } : p)));
   }
 
   async function handleGuardar() {
@@ -100,11 +105,11 @@ export default function GestionTinajasPistas() {
       setGuardado(instantanea(pistas));
       if (iniciada && pistas.some((p, i) => tienePista(p) && !tienePista(JSON.parse(guardado)[i]))) {
         showToast(
-          'Pistas guardadas. Una tinaja nueva no entra a una búsqueda que ya inició.',
+          'Tinajas guardadas. Una tinaja nueva no entra a una búsqueda que ya inició.',
           'warning'
         );
       } else {
-        showToast('Pistas guardadas', 'success');
+        showToast('Tinajas guardadas', 'success');
       }
     } catch (err) {
       showToast(err.message ?? 'No se pudieron guardar las pistas', 'error');
@@ -114,13 +119,13 @@ export default function GestionTinajasPistas() {
   }
 
   async function handleIniciar() {
-    const aviso = `Se le dará a cada uno de los ${equiposTesoro} equipos un recorrido distinto y aleatorio de ${configuradas} tinajas, sin que dos equipos coincidan en la misma tinaja al mismo tiempo. La búsqueda quedará visible para el público.\n\n¿Iniciar la Búsqueda del Tesoro ahora?`;
+    const aviso = `Se le dará a cada uno de los ${equiposTesoro} equipos un recorrido distinto y aleatorio de ${configuradas} tinajas, sin que dos equipos coincidan en la misma tinaja al mismo tiempo. La búsqueda quedará visible para el público.\n\n¿Iniciar Las Tinajas Perdidas ahora?`;
     if (!window.confirm(aviso)) return;
 
     setAccionando(true);
     try {
       await iniciarBusquedaTesoro();
-      showToast('¡Búsqueda del Tesoro iniciada!', 'success');
+      showToast('¡Las Tinajas Perdidas han iniciado!', 'success');
       await cargarEstado();
     } catch (err) {
       showToast(err.message ?? 'No se pudo iniciar la búsqueda', 'error');
@@ -131,7 +136,7 @@ export default function GestionTinajasPistas() {
 
   async function handleReiniciar() {
     const aviso =
-      '¿Reiniciar la Búsqueda del Tesoro?\n\nSe borran los recorridos y TODAS las llegadas y puntuaciones del Tesoro, y la actividad se apaga. Las pistas se conservan.\n\nEsto no se puede deshacer.';
+      '¿Reiniciar Las Tinajas Perdidas?\n\nSe borran los recorridos y TODAS las llegadas y gotas, y la actividad se apaga. Los nombres y las pistas se conservan.\n\nEsto no se puede deshacer.';
     if (!window.confirm(aviso)) return;
 
     setAccionando(true);
@@ -160,12 +165,12 @@ export default function GestionTinajasPistas() {
     <section className="mx-auto max-w-2xl space-y-6">
       <div>
         <h2 className="flex items-center gap-2 font-semibold text-white">
-          <Amphora size={18} className="text-amber-300" />
-          Tinajas y pistas
+          <Amphora size={18} className="text-cyan-300" />
+          Tinajas: nombre y pista
         </h2>
         <p className="mt-1 text-sm leading-relaxed text-slate-400">
-          Escribe la pista o acertijo que llevará a los equipos hasta cada tinaja. Las que dejes
-          vacías no entran a la búsqueda. Cada equipo recibirá las tinajas en un orden distinto,
+          Bautiza cada tinaja con un nombre propio y escribe la pista o acertijo que llevará a los
+          equipos hasta ella. Las que dejes sin pista no entran a la búsqueda. Cada equipo recibirá las tinajas en un orden distinto,
           al azar.
         </p>
       </div>
@@ -177,10 +182,13 @@ export default function GestionTinajasPistas() {
             <div key={p.numero} className="glass-card space-y-2.5 p-4">
               <div className="flex items-center justify-between gap-3">
                 <span className="flex items-center gap-2.5 font-bold text-white">
-                  <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-amber-400/30 bg-amber-600/20 text-base font-black text-amber-200">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-cyan-400/30 bg-cyan-600/20 text-base font-black text-cyan-200">
                     {p.numero}
                   </span>
-                  Tinaja {p.numero}
+                  <span className="min-w-0 break-words leading-tight">
+                    Tinaja {p.numero}
+                    {p.nombre.trim() && <span className="text-cyan-200">: {p.nombre.trim()}</span>}
+                  </span>
                 </span>
                 <span
                   className={`rounded-full px-2.5 py-0.5 text-[11px] font-bold ${
@@ -191,11 +199,28 @@ export default function GestionTinajasPistas() {
                 </span>
               </div>
 
+              <label className="block space-y-1">
+                <span className="text-xs font-bold uppercase tracking-wide text-slate-400">
+                  Nombre de la tinaja
+                </span>
+                <input
+                  value={p.nombre}
+                  maxLength={MAX_NOMBRE_TINAJA}
+                  onChange={(e) => actualizar(p.numero, 'nombre', e.target.value)}
+                  placeholder={`Ej. ${['Fuente de Caná', 'Manantial de Valdocco'][p.numero - 1] ?? 'Nombre de la tinaja'}`}
+                  aria-label={`Nombre de la Tinaja ${p.numero}`}
+                  className="field"
+                />
+              </label>
+
+              <span className="block text-xs font-bold uppercase tracking-wide text-slate-400">
+                Pista / acertijo
+              </span>
               <textarea
                 value={p.pista}
                 maxLength={MAX_PISTA}
                 rows={4}
-                onChange={(e) => actualizar(p.numero, e.target.value)}
+                onChange={(e) => actualizar(p.numero, 'pista', e.target.value)}
                 placeholder={`Escribe aquí la pista que llevará al equipo hasta la Tinaja ${p.numero}…`}
                 aria-label={`Pista de la Tinaja ${p.numero}`}
                 className="field min-h-[7rem] resize-y leading-relaxed"
@@ -219,7 +244,7 @@ export default function GestionTinajasPistas() {
             {hayCambios
               ? 'Tienes cambios sin guardar'
               : configuradas > 0
-                ? `Pistas guardadas · ${configuradas} ${configuradas === 1 ? 'tinaja configurada' : 'tinajas configuradas'}`
+                ? `Tinajas guardadas · ${configuradas} ${configuradas === 1 ? 'tinaja configurada' : 'tinajas configuradas'}`
                 : 'Aún no has escrito ninguna pista'}
           </p>
         )}
@@ -231,7 +256,7 @@ export default function GestionTinajasPistas() {
           className="btn-secondary w-full !py-4 !text-base"
         >
           {guardando ? <Loader2 className="animate-spin" size={20} /> : <Save size={20} />}
-          Guardar pistas
+          Guardar tinajas
         </button>
       </div>
 
@@ -247,7 +272,7 @@ export default function GestionTinajasPistas() {
           <>
             <p className="flex items-center gap-2 font-bold text-emerald-300">
               <Check size={18} />
-              Búsqueda del Tesoro iniciada
+              Las Tinajas Perdidas iniciadas
             </p>
             <p className="text-sm text-slate-300">
               {equiposConRuta} {equiposConRuta === 1 ? 'equipo tiene' : 'equipos tienen'} su
@@ -261,7 +286,7 @@ export default function GestionTinajasPistas() {
               className="btn-danger w-full !py-3"
             >
               {accionando ? <Loader2 className="animate-spin" size={18} /> : <RotateCcw size={18} />}
-              Reiniciar búsqueda
+              Reiniciar la actividad
             </button>
           </>
         ) : (
@@ -282,12 +307,12 @@ export default function GestionTinajasPistas() {
             )}
             {equiposTesoro === 0 && (
               <p className="text-sm text-amber-300">
-                No hay equipos asignados a la Búsqueda del Tesoro. Asígnale un color de Tesoro a
+                No hay equipos asignados a Las Tinajas Perdidas. Asígnale un color de Tinajas a
                 cada Macro-Equipo en Equipos.
               </p>
             )}
             {hayCambios && (
-              <p className="text-sm text-amber-300">Guarda las pistas antes de iniciar.</p>
+              <p className="text-sm text-amber-300">Guarda los cambios antes de iniciar.</p>
             )}
 
             <button
@@ -299,7 +324,7 @@ export default function GestionTinajasPistas() {
               className="btn-primary w-full !py-5 !text-lg disabled:opacity-50"
             >
               {accionando ? <Loader2 className="animate-spin" size={22} /> : <Play size={22} />}
-              Iniciar Búsqueda del Tesoro
+              Iniciar Las Tinajas Perdidas
             </button>
           </>
         )}

@@ -18,11 +18,27 @@ export async function listarSubEquiposColor() {
 export async function listarSubEquiposColorPorActividad(actividad) {
   const { data, error } = await supabase
     .from('sub_equipos_color')
-    .select('id, color_nombre, color_hex, macro_equipo_id')
+    .select('id, color_nombre, color_hex, macro_equipo_id, subgrupo')
     .eq('actividad', actividad)
-    .order('creado_en', { ascending: true });
+    .order('macro_equipo_id', { ascending: true })
+    .order('subgrupo', { ascending: true });
   if (error) throw error;
-  return data.map((c) => ({ id: c.id, nombre: c.color_nombre, color_hex: c.color_hex }));
+  return data.map((c) => ({
+    id: c.id,
+    nombre: c.color_nombre,
+    color_hex: c.color_hex,
+    macro_equipo_id: c.macro_equipo_id,
+    subgrupo: c.subgrupo,
+  }));
+}
+
+/**
+ * En Gymkana cada color se divide en dos escuadras ("Verde 1" y "Verde 2"). El
+ * guardado es siempre sobre la escuadra 1: la base de datos crea, edita y borra la
+ * escuadra 2 sola (SQL 43) y agrega el número al nombre.
+ */
+export function nombreBaseColor(nombre = '') {
+  return nombre.replace(/\s+[12]$/, '').trim();
 }
 
 export async function crearSubEquipoColor({ macroEquipoId, colorNombre, colorHex, actividad }) {

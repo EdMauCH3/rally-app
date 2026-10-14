@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { AlertTriangle, Flag, Loader2, OctagonX, Play, RotateCcw, RotateCw } from 'lucide-react';
+import { AlertTriangle, Flag, Footprints, Loader2, OctagonX, Play, RotateCcw, RotateCw } from 'lucide-react';
 import { useToast } from '../../context/ToastContext';
 import {
   rotarSiguienteBase,
@@ -8,24 +8,19 @@ import {
   reiniciarConfiguracion,
   repetirRotacion,
 } from '../../services/coloresService';
+import { obtenerDesfaseConServidor } from '../../services/horaServidorService';
+import { calcularFaseRotacion } from '../../hooks/useRotacionFormacion';
+import ModalRotacion from './ModalRotacion';
 
-function useCuentaRegresiva(tiempoFin) {
-  const [restanteMs, setRestanteMs] = useState(0);
-
+function useAhoraServidor() {
+  const [desfaseMs, setDesfaseMs] = useState(0);
+  const [ahora, setAhora] = useState(() => Date.now());
   useEffect(() => {
-    function tick() {
-      if (!tiempoFin) {
-        setRestanteMs(0);
-        return;
-      }
-      setRestanteMs(Math.max(0, new Date(tiempoFin).getTime() - Date.now()));
-    }
-    tick();
-    const id = setInterval(tick, 250);
+    obtenerDesfaseConServidor().then(setDesfaseMs).catch(() => {});
+    const id = setInterval(() => setAhora(Date.now()), 250);
     return () => clearInterval(id);
-  }, [tiempoFin]);
-
-  return restanteMs;
+  }, []);
+  return ahora + desfaseMs;
 }
 
 function formatoMMSS(ms) {
@@ -40,8 +35,13 @@ function formatoMMSS(ms) {
 export default function EjecucionRotacion({ config, bases, equipos, onCambio }) {
   const { showToast } = useToast();
   const [procesando, setProcesando] = useState(false);
-  const restanteMs = useCuentaRegresiva(config.tiempo_fin);
-  const tiempoAgotado = restanteMs <= 0;
+  const ahoraServidor = useAhoraServidor();
+  const { fase, desplazamientoMs, formacionMs } = calcularFaseRotacion(config, ahoraServidor);
+  const desplazando = fase === 'desplazamiento';
+  const restanteMs = desplazando ? desplazamientoMs : formacionMs;
+  const tiempoAgotado = !desplazando && formacionMs <= 0;
+  const [modalRotar, setModalRotar] = useState(false);
+  const minutosSugeridos = Math.max(1, Math.round((config.duracion_segundos ?? 600) / 60));
   const terminado = config.estado === 'terminado';
 
   async function conManejoDeError(accion, mensajeExito) {
@@ -93,16 +93,57 @@ export default function EjecucionRotacion({ config, bases, equipos, onCambio }) 
 
   return (
     <div className="space-y-6 max-w-2xl">
+      {modalRotar && (
+        <ModalRotacion
+          minutosSugeridos={minutosSugeridos}
+          ronda={config.ronda_actual + 2}
+          totalRondas={bases.length}
+          desplazamientoSegundos={config.desplazamiento_segundos ?? 120}
+          procesando={procesando}
+          onCancelar={() => setModalRotar(false)}
+          onConfirmar={async (minutos) => {
+            setProcesando(true);
+            try {
+              await rotarSiguienteBase({ minutos });
+              showToast(`Rotación avanzada: ${minutos} min en la base tras el desplazamiento`, 'success');
+              setModalRotar(false);
+              onCambio();
+            } catch (err) {
+              showToast(err.message ?? 'No se pudo rotar', 'error');
+            } finally {
+              setProcesando(false);
+            }
+          }}
+        />
+      )}
       <div className="glass-card p-6 text-center space-y-2">
         <p className="text-sm text-slate-400">Ronda actual</p>
         <p className="text-4xl font-black text-white">{config.ronda_actual + 1}</p>
         <p
+          className={`flex items-center justify-center gap-1.5 text-xs font-bold uppercase tracking-widest ${
+            desplazando ? 'text-amber-300' : 'text-emerald-300'
+          }`}
+        >
+          {desplazando ? (
+            <>
+              <Footprints size={14} /> Desplazamiento a la siguiente base
+            </>
+          ) : (
+            'Formación en la base'
+          )}
+        </p>
+        <p
           className={`text-3xl font-mono font-bold transition-colors duration-300 ${
-            tiempoAgotado ? 'text-red-400' : 'text-white'
+            tiempoAgotado ? 'text-red-400' : desplazando ? 'text-amber-300' : 'text-white'
           }`}
         >
           {formatoMMSS(restanteMs)}
         </p>
+        {desplazando && (
+          <p className="text-xs text-slate-400">
+            Después empieza sola la formación ({Math.round((config.duracion_segundos ?? 0) / 60)} min).
+          </p>
+        )}
         {tiempoAgotado && (
           <p className="flex items-center justify-center gap-2 text-red-400 font-semibold text-sm animate-pulse">
             <AlertTriangle size={16} /> Esperando cambio de BASE
@@ -112,7 +153,7 @@ export default function EjecucionRotacion({ config, bases, equipos, onCambio }) 
 
       <div className="grid gap-3">
         <button
-          onClick={() => conManejoDeError(rotarSiguienteBase, 'Rotación avanzada')}
+          onClick={() => setModalRotar(true)}
           disabled={procesando}
           className="btn-primary w-full !py-6 !text-xl"
         >

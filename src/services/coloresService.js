@@ -56,18 +56,13 @@ export async function guardarBorradorRotacion({ bases, equipos, duracionSegundos
   if (error) throw error;
 }
 
-export async function rotarSiguienteBase() {
-  const config = await obtenerConfiguracion();
-  const nuevoTiempoFin = new Date(Date.now() + config.duracion_segundos * 1000).toISOString();
-
-  const { error } = await supabase
-    .from('colores_configuracion')
-    .update({
-      ronda_actual: config.ronda_actual + 1,
-      tiempo_fin: nuevoTiempoFin,
-      actualizado_en: new Date().toISOString(),
-    })
-    .eq('id', 1);
+/**
+ * Rota a la siguiente base. `minutos` = cuánto durará la estación a la que
+ * llegan (el Admin lo define en cada rotación). El servidor agrega los 2 min
+ * de desplazamiento antes de ese tiempo.
+ */
+export async function rotarSiguienteBase({ minutos }) {
+  const { error } = await supabase.rpc('rotar_colores', { p_minutos: minutos });
   if (error) throw error;
 }
 

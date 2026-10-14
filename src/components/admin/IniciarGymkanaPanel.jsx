@@ -12,7 +12,7 @@ export default function IniciarGymkanaPanel({ equipos, rutas, partidos, gymkanaI
     setIniciando(true);
     try {
       await iniciarGymkana(equipos);
-      showToast('Gymkana iniciada: parejas y rutas generadas', 'success');
+      showToast('Gymkana iniciada: 4 duplas y sus rutas generadas', 'success');
       onCambio();
     } catch (err) {
       showToast(err.message ?? 'No se pudo iniciar la Gymkana', 'error');
@@ -28,28 +28,30 @@ export default function IniciarGymkanaPanel({ equipos, rutas, partidos, gymkanaI
           <Shuffle size={22} />
         </div>
         <p className="text-sm text-slate-400 max-w-sm mx-auto">
-          Aún no se ha iniciado la Gymkana. Al presionar el botón se sortean 2 parejas fijas
-          entre los 4 equipos y se asigna a cada una un recorrido de 6 bases que no se cruza.
+          Aún no se ha iniciado la Gymkana. Al presionar el botón se arman 4 duplas fijas entre
+          los 8 sub-equipos (Verde 1, Verde 2, Azul 1…), sin enfrentar nunca dos del mismo color, y
+          cada dupla recibe un recorrido de 6 bases que no choca con el de las demás.
         </p>
         <button
           onClick={handleIniciar}
-          disabled={iniciando || equipos.length !== 4}
+          disabled={iniciando || equipos.length !== 8}
           className="btn-primary mx-auto"
         >
           {iniciando ? <Loader2 className="animate-spin" size={18} /> : <Shuffle size={18} />}
           Iniciar Gymkana
         </button>
-        {equipos.length !== 4 && (
+        {equipos.length !== 8 && (
           <p className="text-xs text-amber-300">
-            Faltan colores de Gymkana por asignar (hay {equipos.length}/4). Ve a la pestaña{' '}
-            <strong>Equipos</strong> y asígnale un color de Gymkana a cada Macro-Equipo.
+            Faltan sub-equipos de Gymkana por crear (hay {equipos.length}/8). Ve a la pestaña{' '}
+            <strong>Equipos</strong> y asígnale un color de Gymkana a cada Macro-Equipo: cada color
+            genera solo sus dos escuadras (1 y 2).
           </p>
         )}
       </div>
     );
   }
 
-  const parejas = [1, 2].map((num) => rutas.filter((r) => r.pareja_num === num));
+  const parejas = [1, 2, 3, 4].map((num) => rutas.filter((r) => r.pareja_num === num));
   const parejaPorEquipo = new Map(rutas.map((r) => [r.equipo_id, r.pareja_num]));
 
   return (
@@ -63,7 +65,7 @@ export default function IniciarGymkanaPanel({ equipos, rutas, partidos, gymkanaI
         return (
           <div key={i} className="glass-card p-4 space-y-3">
             <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
-              Pareja {parejaNum}
+              Dupla {parejaNum}
             </p>
             <div className="flex items-center gap-2 text-sm font-semibold text-slate-100 flex-wrap">
               {pareja.map((r, idx) => (

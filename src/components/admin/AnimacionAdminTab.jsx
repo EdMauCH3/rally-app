@@ -41,8 +41,8 @@ const MODULOS = [
   },
   {
     id: 'tesoro',
-    nombre: 'Búsqueda del Tesoro',
-    detalle: 'Pistas y puntajes',
+    nombre: 'Las Tinajas Perdidas',
+    detalle: 'Tinajas, pistas y gotas',
     icon: Map,
     clases: 'from-amber-500 to-amber-700',
   },

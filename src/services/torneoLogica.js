@@ -18,6 +18,13 @@ export const NOMBRE_FASE_PARTIDO = {
   final: 'Gran Final',
 };
 
+/** Nombre oficial de cada cancha: la 1 es el Coliseo y la 2 la Cancha Azul. */
+export const NOMBRES_CANCHA = { 1: 'Coliseo', 2: 'Cancha Azul' };
+
+export function nombreCancha(numero) {
+  return NOMBRES_CANCHA[numero] ?? `Cancha ${numero}`;
+}
+
 /** Pestaña a la que pertenece un partido ('grupos' | 'cuadrangular' | 'finales'). */
 export function pestanaDePartido(partido) {
   if (partido.fase === 'tercer_puesto' || partido.fase === 'final') return 'finales';
@@ -61,6 +68,32 @@ export function agruparPorFecha(partidos) {
       fecha,
       partidos: [...lista].sort((x, y) => x.cancha - y.cancha),
     }));
+}
+
+/**
+ * Nombre completo de un grupo: "Grupo A - Verde". El color/nombre sale SIEMPRE del
+ * Macro-equipo, así que si el Admin lo cambia, todas las pantallas lo reflejan solas
+ * (la etiqueta nunca se guarda: se arma al mostrarla).
+ */
+export function etiquetaGrupo(letra, macroNombre) {
+  const nombre = (macroNombre ?? '').trim();
+  return nombre ? `Grupo ${letra} - ${nombre}` : `Grupo ${letra}`;
+}
+
+/** Mapa letra → { nombre, color } a partir de los equipos del torneo (v_equipos_torneo). */
+export function infoGrupos(equipos) {
+  const mapa = new Map();
+  for (const e of equipos ?? []) {
+    if (e.grupo && !mapa.has(e.grupo)) {
+      mapa.set(e.grupo, { nombre: e.macro_nombre, color: e.macro_color });
+    }
+  }
+  return mapa;
+}
+
+/** Etiqueta de un grupo a partir de su letra y la lista de equipos. */
+export function etiquetaGrupoDe(letra, equipos) {
+  return etiquetaGrupo(letra, infoGrupos(equipos).get(letra)?.nombre);
 }
 
 /** Letras de grupo por macro, igual que la base de datos. */

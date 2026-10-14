@@ -126,7 +126,7 @@ export default function ResumenAnimacion({
         />
         <Tarjeta
           icono={Map}
-          nombre="Búsqueda del Tesoro"
+          nombre="Las Tinajas Perdidas"
           color="text-amber-300"
           visible={visible('tesoro')}
           pausada={pausada('tesoro')}

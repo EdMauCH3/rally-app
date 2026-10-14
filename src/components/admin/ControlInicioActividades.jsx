@@ -30,7 +30,7 @@ export function Switch({ activo, onChange, disabled }) {
 
 const ACTIVIDADES = [
   { id: 'gymkana', label: 'Gymkana', icon: Flag },
-  { id: 'tesoro', label: 'Búsqueda del Tesoro', icon: Map },
+  { id: 'tesoro', label: 'Las Tinajas Perdidas', icon: Map },
   { id: 'torneo', label: 'Torneo', icon: Trophy },
 ];
 

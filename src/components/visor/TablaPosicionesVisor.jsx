@@ -12,7 +12,7 @@ export default function TablaPosicionesVisor({ generales }) {
           <tr className="text-left text-slate-400 text-[11px] sm:text-xs uppercase tracking-wide border-b border-white/10">
             <th className="px-4 py-3">Equipo</th>
             <th className="px-2 sm:px-3 py-3 text-right">Pts Gymkana</th>
-            <th className="px-2 sm:px-3 py-3 text-right">Pts Tesoro</th>
+            <th className="px-2 sm:px-3 py-3 text-right">Gotas</th>
             <th className="px-2 sm:px-3 py-3 text-right">Pts Torneo</th>
             <th className="px-4 py-3 text-right">Total</th>
           </tr>

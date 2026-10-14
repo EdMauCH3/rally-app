@@ -28,9 +28,12 @@ export default function VisorPage() {
         // el Visor solo muestra Macro-Equipos, se resuelve cada color a
         // su macro_equipo_id antes de pasarlo al tracker.
         const macroDeColor = new Map(colores.map((c) => [c.id, c.macro_equipo_id]));
+        const nombreDeColor = new Map(colores.map((c) => [c.id, c.color_nombre]));
         const porMacroEquipo = (ubicaciones) =>
           ubicaciones.map((u) => ({
             ...u,
+            // En Gymkana cada macro tiene dos escuadras ("Verde 1", "Verde 2").
+            sub_nombre: nombreDeColor.get(u.equipo_id),
             equipo_id: macroDeColor.get(u.equipo_id) ?? u.equipo_id,
           }));
 

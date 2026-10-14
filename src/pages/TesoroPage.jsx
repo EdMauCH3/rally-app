@@ -4,7 +4,7 @@ import EstacionTesoro from '../components/tesoro/EstacionTesoro';
 import { BASES_TESORO } from '../services/tesoroService';
 
 /**
- * Búsqueda del Tesoro en el panel del staff: el juez elige SU tinaja y se
+ * Las Tinajas Perdidas en el panel del staff: el juez elige SU tinaja y se
  * queda ahí; los equipos vienen a él (ver EstacionTesoro). La tinaja elegida
  * se recuerda aunque se cambie de pestaña o se recargue la página.
  */
@@ -15,7 +15,7 @@ export default function TesoroPage() {
 
   return (
     <main className="mx-auto max-w-2xl space-y-6 px-4 py-6">
-      <h1 className="sr-only">Staff Búsqueda del Tesoro</h1>
+      <h1 className="sr-only">Staff Las Tinajas Perdidas</h1>
 
       {tinaja == null ? (
         <SelectorEstacion

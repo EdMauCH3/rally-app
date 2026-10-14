@@ -10,7 +10,7 @@ import { Switch } from './ControlInicioActividades';
 
 const ACTIVIDADES = [
   { id: 'gymkana', label: 'Gymkana', icon: Flag, color: 'text-emerald-300' },
-  { id: 'tesoro', label: 'Búsqueda del Tesoro', icon: Map, color: 'text-amber-300' },
+  { id: 'tesoro', label: 'Las Tinajas Perdidas', icon: Map, color: 'text-amber-300' },
   { id: 'torneo', label: 'Torneo', icon: Trophy, color: 'text-violet-300' },
 ];
 

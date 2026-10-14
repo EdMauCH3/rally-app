@@ -38,7 +38,7 @@ function ganadorDe(p) {
   return { ganador: dato(g), perdedor: dato(perdedorLado) };
 }
 
-/** Fase Final (Cancha 1): Tercer Puesto (fecha 10) y Gran Final (fecha 11). */
+/** Fase Final (Coliseo): Tercer Puesto (fecha 10) y Gran Final (fecha 11). */
 export default function PanelFinal({ ctx }) {
   const { partidos } = ctx;
   const final = partidos.find((p) => p.fase === 'final');

@@ -1,20 +1,19 @@
-import { CalendarDays, Loader2, ShieldHalf, Users, History } from 'lucide-react';
+import { CalendarDays, Loader2, ShieldHalf, History } from 'lucide-react';
 import { useEstadoPersistente } from '../../hooks/useEstadoPersistente';
 import { useTorneoFases } from '../../hooks/useTorneoFases';
 import HistorialEventosTorneo from './HistorialEventosTorneo';
 import EquiposPorMacro from './torneo/EquiposPorMacro';
 import FixtureAdmin from './torneo/FixtureAdmin';
-import InscripcionJugadores from '../torneo/InscripcionJugadores';
 
 const VISTAS = [
-  { id: 'equipos', label: 'Equipos', icon: ShieldHalf },
-  { id: 'plantillas', label: 'Plantillas', icon: Users },
+  { id: 'equipos', label: 'Equipos y plantillas', icon: ShieldHalf },
   { id: 'fixture', label: 'Fixture', icon: CalendarDays },
   { id: 'historial', label: 'Historial', icon: History },
 ];
 
 export default function TorneoAdminTab() {
-  const { partidos, tablas, equipos, macros, cargando, error, recargar } = useTorneoFases();
+  const { partidos, tablas, equipos, macros, jugadores, cargando, error, recargar } = useTorneoFases({ detalle: true });
+  // detalle: trae también los jugadores para armar las plantillas dentro de cada equipo.
   const [vista, setVista] = useEstadoPersistente('rally_ui_admin_torneo', 'equipos', (v) =>
     VISTAS.some((x) => x.id === v)
   );
@@ -45,7 +44,7 @@ export default function TorneoAdminTab() {
 
   return (
     <div className="space-y-6">
-      <div className="mx-auto grid max-w-2xl grid-cols-2 gap-2 sm:grid-cols-4">
+      <div className="mx-auto grid max-w-2xl grid-cols-3 gap-2">
         {VISTAS.map(({ id, label, icon: Icon }) => (
           <button
             key={id}
@@ -67,11 +66,11 @@ export default function TorneoAdminTab() {
         <EquiposPorMacro
           macros={macros}
           equipos={equipos}
+          jugadores={jugadores}
           fixtureGenerado={fixtureGenerado}
           onCambio={recargar}
         />
       )}
-      {vista === 'plantillas' && <InscripcionJugadores />}
       {vista === 'fixture' && (
         <FixtureAdmin
           macros={macros}

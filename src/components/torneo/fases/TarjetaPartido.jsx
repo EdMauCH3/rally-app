@@ -9,6 +9,7 @@ import {
 import { EMOJI_TIPO, ETIQUETA_TIPO } from '../publico/utilsTorneo';
 import DetalleEquipoEventos from '../publico/DetalleEquipoEventos';
 import InsigniaEquipo from './InsigniaEquipo';
+import BadgeCancha from '../BadgeCancha';
 
 /** Minuto del partido en vivo (con la hora del servidor), actualizado cada segundo. */
 function useMinuto(p, desfaseMs) {
@@ -232,9 +233,9 @@ export default function TarjetaPartido({
       }`}
     >
       <header className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 border-b border-white/5 px-4 py-2.5 text-xs text-slate-400">
-        <span className="flex flex-wrap items-center gap-x-2">
+        <span className="flex flex-wrap items-center gap-x-2 gap-y-1.5">
           <span className="font-bold text-slate-200">Fecha {p.fecha_num}</span>
-          <span>Cancha {p.cancha}</span>
+          <BadgeCancha cancha={p.cancha} tamano="normal" />
           {hora && (
             <span className="inline-flex items-center gap-1">
               <Clock size={11} />
@@ -261,6 +262,11 @@ export default function TarjetaPartido({
           ganador={p.finalizado && p.ganador_id ? p.ganador_id === p.equipo_b_id : null}
           onEquipo={onEquipo}
         />
+        {p.fase_juego === 'penales' && p.pen_a != null && (
+          <p className="rounded-lg bg-amber-400/10 py-1.5 text-center text-sm font-black tabular-nums text-amber-200">
+            {p.goles_a}-{p.goles_b} ({p.pen_a}-{p.pen_b} pen.)
+          </p>
+        )}
       </div>
 
       <button

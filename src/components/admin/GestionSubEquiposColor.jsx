@@ -7,11 +7,12 @@ import {
   actualizarSubEquipoColor,
   eliminarSubEquipoColor,
   suscribirseSubEquiposColor,
+  nombreBaseColor,
 } from '../../services/subEquiposColorService';
 
 const ACTIVIDADES = [
   { id: 'gymkana', label: 'Gymkana' },
-  { id: 'tesoro', label: 'Tesoro' },
+  { id: 'tesoro', label: 'Tinajas' },
 ];
 
 const COLOR_DEFAULT = '#733f2d';
@@ -39,13 +40,19 @@ export default function GestionSubEquiposColor({ macroEquipos }) {
     return unsubscribe;
   }, [cargar]);
 
+  // Para Gymkana se devuelve la escuadra 1 (la 2 la crea y sincroniza la base de datos).
   function colorDe(macroEquipoId, actividad) {
-    return colores.find((c) => c.macro_equipo_id === macroEquipoId && c.actividad === actividad);
+    return colores.find(
+      (c) =>
+        c.macro_equipo_id === macroEquipoId &&
+        c.actividad === actividad &&
+        (c.subgrupo ?? 1) === 1
+    );
   }
 
   function abrirForm(macroEquipoId, actividad, colorExistente) {
     setEditando({ macroEquipoId, actividad, id: colorExistente?.id ?? null });
-    setColorNombre(colorExistente?.color_nombre ?? '');
+    setColorNombre(nombreBaseColor(colorExistente?.color_nombre ?? ''));
     setColorHex(colorExistente?.color_hex ?? COLOR_DEFAULT);
   }
 
@@ -82,7 +89,7 @@ export default function GestionSubEquiposColor({ macroEquipos }) {
 
   async function handleEliminar() {
     if (!editando?.id) return;
-    if (!window.confirm('¿Quitar este color de la actividad?')) return;
+    if (!window.confirm('¿Quitar este color de la actividad? En Gymkana también se quitan sus dos escuadras.')) return;
     setGuardando(true);
     try {
       await eliminarSubEquipoColor(editando.id);
@@ -109,7 +116,7 @@ export default function GestionSubEquiposColor({ macroEquipos }) {
       <div>
         <h2 className="font-semibold text-white">Colores por Macro-Equipo</h2>
         <p className="text-sm text-slate-400 mt-1">
-          Asigna qué color de cada Macro-Equipo va a Gymkana, y cuál a Tesoro. Los equipos del Torneo se crean en Admin → Torneo.
+          Asigna qué color de cada Macro-Equipo va a Gymkana, y cuál a Las Tinajas Perdidas. Los equipos del Torneo se crean en Admin → Torneo.
         </p>
       </div>
 
@@ -142,7 +149,13 @@ export default function GestionSubEquiposColor({ macroEquipos }) {
                         className="block w-6 h-6 rounded-full mx-auto my-1.5"
                         style={{ backgroundColor: color.color_hex }}
                       />
-                      <p className="text-xs font-bold text-white truncate">{color.color_nombre}</p>
+                      {act.id === 'gymkana' ? (
+                        <p className="text-xs font-bold text-white truncate">
+                          {nombreBaseColor(color.color_nombre)} 1 y 2
+                        </p>
+                      ) : (
+                        <p className="text-xs font-bold text-white truncate">{color.color_nombre}</p>
+                      )}
                     </>
                   ) : (
                     <p className="text-xs text-slate-500 py-3">+ Asignar</p>
@@ -169,6 +182,20 @@ export default function GestionSubEquiposColor({ macroEquipos }) {
                 <X size={20} />
               </button>
             </div>
+
+            {editando.actividad === 'gymkana' && (
+              <p className="rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2 text-xs leading-relaxed text-slate-300">
+                En Gymkana este color se divide solo en dos escuadras:{' '}
+                <strong className="text-white">
+                  {(colorNombre.trim() || 'Verde')} 1
+                </strong>{' '}
+                y{' '}
+                <strong className="text-white">
+                  {(colorNombre.trim() || 'Verde')} 2
+                </strong>
+                . Los puntos de las dos suman al Macro-equipo.
+              </p>
+            )}
 
             <div className="space-y-1.5">
               <label className="field-label">Nombre del color</label>

@@ -1,18 +1,20 @@
 import { useState } from 'react';
-import { ArrowDown, ArrowUp, Loader2, Pencil, Plus, Trash2 } from 'lucide-react';
+import { ArrowDown, ArrowUp, ChevronDown, Loader2, Pencil, Plus, Trash2, Users } from 'lucide-react';
 import { useToast } from '../../../context/ToastContext';
-import { revisarPlantilla } from '../../../services/torneoLogica';
+import { etiquetaGrupo, revisarPlantilla } from '../../../services/torneoLogica';
 import { moverEquipoTorneo, quitarEquipoDelTorneo } from '../../../services/torneoService';
 import FormularioEquipoTorneo from './FormularioEquipoTorneo';
+import PlantillaEquipoInline from './PlantillaEquipoInline';
 
 /**
  * Los 12 equipos del torneo, organizados por macro-equipo (= grupo).
  * Cada grupo tiene 3 posiciones (A1, A2, A3…) que definen el fixture.
  */
-export default function EquiposPorMacro({ macros, equipos, fixtureGenerado, onCambio }) {
+export default function EquiposPorMacro({ macros, equipos, jugadores = [], fixtureGenerado, onCambio }) {
   const { showToast } = useToast();
   const [formulario, setFormulario] = useState(null); // { equipo?, macroId? }
   const [procesandoId, setProcesandoId] = useState(null);
+  const [plantillaAbierta, setPlantillaAbierta] = useState(null); // id del equipo con la plantilla desplegada
 
   const { grupos, problemas } = revisarPlantilla(macros, equipos);
   const totalEquipos = equipos.length;
@@ -45,6 +47,17 @@ export default function EquiposPorMacro({ macros, equipos, fixtureGenerado, onCa
 
   return (
     <div className="space-y-4 max-w-3xl mx-auto">
+      <ol className="grid grid-cols-3 gap-2 text-center text-[11px] font-bold uppercase leading-tight tracking-wide text-slate-300 sm:text-xs">
+        {['Macro-equipo (grupo)', 'Equipo de microfútbol', 'Plantilla de jugadores'].map((t, i) => (
+          <li key={t} className="rounded-xl bg-white/[0.06] px-2 py-2.5">
+            <span className="mb-1 mx-auto flex h-6 w-6 items-center justify-center rounded-full bg-white text-sm font-black text-slate-900">
+              {i + 1}
+            </span>
+            {t}
+          </li>
+        ))}
+      </ol>
+
       <div className="glass-card p-4 text-sm text-slate-300 space-y-1">
         <p>
           <strong className="text-white">{totalEquipos} de 12</strong> equipos creados. Cada
@@ -80,8 +93,8 @@ export default function EquiposPorMacro({ macros, equipos, fixtureGenerado, onCa
                 {g.letra}
               </span>
               <div className="min-w-0">
-                <p className="truncate font-bold text-white">Grupo {g.letra}</p>
-                <p className="truncate text-xs text-slate-400">{g.macro.nombre}</p>
+                <p className="truncate font-bold text-white">{etiquetaGrupo(g.letra, g.macro.nombre)}</p>
+                <p className="truncate text-xs text-slate-400">Se actualiza solo con el Macro-equipo</p>
               </div>
               <span className="ml-auto text-xs text-slate-400">{g.total}/3</span>
             </header>
@@ -108,7 +121,8 @@ export default function EquiposPorMacro({ macros, equipos, fixtureGenerado, onCa
                   );
                 }
                 return (
-                  <div key={eq.id} className="glass-row flex items-center gap-3 px-3 py-2.5">
+                  <div key={eq.id} className="glass-row space-y-2 px-3 py-2.5">
+                    <div className="flex items-center gap-3">
                     <span className="w-7 shrink-0 text-xs font-bold text-slate-400">
                       {g.letra}
                       {slot}
@@ -170,6 +184,27 @@ export default function EquiposPorMacro({ macros, equipos, fixtureGenerado, onCa
                           </button>
                         )}
                       </span>
+                    )}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setPlantillaAbierta((v) => (v === eq.id ? null : eq.id))}
+                      aria-expanded={plantillaAbierta === eq.id}
+                      className="flex w-full items-center gap-2 rounded-lg bg-white/[0.05] px-3 py-2 text-xs font-semibold text-slate-200 hover:bg-white/10"
+                    >
+                      <Users size={14} />
+                      Plantilla · {jugadores.filter((j) => j.equipo_torneo_id === eq.id).length} jugadores
+                      <ChevronDown
+                        size={14}
+                        className={`ml-auto transition-transform duration-300 ${plantillaAbierta === eq.id ? 'rotate-180' : ''}`}
+                      />
+                    </button>
+                    {plantillaAbierta === eq.id && (
+                      <PlantillaEquipoInline
+                        equipo={eq}
+                        jugadores={jugadores.filter((j) => j.equipo_torneo_id === eq.id)}
+                        onCambio={onCambio}
+                      />
                     )}
                   </div>
                 );

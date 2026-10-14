@@ -116,3 +116,33 @@ export function formatoMMSS(ms) {
   const s = String(total % 60).padStart(2, '0');
   return `${m}:${s}`;
 }
+
+/**
+ * Fase de la rotación en este instante, con la hora del servidor.
+ *   'desplazamiento' -> los grupos caminan a su nueva base (cuenta de 2:00)
+ *   'formacion'      -> trabajo temático en la base (cuenta hasta tiempo_fin)
+ * Devuelve { fase, desplazamientoMs, formacionMs } (ms que faltan de cada una).
+ * Pasa de una fase a la otra sola, sin que nadie pulse nada.
+ */
+export function useFaseRotacion(config, desfaseMs = 0) {
+  const [ahora, setAhora] = useState(() => Date.now());
+  useEffect(() => {
+    setAhora(Date.now());
+    const id = setInterval(() => setAhora(Date.now()), 500);
+    return () => clearInterval(id);
+  }, [config?.desplazamiento_fin, config?.tiempo_fin]);
+  return calcularFaseRotacion(config, ahora + desfaseMs);
+}
+
+/** Versión pura (sin React) de useFaseRotacion; `ahoraMs` = hora del servidor en ms. */
+export function calcularFaseRotacion(config, ahoraMs) {
+  const finDesp = config?.desplazamiento_fin ? Date.parse(config.desplazamiento_fin) : 0;
+  const finForm = config?.tiempo_fin ? Date.parse(config.tiempo_fin) : 0;
+  const desplazamientoMs = Math.max(0, finDesp - ahoraMs);
+  const formacionMs = Math.max(0, finForm - ahoraMs);
+  return {
+    fase: desplazamientoMs > 0 ? 'desplazamiento' : 'formacion',
+    desplazamientoMs,
+    formacionMs,
+  };
+}
