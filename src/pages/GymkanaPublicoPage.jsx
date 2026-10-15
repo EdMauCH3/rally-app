@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Loader2, Lock, PartyPopper, Hourglass, Check } from 'lucide-react';
+import { Loader2, Lock, Hourglass, Check } from 'lucide-react';
 import { listarEstadoActividades, suscribirseEstadoActividades } from '../services/estadoActividadesService';
 import EquipoSelector from '../components/gymkana/EquipoSelector';
 import CabeceraBase from '../components/gymkana/CabeceraBase';
 import RelojRonda from '../components/gymkana/RelojRonda';
+import TarjetaCierreGymkana from '../components/gymkana/TarjetaCierreGymkana';
 import LetreroActividadNoIniciada from '../components/common/LetreroActividadNoIniciada';
 import PausaActividadOverlay from '../components/common/PausaActividadOverlay';
 import { useBasesGymkana } from '../hooks/useBasesGymkana';
@@ -100,15 +101,11 @@ export default function GymkanaPublicoPage() {
           <RelojRonda circuito={circuito} equipos={equipos} cruces={cruces} desfaseMs={desfaseMs} />
 
           {circuito.estado === 'completado' ? (
-            <div className="space-y-3 rounded-3xl border-2 border-emerald-400/50 bg-emerald-500/10 p-8 text-center">
-              <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-300">
-                <PartyPopper size={34} />
-              </span>
-              <p className="text-2xl font-black leading-snug text-emerald-100">¡Misión cumplida! 🎉</p>
-              <p className="text-base leading-relaxed text-emerald-50">
-                Has superado todas las bases de la Gymkana.
-              </p>
-            </div>
+            <TarjetaCierreGymkana
+              variante="publico"
+              puntos={puntosGymkana(cruces, equipo.id)}
+              colorEquipo={equipo.color_hex}
+            />
           ) : circuito.estado === 'esperando' || !mio ? (
             <div className="glass-card space-y-3 p-6 text-center">
               <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-sky-500/15 text-sky-300">
@@ -141,10 +138,12 @@ export default function GymkanaPublicoPage() {
             </>
           )}
 
-          <div className="glass-card p-5 text-center">
-            <p className="text-sm text-slate-400">Puntos en Gymkana</p>
-            <p className="text-4xl font-black text-white">{puntosGymkana(cruces, equipo.id)}</p>
-          </div>
+          {circuito.estado !== 'completado' && (
+            <div className="glass-card p-5 text-center">
+              <p className="text-sm text-slate-400">Puntos en Gymkana</p>
+              <p className="text-4xl font-black text-white">{puntosGymkana(cruces, equipo.id)}</p>
+            </div>
+          )}
 
           <div className="space-y-2">
             <h3 className="text-sm font-semibold text-slate-400">Historial de bases</h3>

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { AlertTriangle, Clock, Check, Hourglass, Loader2, PartyPopper } from 'lucide-react';
+import { AlertTriangle, Clock, Check, Hourglass, Loader2 } from 'lucide-react';
 import { useToast } from '../../context/ToastContext';
 import { useBasesGymkana } from '../../hooks/useBasesGymkana';
 import { useAlertaLlegada } from '../../hooks/useAlertaLlegada';
@@ -10,6 +10,7 @@ import { crucesDeRonda, equipoVisual } from '../../services/gymkanaLogica';
 import TarjetaLlegadaEquipo from '../estacion/TarjetaLlegadaEquipo';
 import CabeceraBase from './CabeceraBase';
 import RelojRonda from './RelojRonda';
+import TarjetaCierreGymkana from './TarjetaCierreGymkana';
 
 /**
  * Pantalla del juez FIJO de una Base en la Gymkana sincronizada.
@@ -85,17 +86,7 @@ export default function EstacionGymkana({ base }) {
 
   let cuerpo;
   if (circuito.estado === 'completado') {
-    cuerpo = (
-      <div className="space-y-3 rounded-3xl border-2 border-emerald-400/50 bg-emerald-500/10 p-8 text-center animate-fade-up">
-        <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-300">
-          <PartyPopper size={34} />
-        </span>
-        <p className="text-2xl font-black leading-snug text-emerald-100">¡Gymkana completada! 🎉</p>
-        <p className="text-base leading-relaxed text-emerald-50">
-          Todos los equipos completaron el circuito. Ya puedes recoger la base y apoyar el resto del evento.
-        </p>
-      </div>
-    );
+    cuerpo = <TarjetaCierreGymkana variante="staff" />;
   } else if (circuito.estado === 'esperando') {
     cuerpo = (
       <div className="glass-card space-y-3 p-8 text-center animate-fade-up">

@@ -3,7 +3,12 @@ import { AlertTriangle, Check, Clock, Flag, Loader2, MapPin, Pencil, RotateCw, U
 import { useToast } from '../../context/ToastContext';
 import { useBasesGymkana } from '../../hooks/useBasesGymkana';
 import { useCircuitoGymkana } from '../../hooks/useCircuitoGymkana';
-import { ajustarRondaGymkana, rotarEquiposGymkana } from '../../services/gymkanaCircuitoService';
+import {
+  ajustarRondaGymkana,
+  finalizarGymkana,
+  reabrirGymkana,
+  rotarEquiposGymkana,
+} from '../../services/gymkanaCircuitoService';
 import { listarAlertasGymkana, suscribirseAlertasGymkana } from '../../services/adminService';
 import {
   esRondaFinal,
@@ -172,6 +177,41 @@ export default function ConsolaGymkana({ esAdmin = false, conAlertas = false, on
     }
   }
 
+  async function finalizar() {
+    const pendientes = crucesDeRondaActual.filter((c) => !c.finalizado).length;
+    const aviso =
+      pendientes > 0
+        ? `Faltan ${pendientes} cruces por calificar en la ronda actual: se descartarán y no sumarán puntos.\n\n¿Finalizar la Gymkana de todos modos?`
+        : '¿Finalizar la Gymkana? Jueces y público verán el mensaje de cierre.';
+    if (!window.confirm(aviso)) return;
+    setGuardandoAjuste(true);
+    try {
+      const r = await finalizarGymkana({ forzar: pendientes > 0 });
+      showToast(r?.mensaje ?? 'Gymkana finalizada', r?.ok === false ? 'warning' : 'success');
+      await recargar();
+      onCambio?.();
+    } catch (err) {
+      showToast(err.message ?? 'No se pudo finalizar la Gymkana', 'error');
+    } finally {
+      setGuardandoAjuste(false);
+    }
+  }
+
+  async function reabrir() {
+    if (!window.confirm('¿Reabrir la Gymkana? Se quita el mensaje de cierre.')) return;
+    setGuardandoAjuste(true);
+    try {
+      await reabrirGymkana();
+      showToast('Gymkana reabierta', 'success');
+      await recargar();
+      onCambio?.();
+    } catch (err) {
+      showToast(err.message ?? 'No se pudo reabrir', 'error');
+    } finally {
+      setGuardandoAjuste(false);
+    }
+  }
+
   async function ajustar(cambios, mensaje) {
     setGuardandoAjuste(true);
     try {
@@ -201,6 +241,7 @@ export default function ConsolaGymkana({ esAdmin = false, conAlertas = false, on
   }
 
   const enCurso = circuito.estado === 'en_curso';
+  const crucesDeRondaActual = cruces.filter((c) => c.ronda === circuito.ronda_actual);
   const minutosNuevos = Number.parseInt(minutosTexto, 10);
   const minutosValidos = Number.isInteger(minutosNuevos) && minutosNuevos >= 1 && minutosNuevos <= 180;
   const textoBoton =
@@ -217,10 +258,15 @@ export default function ConsolaGymkana({ esAdmin = false, conAlertas = false, on
         <RelojRonda circuito={circuito} equipos={equipos} cruces={cruces} desfaseMs={desfaseMs} />
 
         {circuito.estado === 'completado' ? (
-          <p className="rounded-2xl border border-emerald-400/40 bg-emerald-500/10 p-4 text-sm text-emerald-100">
-            🎉 Todos los sub-equipos completaron las 6 bases. Ya no se pueden generar más rotaciones; los
-            jueces y el público ven el mensaje de cierre.
-          </p>
+          <div className="space-y-3">
+            <p className="rounded-2xl border border-emerald-400/40 bg-emerald-500/10 p-4 text-sm text-emerald-100">
+              🎉 La Gymkana está finalizada. Ya no se pueden generar más rotaciones; los jueces y el público
+              ven la tarjeta de cierre.
+            </p>
+            <button type="button" onClick={reabrir} disabled={guardandoAjuste} className="btn-secondary w-full">
+              Reabrir Gymkana (si se finalizó por error)
+            </button>
+          </div>
         ) : (
           <>
             <button
@@ -312,6 +358,17 @@ export default function ConsolaGymkana({ esAdmin = false, conAlertas = false, on
                   />
                 </div>
               </div>
+            )}
+
+            {enCurso && (
+              <button
+                type="button"
+                onClick={finalizar}
+                disabled={guardandoAjuste}
+                className="flex w-full items-center justify-center gap-2 rounded-xl border-2 border-red-400/60 bg-red-600/20 py-3 font-bold text-red-100 transition-colors hover:bg-red-600/35 disabled:opacity-50"
+              >
+                <Flag size={18} /> Finalizar Gymkana
+              </button>
             )}
           </>
         )}

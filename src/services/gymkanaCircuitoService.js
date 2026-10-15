@@ -74,3 +74,16 @@ export function suscribirseCircuito(onChange) {
     supabase.removeChannel(channel);
   };
 }
+
+/** Cierra la Gymkana a mano. Devuelve { ok, mensaje, pendientes }; con pendientes pide confirmar y repetir con forzar. */
+export async function finalizarGymkana({ forzar = false } = {}) {
+  const { data, error } = await supabase.rpc('gymkana_finalizar', { p_forzar: forzar });
+  if (error) throw error;
+  return data?.[0];
+}
+
+/** Deshace un cierre hecho por error. */
+export async function reabrirGymkana() {
+  const { error } = await supabase.rpc('gymkana_reabrir');
+  if (error) throw error;
+}
