@@ -314,8 +314,8 @@ export function ModalAgregar({ equipos, onCerrar, onHecho, modoInicial = 'campeo
   const activos = equipos.filter((e) => e.estado !== 'retirado');
   const grupos = [...new Set(activos.map((e) => e.grupo).filter(Boolean))].sort();
   const candidatos = !adicional && fase === 'grupos' ? activos.filter((e) => e.grupo === grupo) : activos;
-  const macroA = activos.find((e) => e.id === a)?.macro_equipo_id;
-  const candidatosB = adicional && macroA ? candidatos.filter((e) => e.macro_equipo_id !== macroA) : candidatos;
+  // Pueden enfrentarse equipos del mismo grupo y del mismo Macro-equipo, también en adicionales.
+  const candidatosB = candidatos.filter((e) => e.id !== a);
 
   async function enviar(e) {
     e.preventDefault();

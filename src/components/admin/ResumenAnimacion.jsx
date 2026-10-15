@@ -5,6 +5,7 @@ import {
   suscribirseEstadoActividades,
 } from '../../services/estadoActividadesService';
 import { listarPartidos, suscribirsePartidos } from '../../services/torneoService';
+import { useCircuitoGymkana } from '../../hooks/useCircuitoGymkana';
 import TablaMarcador from './TablaMarcador';
 
 function Tarjeta({ icono: Icono, nombre, color, visible, pausada = false, cargado, lineas, alerta }) {
@@ -53,12 +54,8 @@ function Tarjeta({ icono: Icono, nombre, color, visible, pausada = false, cargad
  * "Iniciada / Apagada" es el interruptor que decide si el público ve la
  * actividad o el letrero de espera (Admin → Equipos, o dentro de cada módulo).
  */
-export default function ResumenAnimacion({
-  marcador,
-  gymkanaLanzada,
-  partidosGymkana,
-  alertasGymkanaPendientes,
-}) {
+export default function ResumenAnimacion({ marcador, alertasGymkanaPendientes }) {
+  const gym = useCircuitoGymkana();
   const [estados, setEstados] = useState([]);
   const [partidosTorneo, setPartidosTorneo] = useState([]);
   const [cargado, setCargado] = useState(false);
@@ -85,8 +82,9 @@ export default function ResumenAnimacion({
   const pausada = (actividad) =>
     visible(actividad) && (estados.find((e) => e.actividad === actividad)?.pausada ?? false);
 
-  const gymkanaTotal = partidosGymkana.length;
-  const gymkanaListos = partidosGymkana.filter((p) => p.finalizado).length;
+  const gymkanaTotal = gym.cruces.length;
+  const gymkanaListos = gym.cruces.filter((p) => p.finalizado).length;
+  const estadoGym = gym.circuito?.estado ?? 'esperando';
   const torneoTotal = partidosTorneo.length;
   const torneoListos = partidosTorneo.filter((p) => p.finalizado).length;
 
@@ -101,9 +99,14 @@ export default function ResumenAnimacion({
           pausada={pausada('gymkana')}
           cargado={cargado}
           lineas={
-            gymkanaLanzada
-              ? [`${gymkanaListos} de ${gymkanaTotal} partidos finalizados`]
-              : ['Aún no se ha lanzado']
+            estadoGym === 'esperando'
+              ? ['Aún no se ha lanzado']
+              : [
+                  estadoGym === 'completado'
+                    ? 'Finalizada'
+                    : `Ronda ${gym.circuito.ronda_actual} en curso`,
+                  `${gymkanaListos} de ${gymkanaTotal} cruces calificados`,
+                ]
           }
           alerta={
             alertasGymkanaPendientes > 0

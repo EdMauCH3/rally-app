@@ -15,6 +15,7 @@ import {
   listarAlertasAnimador,
   suscribirseAlertasAnimador,
 } from '../services/alertasAnimadorService';
+import { suscribirseCircuito } from '../services/gymkanaCircuitoService';
 import { listarSubEquiposColorPorActividad } from '../services/subEquiposColorService';
 import ConfiguracionUIPanel from '../components/admin/ConfiguracionUIPanel';
 import EquiposCRUD from '../components/admin/EquiposCRUD';
@@ -130,6 +131,21 @@ export default function AdminPage() {
     };
   }, [cargarTodo, recargarAlertas]);
 
+  // El marcador general se mantiene al día cuando se califica un cruce de Gymkana.
+  useEffect(() => {
+    let t;
+    const cancelar = suscribirseCircuito(() => {
+      clearTimeout(t);
+      t = setTimeout(() => {
+        obtenerMarcadorGeneral().then(setMarcador).catch(() => {});
+      }, 500);
+    });
+    return () => {
+      clearTimeout(t);
+      cancelar();
+    };
+  }, []);
+
   const alertasGymkanaPendientes = alertas.filter((a) => a.requiere_auditoria).length;
   const alertasAnimadorPendientes = alertasAnimador.filter((a) => !a.atendida).length;
 
@@ -208,11 +224,7 @@ export default function AdminPage() {
                 marcador={marcador}
                 equipos={equipos}
                 ajustes={ajustes}
-                alertas={alertas}
                 alertasPendientes={alertasGymkanaPendientes}
-                coloresGymkana={coloresGymkana}
-                partidosGymkana={partidosGymkana}
-                gymkanaIniciada={gymkanaIniciada}
                 onCambio={recargar}
               />
             )}

@@ -2,7 +2,6 @@ import { ClipboardList, Flag, Map, Radio, Settings, Trophy } from 'lucide-react'
 import { useEstadoPersistente } from '../../hooks/useEstadoPersistente';
 import ResumenAnimacion from './ResumenAnimacion';
 import ConsolaGymkana from '../gymkana/ConsolaGymkana';
-import AlertasGymkana from './AlertasGymkana';
 import TorneoAdminTab from './TorneoAdminTab';
 import AjustesForm from './AjustesForm';
 import TesoroAdminModulo from './TesoroAdminModulo';
@@ -27,7 +26,7 @@ const MODULOS = [
   {
     id: 'gymkana',
     nombre: 'Gymkana',
-    detalle: 'Circuito y alertas',
+    detalle: 'Circuito, bases y alertas',
     icon: Flag,
     clases: 'from-emerald-500 to-emerald-700',
   },
@@ -54,8 +53,6 @@ const MODULOS = [
   },
 ];
 
-const SUBMODULOS_GYMKANA = ['controles', 'alertas'];
-
 /** Círculo rojo con el número de alertas pendientes (no se dibuja si es 0). */
 function InsigniaAlertas({ cantidad, className = '' }) {
   if (!(cantidad > 0)) return null;
@@ -79,19 +76,11 @@ export default function AnimacionAdminTab({
   marcador,
   equipos,
   ajustes,
-  alertas,
   alertasPendientes,
-  partidosGymkana,
-  gymkanaIniciada,
   onCambio,
 }) {
   const [modulo, setModulo] = useEstadoPersistente('rally_ui_admin_animacion', 'resumen', (v) =>
     MODULOS.some((m) => m.id === v)
-  );
-  const [subGymkana, setSubGymkana] = useEstadoPersistente(
-    'rally_ui_admin_animacion_gymkana',
-    'controles',
-    (v) => SUBMODULOS_GYMKANA.includes(v)
   );
 
   return (
@@ -131,12 +120,7 @@ export default function AnimacionAdminTab({
       </div>
 
       {modulo === 'resumen' && (
-        <ResumenAnimacion
-          marcador={marcador}
-          gymkanaLanzada={gymkanaIniciada}
-          partidosGymkana={partidosGymkana}
-          alertasGymkanaPendientes={alertasPendientes}
-        />
+        <ResumenAnimacion marcador={marcador} alertasGymkanaPendientes={alertasPendientes} />
       )}
 
       {modulo === 'radar' && (
@@ -146,36 +130,8 @@ export default function AnimacionAdminTab({
         />
       )}
 
-      {modulo === 'gymkana' && (
-        <div className="space-y-6">
-          <div className="mx-auto grid max-w-md grid-cols-2 gap-2">
-            {[
-              { id: 'controles', label: 'Controles' },
-              { id: 'alertas', label: 'Alertas Gymkana' },
-            ].map((s) => (
-              <button
-                key={s.id}
-                type="button"
-                onClick={() => setSubGymkana(s.id)}
-                className={`flex items-center justify-center gap-2 rounded-xl border-2 py-3 font-semibold transition-all duration-300 ease-in-out ${
-                  subGymkana === s.id
-                    ? 'border-brand-brown bg-brand-brown/15 text-white'
-                    : 'border-white/10 text-slate-400 hover:border-white/20 hover:text-slate-200'
-                }`}
-              >
-                {s.label}
-                {s.id === 'alertas' && <InsigniaAlertas cantidad={alertasPendientes} />}
-              </button>
-            ))}
-          </div>
-
-          {subGymkana === 'controles' ? (
-            <ConsolaGymkana esAdmin onCambio={onCambio} />
-          ) : (
-            <AlertasGymkana alertas={alertas} onCambio={onCambio} />
-          )}
-        </div>
-      )}
+      {/* Misma consola que usa la Coordinación de Gymkana: una sola fuente, sin duplicados. */}
+      {modulo === 'gymkana' && <ConsolaGymkana esAdmin conAlertas onCambio={onCambio} />}
 
       {modulo === 'torneo' && <TorneoAdminTab />}
 
