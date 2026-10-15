@@ -4,17 +4,17 @@ import { useToast } from '../../context/ToastContext';
 import { listarBasesGymkana, guardarBasesGymkana } from '../../services/gymkanaBasesService';
 
 const NUMEROS = [1, 2, 3, 4, 5, 6];
+const MAX_NOMBRE = 80;
 const MAX_LUGAR = 100;
-const MAX_DESCRIPCION = 200;
 
-const vacias = () => NUMEROS.map((n) => ({ numero: n, lugar: '', descripcion: '' }));
+const vacias = () => NUMEROS.map((n) => ({ numero: n, nombre: '', lugar: '' }));
 const instantanea = (bases) => JSON.stringify(bases);
 
 /**
- * Las 6 bases de la Gymkana (lugar + descripción corta). Se configuran
- * ANTES de lanzar la Gymkana y quedan guardadas en la base de datos: no se
- * pierden al recargar. El número de base es fijo (1 a 6); es el mismo que
- * usan las rutas y los partidos.
+ * Las 6 bases de la Gymkana: número fijo (Base 1 a 6), nombre temático
+ * ("Esperanza") y lugar físico ("Cancha de baloncesto"). Lo editan el Admin y
+ * la Coordinación de Gymkana, antes o durante el evento; los cambios llegan solos
+ * a las pantallas del público y de los jueces.
  */
 export default function GestionBasesGymkana() {
   const { showToast } = useToast();
@@ -29,14 +29,14 @@ export default function GestionBasesGymkana() {
         const porNumero = new Map(lista.map((b) => [b.numero, b]));
         const cargadas = NUMEROS.map((n) => ({
           numero: n,
+          nombre: porNumero.get(n)?.nombre ?? '',
           lugar: porNumero.get(n)?.lugar ?? '',
-          descripcion: porNumero.get(n)?.descripcion ?? '',
         }));
         setBases(cargadas);
         setGuardado(instantanea(cargadas));
       })
       .catch(() =>
-        showToast('No se pudieron cargar las bases. ¿Ya corriste el SQL de las bases de la Gymkana?', 'error')
+        showToast('No se pudieron cargar las bases. ¿Ya corriste el SQL 49 de la Gymkana?', 'error')
       )
       .finally(() => setCargando(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -47,19 +47,18 @@ export default function GestionBasesGymkana() {
   }
 
   const hayCambios = guardado !== null && instantanea(bases) !== guardado;
-  const algunaConfigurada = bases.some((b) => b.lugar.trim() || b.descripcion.trim());
-  const faltanLugares = bases.some((b) => !b.lugar.trim());
+  const algunaConfigurada = bases.some((b) => b.lugar.trim() || b.nombre.trim());
+  const faltanDatos = bases.some((b) => !b.lugar.trim() || !b.nombre.trim());
 
   async function handleGuardar() {
     setGuardando(true);
     try {
       await guardarBasesGymkana(bases);
       setGuardado(instantanea(bases));
-      if (faltanLugares) {
-        showToast('Bases guardadas. Aún faltan lugares por completar.', 'warning');
-      } else {
-        showToast('Bases guardadas', 'success');
-      }
+      showToast(
+        faltanDatos ? 'Bases guardadas. Aún faltan nombres o lugares por completar.' : 'Bases guardadas',
+        faltanDatos ? 'warning' : 'success'
+      );
     } catch (err) {
       showToast(err.message ?? 'No se pudieron guardar las bases', 'error');
     } finally {
@@ -76,29 +75,46 @@ export default function GestionBasesGymkana() {
   }
 
   return (
-    <section className="max-w-2xl mx-auto space-y-4">
+    <section className="mx-auto max-w-2xl space-y-4">
       <div>
         <h2 className="flex items-center gap-2 font-semibold text-white">
           <MapPin size={18} className="text-emerald-300" />
           Bases de la Gymkana
         </h2>
-        <p className="mt-1 text-sm text-slate-400 leading-relaxed">
-          Cuéntale a cada equipo dónde queda su base y de qué se trata. Esto se muestra cuando se
-          dirigen a ella. Puedes guardarlo desde ya, antes de lanzar la Gymkana.
+        <p className="mt-1 text-sm leading-relaxed text-slate-400">
+          Cada base se muestra como <strong className="text-slate-200">«Base 1 - Esperanza»</strong> y, debajo,
+          el lugar en letra grande. Puedes cambiarlo en caliente, incluso con la Gymkana en marcha.
         </p>
       </div>
 
       <div className="space-y-3">
         {bases.map((b) => (
-          <div key={b.numero} className="glass-card p-4 flex gap-3">
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-600/25 border border-emerald-500/30 text-lg font-black text-emerald-200">
+          <div key={b.numero} className="glass-card flex gap-3 p-4">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-emerald-500/30 bg-emerald-600/25 text-lg font-black text-emerald-200">
               {b.numero}
             </span>
 
             <div className="min-w-0 flex-1 space-y-2.5">
               <div className="space-y-1">
+                <label className="field-label" htmlFor={`base-nombre-${b.numero}`}>
+                  Nombre de la Base
+                </label>
+                <input
+                  id={`base-nombre-${b.numero}`}
+                  value={b.nombre}
+                  maxLength={MAX_NOMBRE}
+                  onChange={(e) => actualizar(b.numero, 'nombre', e.target.value)}
+                  placeholder="Ej: Esperanza"
+                  className="field"
+                />
+                <p className="text-xs text-slate-500">
+                  Se verá: <span className="font-semibold text-slate-300">Base {b.numero}{b.nombre.trim() ? ` - ${b.nombre.trim()}` : ''}</span>
+                </p>
+              </div>
+
+              <div className="space-y-1">
                 <label className="field-label" htmlFor={`base-lugar-${b.numero}`}>
-                  Lugar / ubicación
+                  Lugar / Ubicación
                 </label>
                 <input
                   id={`base-lugar-${b.numero}`}
@@ -109,24 +125,6 @@ export default function GestionBasesGymkana() {
                   className="field"
                 />
               </div>
-
-              <div className="space-y-1">
-                <label className="field-label" htmlFor={`base-desc-${b.numero}`}>
-                  Descripción corta
-                </label>
-                <textarea
-                  id={`base-desc-${b.numero}`}
-                  value={b.descripcion}
-                  maxLength={MAX_DESCRIPCION}
-                  rows={2}
-                  onChange={(e) => actualizar(b.numero, 'descripcion', e.target.value)}
-                  placeholder="Ej: Lleven el balón y formen una fila de 5"
-                  className="field resize-none"
-                />
-                <p className="text-right text-xs text-slate-500 tabular-nums">
-                  {b.descripcion.length}/{MAX_DESCRIPCION}
-                </p>
-              </div>
             </div>
           </div>
         ))}
@@ -135,11 +133,7 @@ export default function GestionBasesGymkana() {
       {guardado !== null && (
         <p
           className={`flex items-center gap-2 text-sm font-semibold ${
-            hayCambios
-              ? 'text-amber-300'
-              : algunaConfigurada
-                ? 'text-emerald-300'
-                : 'text-slate-400'
+            hayCambios ? 'text-amber-300' : algunaConfigurada ? 'text-emerald-300' : 'text-slate-400'
           }`}
         >
           {!hayCambios && algunaConfigurada && <Check size={16} />}

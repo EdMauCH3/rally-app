@@ -7,7 +7,6 @@ import {
   obtenerMarcadorGeneral,
   listarAjustes,
   gymkanaEstaIniciada,
-  listarRutasGymkana,
   listarPartidosGymkana,
   listarAlertasGymkana,
   suscribirseAlertasGymkana,
@@ -50,7 +49,6 @@ export default function AdminPage() {
   const [equipos, setEquipos] = useState([]);
   const [ajustes, setAjustes] = useState([]);
   const [gymkanaIniciada, setGymkanaIniciada] = useState(false);
-  const [rutasGymkana, setRutasGymkana] = useState([]);
   const [partidosGymkana, setPartidosGymkana] = useState([]);
   const [alertas, setAlertas] = useState([]);
   const [alertasAnimador, setAlertasAnimador] = useState([]);
@@ -82,23 +80,11 @@ export default function AdminPage() {
       if (alertasAnimadorData.status === 'fulfilled') setAlertasAnimador(alertasAnimadorData.value);
       if (coloresGymkanaData.status === 'fulfilled') setColoresGymkana(coloresGymkanaData.value);
 
-      if (iniciada.status === 'fulfilled') {
-        setGymkanaIniciada(iniciada.value);
-        if (iniciada.value) {
-          try {
-            const [rutasData, partidosData] = await Promise.all([
-              listarRutasGymkana(),
-              listarPartidosGymkana(),
-            ]);
-            setRutasGymkana(rutasData);
-            setPartidosGymkana(partidosData);
-          } catch {
-            if (!silencioso) showToast('No se pudieron cargar las rutas de Gymkana', 'error');
-          }
-        } else {
-          setRutasGymkana([]);
-          setPartidosGymkana([]);
-        }
+      if (iniciada.status === 'fulfilled') setGymkanaIniciada(iniciada.value);
+      try {
+        setPartidosGymkana(await listarPartidosGymkana());
+      } catch {
+        if (!silencioso) showToast('No se pudieron cargar los cruces de Gymkana', 'error');
       }
 
       const fallidas = [m, e, a, iniciada, alertasData].filter((r) => r.status === 'rejected');
@@ -110,7 +96,7 @@ export default function AdminPage() {
           );
           showToast(
             esGymkanaFaltante
-              ? 'Falta correr el SQL de Gymkana en Supabase (rutas_gymkana / puntuaciones_gymkana)'
+              ? 'Falta correr el SQL de Gymkana en Supabase (gymkana_circuito / puntuaciones_gymkana)'
               : 'No se pudo cargar parte de la información del Admin',
             'error'
           );
@@ -225,7 +211,6 @@ export default function AdminPage() {
                 alertas={alertas}
                 alertasPendientes={alertasGymkanaPendientes}
                 coloresGymkana={coloresGymkana}
-                rutasGymkana={rutasGymkana}
                 partidosGymkana={partidosGymkana}
                 gymkanaIniciada={gymkanaIniciada}
                 onCambio={recargar}

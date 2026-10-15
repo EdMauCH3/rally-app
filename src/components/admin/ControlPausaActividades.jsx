@@ -45,7 +45,7 @@ function usePausa() {
  * botón grande de emergencia. Pausar actualiza Supabase al instante y todas las
  * pantallas se bloquean con el aviso; Reanudar las libera sin recargar.
  */
-export default function ControlPausaActividades() {
+export default function ControlPausaActividades({ actividades, puedeEncender = true }) {
   const { showToast } = useToast();
   const { estados, cargando } = useEstadoActividades();
   const { ocupadoId, cambiarPausa } = usePausa();
@@ -80,8 +80,8 @@ export default function ControlPausaActividades() {
         </p>
       </div>
 
-      <div className="grid gap-3 md:grid-cols-3">
-        {ACTIVIDADES.map(({ id, label, icon: Icon, color }) => {
+      <div className={`grid gap-3 ${actividades?.length === 1 ? 'max-w-md' : 'md:grid-cols-3'}`}>
+        {ACTIVIDADES.filter((a) => !actividades || actividades.includes(a.id)).map(({ id, label, icon: Icon, color }) => {
           const e = estados[id] ?? { iniciada: false, pausada: false };
           const pausada = e.iniciada && e.pausada;
           const ocupado = ocupadoId === id;
@@ -108,14 +108,16 @@ export default function ControlPausaActividades() {
                 </span>
               </div>
 
-              <div className="glass-row flex items-center justify-between px-3 py-2">
-                <span className="text-sm text-slate-300">{e.iniciada ? 'Encendida' : 'Apagada'}</span>
-                <Switch
-                  activo={e.iniciada}
-                  disabled={guardandoId === id}
-                  onChange={(v) => handleToggle(id, v)}
-                />
-              </div>
+              {puedeEncender && (
+                <div className="glass-row flex items-center justify-between px-3 py-2">
+                  <span className="text-sm text-slate-300">{e.iniciada ? 'Encendida' : 'Apagada'}</span>
+                  <Switch
+                    activo={e.iniciada}
+                    disabled={guardandoId === id}
+                    onChange={(v) => handleToggle(id, v)}
+                  />
+                </div>
+              )}
 
               {pausada ? (
                 <button

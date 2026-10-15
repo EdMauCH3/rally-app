@@ -6,12 +6,15 @@ import BloqueCronograma from '../components/panel/BloqueCronograma';
 import BloqueAyuda from '../components/panel/BloqueAyuda';
 import FormacionPanel from '../components/formacion/FormacionPanel';
 import DirectorTecnicoPanel from '../components/torneo/DirectorTecnicoPanel';
+import ConsolaGymkana from '../components/gymkana/ConsolaGymkana';
 
 // Permisos de pestañas:
 // - Comisiones, Cronograma y Ayuda: TODO el staff (admin, animador,
 //   staff_gymkana, staff_tesoro, arbitro y formacion).
 // - Actividades: todos menos el animador, y cada rol ve SOLO la suya
 //   (ver BloqueActividades); el Admin ve las tres.
+// - Control Gymkana: solo `coordinador_gymkana`. Es la misma consola operativa del Admin
+//   (rotación general, radar, pausa, bases) y además puede ser juez en la pestaña Actividades.
 // - Torneo (DT): solo el rol `director_tecnico`. Reúne la gestión completa del torneo
 //   (equipos, grupos, etapas, W.O.) y todo lo del árbitro (planillas y partidos en vivo).
 // - Formación: solo el rol `formacion` (y el Admin). El formador ve además
@@ -20,12 +23,17 @@ const TODOS_LOS_TABS = [
   {
     id: 'comisiones',
     label: 'Comisiones',
-    roles: ['admin', 'animador', 'staff_gymkana', 'staff_tesoro', 'arbitro', 'formacion', 'director_tecnico'],
+    roles: ['admin', 'animador', 'staff_gymkana', 'staff_tesoro', 'arbitro', 'formacion', 'director_tecnico', 'coordinador_gymkana'],
   },
   {
     id: 'actividades',
     label: 'Actividades',
-    roles: ['admin', 'staff_gymkana', 'staff_tesoro', 'arbitro'],
+    roles: ['admin', 'staff_gymkana', 'staff_tesoro', 'arbitro', 'coordinador_gymkana'],
+  },
+  {
+    id: 'control_gymkana',
+    label: 'Control Gymkana',
+    roles: ['coordinador_gymkana'],
   },
   {
     id: 'torneo_dt',
@@ -40,12 +48,12 @@ const TODOS_LOS_TABS = [
   {
     id: 'cronograma',
     label: 'Cronograma',
-    roles: ['admin', 'animador', 'staff_gymkana', 'staff_tesoro', 'arbitro', 'formacion', 'director_tecnico'],
+    roles: ['admin', 'animador', 'staff_gymkana', 'staff_tesoro', 'arbitro', 'formacion', 'director_tecnico', 'coordinador_gymkana'],
   },
   {
     id: 'ayuda',
     label: 'Ayuda',
-    roles: ['admin', 'animador', 'staff_gymkana', 'staff_tesoro', 'arbitro', 'formacion', 'director_tecnico'],
+    roles: ['admin', 'animador', 'staff_gymkana', 'staff_tesoro', 'arbitro', 'formacion', 'director_tecnico', 'coordinador_gymkana'],
   },
 ];
 
@@ -60,7 +68,9 @@ export default function PanelAnimadorPage() {
       ? 'formacion' // el formador abre directo en su pestaña
       : perfil?.rol === 'director_tecnico'
         ? 'torneo_dt' // el DT abre directo en el torneo
-        : tabsVisibles[0]?.id;
+        : perfil?.rol === 'coordinador_gymkana'
+          ? 'control_gymkana' // la Coordinación abre directo en su consola
+          : tabsVisibles[0]?.id;
 
   return (
     <>
@@ -88,6 +98,7 @@ export default function PanelAnimadorPage() {
       <main className="px-4 py-6">
         {tabActivo === 'comisiones' && <BloqueComisiones />}
         {tabActivo === 'actividades' && <BloqueActividades rol={perfil?.rol} />}
+        {tabActivo === 'control_gymkana' && <ConsolaGymkana conAlertas />}
         {tabActivo === 'torneo_dt' && <DirectorTecnicoPanel />}
         {tabActivo === 'formacion' && <FormacionPanel />}
         {tabActivo === 'cronograma' && <BloqueCronograma />}

@@ -15,6 +15,7 @@ export const RUTA_POR_ROL = {
   arbitro: '/panel',
   formacion: '/panel',
   director_tecnico: '/panel',
+  coordinador_gymkana: '/panel',
 };
 
 // Prefijo de las claves de sessionStorage donde se recuerda en qué parte

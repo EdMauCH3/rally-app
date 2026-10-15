@@ -7,7 +7,7 @@ const BASES = [1, 2, 3, 4, 5, 6];
 
 /**
  * Gymkana en el panel del staff: el juez elige SU base y se queda ahí. Los
- * equipos vienen a él (ver EstacionGymkana). La base elegida se recuerda
+ * equipos llegan cuando la coordinación autoriza cada rotación (ver EstacionGymkana). La base elegida se recuerda
  * aunque se cambie de pestaña o se recargue la página.
  */
 export default function GymkanaPage() {
@@ -26,7 +26,7 @@ export default function GymkanaPage() {
           numeros={BASES}
           seleccionada={base}
           onSeleccionar={setBase}
-          detalle={(n) => bases[n]?.lugar?.trim()}
+          detalle={(n) => [bases[n]?.nombre?.trim(), bases[n]?.lugar?.trim()].filter(Boolean).join(' · ')}
         />
       ) : (
         <>

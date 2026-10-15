@@ -3,7 +3,7 @@ import { listarBasesGymkana, suscribirseBasesGymkana } from '../services/gymkana
 
 /**
  * Devuelve las bases de la Gymkana indexadas por número:
- *   { 1: { numero, lugar, descripcion }, 2: {...}, ... }
+ *   { 1: { numero, nombre, lugar }, 2: {...}, ... }
  * Se mantiene al día por Realtime. Si falla la lectura (por ejemplo, el SQL
  * aún no se ha corrido) devuelve {} y las pantallas muestran solo "Base N",
  * como antes: nunca se rompe nada por esto.

@@ -4,7 +4,7 @@ import { useToast } from '../../context/ToastContext';
 import { useBasesGymkana } from '../../hooks/useBasesGymkana';
 import { listarEquipos } from '../../services/equiposService';
 import { listarSubEquiposColor } from '../../services/subEquiposColorService';
-import { obtenerEstacionesGymkana, suscribirseGymkana } from '../../services/gymkanaService';
+import { useCircuitoGymkana } from '../../hooks/useCircuitoGymkana';
 import {
   listarRutasTesoro,
   listarPuntuacionesTesoro,
@@ -12,18 +12,13 @@ import {
   suscribirseTesoroGlobal,
   BASES_TESORO,
 } from '../../services/tesoroService';
-import {
-  mapaEquipos,
-  radarGymkana,
-  radarTesoro,
-  ocupacionBases,
-  ocupacionTinajas,
-} from '../../services/estacionesLogica';
+import { mapaEquipos, radarTesoro, ocupacionTinajas } from '../../services/estacionesLogica';
+import { ocupacionBasesCircuito, radarCircuito } from '../../services/gymkanaLogica';
 import ControlPausaActividades from './ControlPausaActividades';
-import IniciarGymkanaPanel from './IniciarGymkanaPanel';
+import ResultadosCircuito from '../gymkana/ResultadosCircuito';
+import { FichasBasesGymkana } from '../gymkana/ConsolaGymkana';
+import RelojRonda from '../gymkana/RelojRonda';
 import SupervisionTesoroAdmin from './SupervisionTesoroAdmin';
-
-const BASES_GYMKANA = [1, 2, 3, 4, 5, 6];
 
 function Punto({ color, grande = false }) {
   return (
@@ -44,6 +39,15 @@ function CeldaEquipo({ fila, unidad, lugar, icono: Icono }) {
   let clase = 'text-slate-200';
   if (fila.estado === 'termino') {
     texto = 'Terminó su recorrido';
+    clase = 'text-emerald-300';
+  } else if (fila.estado === 'esperando') {
+    texto = 'Esperando la primera rotación';
+    clase = 'text-sky-300';
+  } else if (fila.estado === 'listo') {
+    texto = `Calificado en ${unidad} ${fila.destino}${lugar ? ` · ${lugar}` : ''}`;
+    clase = 'text-sky-300';
+  } else if (fila.estado === 'compitiendo') {
+    texto = `Compitiendo en ${unidad} ${fila.destino}${lugar ? ` · ${lugar}` : ''}`;
     clase = 'text-emerald-300';
   } else if (fila.estado === 'espera') {
     texto = 'Esperando que se libere una tinaja';
@@ -68,7 +72,7 @@ function CeldaEquipo({ fila, unidad, lugar, icono: Icono }) {
         )}
       </p>
       <p className={`flex items-center gap-1.5 text-sm ${clase}`}>
-        {fila.estado === 'espera' ? (
+        {fila.estado === 'espera' || fila.estado === 'esperando' ? (
           <Clock size={14} />
         ) : fila.estado === 'termino' ? (
           <Check size={14} />
@@ -145,20 +149,13 @@ function FichaEstacion({ etiqueta, estacion, lugar, equiposDeEstacion }) {
  * controles de pausa. Se actualiza solo por Realtime. Las correcciones de
  * resultados viven abajo, reutilizando las pantallas de edición que ya existían.
  */
-export default function RadarAdmin({
-  coloresGymkana,
-  rutasGymkana,
-  partidosGymkana,
-  gymkanaIniciada,
-  alertasPendientes,
-  onCambio,
-}) {
+export default function RadarAdmin({ alertasPendientes, onCambio }) {
   const { showToast } = useToast();
   const bases = useBasesGymkana();
 
   const [macros, setMacros] = useState([]);
   const [subs, setSubs] = useState([]);
-  const [gym, setGym] = useState({ rutas: [], partidos: [] });
+  const gym = useCircuitoGymkana();
   const [tes, setTes] = useState({ rutas: [], puntuaciones: [], asignaciones: [] });
   const [cargando, setCargando] = useState(true);
 
@@ -166,19 +163,17 @@ export default function RadarAdmin({
     const r = await Promise.allSettled([
       listarEquipos(),
       listarSubEquiposColor(),
-      obtenerEstacionesGymkana(),
       listarRutasTesoro(),
       listarPuntuacionesTesoro(),
       listarAsignacionesTesoro(),
     ]);
     if (r[0].status === 'fulfilled') setMacros(r[0].value);
     if (r[1].status === 'fulfilled') setSubs(r[1].value);
-    if (r[2].status === 'fulfilled') setGym(r[2].value);
     // Sin el SQL de estaciones (o sin iniciar) el Tesoro simplemente aparece vacío.
     setTes({
-      rutas: r[3].status === 'fulfilled' ? r[3].value : [],
-      puntuaciones: r[4].status === 'fulfilled' ? r[4].value : [],
-      asignaciones: r[5].status === 'fulfilled' ? r[5].value : [],
+      rutas: r[2].status === 'fulfilled' ? r[2].value : [],
+      puntuaciones: r[3].status === 'fulfilled' ? r[3].value : [],
+      asignaciones: r[4].status === 'fulfilled' ? r[4].value : [],
     });
     if (r.slice(0, 2).some((x) => x.status === 'rejected')) {
       showToast('No se pudo cargar todo el radar', 'error');
@@ -194,13 +189,11 @@ export default function RadarAdmin({
       clearTimeout(temporizador);
       temporizador = setTimeout(cargar, 300);
     };
-    const c1 = suscribirseGymkana(refrescar);
     const c2 = suscribirseTesoroGlobal(refrescar);
     const intervalo = setInterval(cargar, 30000);
     return () => {
       clearTimeout(temporizador);
       clearInterval(intervalo);
-      c1();
       c2();
     };
   }, [cargar]);
@@ -210,12 +203,12 @@ export default function RadarAdmin({
       subs.map((s) => ({ id: s.id, nombre: s.color_nombre, color_hex: s.color_hex }))
     );
     return {
-      gymFilas: radarGymkana(gym.rutas, gym.partidos, equipos),
+      gymFilas: gym.circuito ? radarCircuito(gym.circuito, gym.equipos, gym.cruces) : [],
+      fichas: gym.circuito ? ocupacionBasesCircuito(gym.circuito, gym.equipos, gym.cruces) : [],
       tesFilas: radarTesoro(tes.rutas, tes.puntuaciones, tes.asignaciones, equipos),
-      bases: ocupacionBases(gym.rutas, gym.partidos, equipos, BASES_GYMKANA),
       tinajas: ocupacionTinajas(tes.rutas, tes.puntuaciones, tes.asignaciones, equipos, BASES_TESORO),
     };
-  }, [subs, gym, tes]);
+  }, [subs, gym.circuito, gym.equipos, gym.cruces, tes]);
 
   if (cargando) {
     return (
@@ -237,10 +230,6 @@ export default function RadarAdmin({
     return s ? { id: s.id, nombre: s.color_nombre, color_hex: s.color_hex } : null;
   };
 
-  const equiposDeBase = (n) =>
-    calculos.bases
-      .find((b) => b.numero === n)
-      .parejas.flatMap((p) => [p.equipoA, p.equipoB]);
   const equiposDeTinaja = (n) => {
     const t = calculos.tinajas.find((x) => x.numero === n);
     return t.equipo ? [t.equipo] : [];
@@ -290,7 +279,7 @@ export default function RadarAdmin({
                     <p className="mb-1 text-xs font-bold uppercase tracking-wide text-slate-500 md:hidden">
                       Gymkana
                     </p>
-                    {gymkanaIniciada || gym.rutas.length > 0 ? (
+                    {gym.circuito && gym.circuito.estado !== 'esperando' ? (
                       <div className="space-y-2">
                         {gs.length === 0 && (
                           <CeldaEquipo fila={undefined} unidad="la Base" icono={MapPin} />
@@ -300,7 +289,7 @@ export default function RadarAdmin({
                             key={g.equipo.id}
                             fila={g}
                             unidad="la Base"
-                            lugar={g?.destino ? bases[g.destino]?.lugar?.trim() : null}
+                            lugar={g?.destino ? bases[g.destino]?.nombre?.trim() || bases[g.destino]?.lugar?.trim() : null}
                             icono={MapPin}
                           />
                         ))}
@@ -331,17 +320,16 @@ export default function RadarAdmin({
         <h2 className="flex items-center gap-2 font-semibold text-white">
           <Flag size={16} className="text-emerald-300" /> Bases de la Gymkana
         </h2>
-        <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-6">
-          {calculos.bases.map((b) => (
-            <FichaEstacion
-              key={b.numero}
-              etiqueta="Base"
-              estacion={b}
-              lugar={bases[b.numero]?.lugar?.trim()}
-              equiposDeEstacion={equiposDeBase(b.numero)}
-            />
-          ))}
-        </div>
+        {gym.circuito && (
+          <RelojRonda
+            circuito={gym.circuito}
+            equipos={gym.equipos}
+            cruces={gym.cruces}
+            desfaseMs={gym.desfaseMs}
+            compacto
+          />
+        )}
+        <FichasBasesGymkana fichas={calculos.fichas} bases={bases} />
       </section>
 
       <section className="space-y-3">
@@ -378,15 +366,17 @@ export default function RadarAdmin({
 
         <details className="glass-card group p-4">
           <summary className="cursor-pointer select-none font-semibold text-slate-200">
-            Gymkana: fixture y resultados (toca el lápiz para corregir)
+            Gymkana: resultados por ronda (toca el lápiz para corregir)
           </summary>
           <div className="mt-4">
-            <IniciarGymkanaPanel
-              equipos={coloresGymkana}
-              rutas={rutasGymkana}
-              partidos={partidosGymkana}
-              gymkanaIniciada={gymkanaIniciada}
-              onCambio={onCambio}
+            <ResultadosCircuito
+              cruces={gym.cruces}
+              equipos={gym.equipos}
+              bases={bases}
+              onCambio={() => {
+                gym.recargar();
+                onCambio?.();
+              }}
             />
           </div>
         </details>

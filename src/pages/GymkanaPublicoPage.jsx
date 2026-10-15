@@ -1,12 +1,20 @@
-import { useCallback, useEffect, useState } from 'react';
-import { Loader2, MapPin, Lock } from 'lucide-react';
-import { listarSubEquiposColorPorActividad } from '../services/subEquiposColorService';
+import { useEffect, useMemo, useState } from 'react';
+import { Loader2, Lock, PartyPopper, Hourglass, Check } from 'lucide-react';
 import { listarEstadoActividades, suscribirseEstadoActividades } from '../services/estadoActividadesService';
-import { obtenerEstadoGymkana, suscribirseGymkana } from '../services/gymkanaService';
 import EquipoSelector from '../components/gymkana/EquipoSelector';
+import CabeceraBase from '../components/gymkana/CabeceraBase';
+import RelojRonda from '../components/gymkana/RelojRonda';
 import LetreroActividadNoIniciada from '../components/common/LetreroActividadNoIniciada';
 import PausaActividadOverlay from '../components/common/PausaActividadOverlay';
 import { useBasesGymkana } from '../hooks/useBasesGymkana';
+import { useCircuitoGymkana } from '../hooks/useCircuitoGymkana';
+import {
+  crucePropio,
+  crucesDeEquipo,
+  equipoVisual,
+  puntosGymkana,
+  tituloBase,
+} from '../services/gymkanaLogica';
 
 const LS_KEY = 'gymkana_equipo_seleccionado';
 
@@ -16,201 +24,151 @@ const ETIQUETAS_RESULTADO = {
   perdio: { texto: 'Perdió', clase: 'bg-white/10 text-slate-300 border border-white/10' },
 };
 
-function calcularPuntos(recorrido, equipoId) {
-  return recorrido.reduce((total, partido) => {
-    if (!partido || !partido.finalizado) return total;
-    const miLado = partido.equipo_a_id === equipoId ? 'a' : 'b';
-    const resultado = miLado === 'a' ? partido.resultado_a : partido.resultado_b;
-    const bono = resultado === 'gano' ? 3 : resultado === 'empato' ? 1 : 0;
-    return total + 1 + bono;
-  }, 0);
-}
-
-/**
- * Lectura rápida: "Siguiente: Base 3 - Fuente Principal" y, debajo, la descripción que
- * configuró el Admin. El color del equipo va en el borde grueso y en el círculo con la
- * insignia de la base; el fondo es oscuro y el texto blanco, así el contraste no depende
- * del color del equipo.
- */
-function TarjetaSiguienteBase({ partido, info, miEquipo, rival, color }) {
-  const lugar = info?.lugar?.trim();
-  const descripcion = info?.descripcion?.trim();
-  const estaAhi = !!partido.llegada_en;
-
-  return (
-    <div
-      className="space-y-3 rounded-3xl border border-white/10 bg-slate-900/90 p-5 shadow-2xl shadow-black/40"
-      style={{ borderLeft: `10px solid ${color}` }}
-    >
-      <div className="flex items-center gap-4">
-        <span
-          className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full border-4 border-slate-900 text-2xl font-black text-white"
-          style={{ backgroundColor: color, boxShadow: `0 0 26px 4px ${color}88` }}
-          aria-hidden="true"
-        >
-          {partido.base_id}
-        </span>
-        <div className="min-w-0">
-          <p className="text-2xl font-black leading-tight text-white break-words">
-            {estaAhi ? 'Estás en' : 'Siguiente'}: Base {partido.base_id}
-            {lugar ? ` - ${lugar}` : ''}
-          </p>
-          {rival && (
-            <p className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-base text-slate-200">
-              <span className="text-xs font-bold uppercase tracking-widest text-slate-400">Encuentro:</span>
-              <span className="inline-flex items-center gap-1.5 font-black text-white">
-                <span className="h-3.5 w-3.5 rounded-full border border-white/40" style={{ backgroundColor: color }} />
-                {miEquipo?.nombre}
-              </span>
-              <span className="text-slate-400">vs</span>
-              <span className="inline-flex items-center gap-1.5 font-black text-white">
-                <span className="h-3.5 w-3.5 rounded-full border border-white/40" style={{ backgroundColor: rival.color_hex }} />
-                {rival.nombre}
-              </span>
-            </p>
-          )}
-        </div>
-      </div>
-
-      {descripcion && (
-        <p className="rounded-2xl bg-black/30 px-4 py-3 text-base leading-relaxed text-slate-100">
-          Descripción: {descripcion}
-        </p>
-      )}
-    </div>
-  );
-}
-
 export default function GymkanaPublicoPage() {
   const bases = useBasesGymkana();
   const [iniciada, setIniciada] = useState(null); // null = aun no sabemos
-  const [equipos, setEquipos] = useState([]);
-  const [equipoId, setEquipoId] = useState(() => localStorage.getItem(LS_KEY));
-  const [estado, setEstado] = useState(null);
-  const [cargandoEquipos, setCargandoEquipos] = useState(true);
-  const [cargandoEstado, setCargandoEstado] = useState(false);
+  const [equipoId, setEquipoId] = useState(() => {
+    try {
+      return localStorage.getItem(LS_KEY);
+    } catch {
+      return null;
+    }
+  });
+  const { circuito, cruces, equipos, desfaseMs, cargando } = useCircuitoGymkana();
 
   useEffect(() => {
     function cargarEstadoGlobal() {
-      listarEstadoActividades().then((lista) => {
-        setIniciada(lista.find((e) => e.actividad === 'gymkana')?.iniciada ?? false);
-      });
+      listarEstadoActividades()
+        .then((lista) => setIniciada(lista.find((e) => e.actividad === 'gymkana')?.iniciada ?? false))
+        .catch(() => setIniciada(false));
     }
     cargarEstadoGlobal();
-    const unsubscribe = suscribirseEstadoActividades(cargarEstadoGlobal);
-    return unsubscribe;
+    return suscribirseEstadoActividades(cargarEstadoGlobal);
   }, []);
-
-  useEffect(() => {
-    if (!iniciada) return;
-    listarSubEquiposColorPorActividad('gymkana')
-      .then(setEquipos)
-      .finally(() => setCargandoEquipos(false));
-  }, [iniciada]);
-
-  const cargarEstado = useCallback((id) => {
-    setCargandoEstado(true);
-    obtenerEstadoGymkana(id)
-      .then(setEstado)
-      .finally(() => setCargandoEstado(false));
-  }, []);
-
-  useEffect(() => {
-    if (!equipoId || !iniciada) return;
-    cargarEstado(equipoId);
-    const unsubscribe = suscribirseGymkana(() => cargarEstado(equipoId));
-    return unsubscribe;
-  }, [equipoId, iniciada, cargarEstado]);
 
   function elegirEquipo(equipo) {
-    localStorage.setItem(LS_KEY, equipo.id);
+    try {
+      localStorage.setItem(LS_KEY, equipo.id);
+    } catch {
+      // Sin almacenamiento: igual funciona en esta visita.
+    }
     setEquipoId(equipo.id);
   }
 
   function cambiarEquipo() {
-    localStorage.removeItem(LS_KEY);
+    try {
+      localStorage.removeItem(LS_KEY);
+    } catch {
+      // nada que borrar
+    }
     setEquipoId(null);
   }
+
+  const equipo = equipos.find((e) => e.id === equipoId) ?? null;
+  const mio = useMemo(
+    () => (circuito && equipo ? crucePropio(circuito, cruces, equipo.id) : null),
+    [circuito, cruces, equipo]
+  );
+  const historial = useMemo(
+    () => (equipo ? crucesDeEquipo(cruces, equipo.id).filter((c) => c.finalizado) : []),
+    [cruces, equipo]
+  );
 
   if (iniciada === null) return null;
 
   if (!iniciada) {
     return (
-      <main className="max-w-2xl mx-auto px-4">
+      <main className="mx-auto max-w-2xl px-4">
         <LetreroActividadNoIniciada tema="gymkana" />
       </main>
     );
   }
 
-  const equipoSeleccionado = equipos.find((e) => e.id === equipoId) ?? null;
-
   return (
-    <main className="max-w-2xl mx-auto px-4 py-6 space-y-6">
+    <main className="mx-auto max-w-2xl space-y-6 px-4 py-6">
       <PausaActividadOverlay actividad="gymkana" />
-      <h1 className="text-xl font-black text-white text-center">Gymkana</h1>
+      <h1 className="text-center text-xl font-black text-white">Gymkana</h1>
 
-      {cargandoEquipos ? (
+      {cargando || !circuito ? (
         <div className="flex justify-center py-10">
           <Loader2 className="animate-spin text-white" size={28} />
         </div>
-      ) : !equipoSeleccionado ? (
+      ) : !equipo ? (
         <EquipoSelector equipos={equipos} equipoSeleccionado={null} onSeleccionar={elegirEquipo} />
-      ) : cargandoEstado || !estado ? (
-        <div className="flex justify-center py-10">
-          <Loader2 className="animate-spin text-white" size={28} />
-        </div>
       ) : (
-        <div className="space-y-5 animate-fade-up">
-          {estado.actual ? (
-            <TarjetaSiguienteBase
-              partido={estado.actual}
-              info={bases[estado.actual.base_id]}
-              miEquipo={equipoSeleccionado}
-              rival={estado.rival}
-              color={equipoSeleccionado.color_hex}
-            />
-          ) : (
-            <div className="rounded-2xl border border-emerald-500/25 bg-emerald-500/[0.06] p-6 text-center">
-              <p className="font-semibold text-emerald-300">¡Recorrido completo!</p>
+        <div className="animate-fade-up space-y-5">
+          <RelojRonda circuito={circuito} equipos={equipos} cruces={cruces} desfaseMs={desfaseMs} />
+
+          {circuito.estado === 'completado' ? (
+            <div className="space-y-3 rounded-3xl border-2 border-emerald-400/50 bg-emerald-500/10 p-8 text-center">
+              <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-300">
+                <PartyPopper size={34} />
+              </span>
+              <p className="text-2xl font-black leading-snug text-emerald-100">¡Misión cumplida! 🎉</p>
+              <p className="text-base leading-relaxed text-emerald-50">
+                Has superado todas las bases de la Gymkana.
+              </p>
             </div>
+          ) : circuito.estado === 'esperando' || !mio ? (
+            <div className="glass-card space-y-3 p-6 text-center">
+              <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-sky-500/15 text-sky-300">
+                <Hourglass size={28} />
+              </span>
+              <p className="text-lg font-bold leading-snug text-white">
+                {circuito.estado === 'esperando'
+                  ? 'Todavía no empieza la Gymkana. Cuando la coordinación dé la señal, aquí verás tu primera base.'
+                  : 'Espera la señal de rotación: aquí aparecerá tu próxima base.'}
+              </p>
+            </div>
+          ) : (
+            <>
+              <CabeceraBase
+                numero={Number(mio.base_id)}
+                info={bases[mio.base_id]}
+                color={equipo.color_hex}
+                etiqueta={mio.finalizado ? 'Terminaste en' : 'Dirígete a'}
+              />
+              <RivalLinea cruce={mio} equipo={equipo} equipos={equipos} />
+              {mio.finalizado && (
+                <p
+                  role="status"
+                  className="flex items-start gap-2 rounded-2xl border border-emerald-400/30 bg-emerald-500/10 px-4 py-3 text-sm font-semibold text-emerald-100"
+                >
+                  <Check size={18} className="mt-0.5 shrink-0" />
+                  Tu encuentro ya fue calificado. Espera la señal de rotación para saber tu próxima base.
+                </p>
+              )}
+            </>
           )}
 
           <div className="glass-card p-5 text-center">
             <p className="text-sm text-slate-400">Puntos en Gymkana</p>
-            <p className="text-4xl font-black text-white">
-              {calcularPuntos(estado.recorrido, equipoSeleccionado.id)}
-            </p>
+            <p className="text-4xl font-black text-white">{puntosGymkana(cruces, equipo.id)}</p>
           </div>
 
           <div className="space-y-2">
             <h3 className="text-sm font-semibold text-slate-400">Historial de bases</h3>
-            {estado.recorrido.map((partido, i) => {
-              if (!partido) return null;
-              const esActual = i === estado.actualIndex;
-              const miLado = partido.equipo_a_id === equipoSeleccionado.id ? 'a' : 'b';
-              const miResultado = miLado === 'a' ? partido.resultado_a : partido.resultado_b;
-
+            {historial.length === 0 && (
+              <p className="glass-row flex items-center gap-1.5 px-4 py-3 text-sm text-slate-500">
+                <Lock size={13} /> Aún no has completado ninguna base.
+              </p>
+            )}
+            {historial.map((c) => {
+              const lado = c.equipo_a_id === equipo.id ? 'a' : 'b';
+              const resultado = lado === 'a' ? c.resultado_a : c.resultado_b;
               return (
-                <div
-                  key={partido.id}
-                  className="glass-row px-4 py-3 flex items-center justify-between"
-                >
+                <div key={c.id} className="glass-row flex items-center justify-between px-4 py-3">
                   <span className="text-sm font-medium text-slate-200">
-                    Base {partido.base_id}
-                    {bases[partido.base_id]?.lugar ? ` · ${bases[partido.base_id].lugar}` : ''}{' '}
-                    {esActual && '(actual)'}
+                    {tituloBase(c.base_id, bases[c.base_id])}
+                    {bases[c.base_id]?.lugar ? (
+                      <span className="block text-xs text-slate-400">📍 {bases[c.base_id].lugar}</span>
+                    ) : null}
                   </span>
-                  {partido.finalizado ? (
-                    <span
-                      className={`text-xs font-semibold px-2.5 py-1 rounded-full ${ETIQUETAS_RESULTADO[miResultado]?.clase}`}
-                    >
-                      {ETIQUETAS_RESULTADO[miResultado]?.texto}
-                    </span>
-                  ) : (
-                    <span className="flex items-center gap-1 text-xs text-slate-500">
-                      <Lock size={12} /> Pendiente
-                    </span>
-                  )}
+                  <span
+                    className={`rounded-full px-2.5 py-1 text-xs font-semibold ${ETIQUETAS_RESULTADO[resultado]?.clase}`}
+                  >
+                    {ETIQUETAS_RESULTADO[resultado]?.texto}
+                  </span>
                 </div>
               );
             })}
@@ -218,12 +176,31 @@ export default function GymkanaPublicoPage() {
 
           <button
             onClick={cambiarEquipo}
-            className="block mx-auto text-xs text-slate-500 underline underline-offset-2 hover:text-slate-300 transition-colors duration-300"
+            className="mx-auto block text-xs text-slate-500 underline underline-offset-2 transition-colors duration-300 hover:text-slate-300"
           >
             Cambiar equipo
           </button>
         </div>
       )}
     </main>
+  );
+}
+
+function RivalLinea({ cruce, equipo, equipos }) {
+  const rivalId = cruce.equipo_a_id === equipo.id ? cruce.equipo_b_id : cruce.equipo_a_id;
+  const rival = equipoVisual(equipos, rivalId);
+  return (
+    <p className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 rounded-2xl bg-white/[0.04] px-4 py-3 text-base text-slate-200">
+      <span className="text-xs font-bold uppercase tracking-widest text-slate-400">Encuentro:</span>
+      <span className="inline-flex items-center gap-1.5 font-black text-white">
+        <span className="h-3.5 w-3.5 rounded-full border border-white/40" style={{ backgroundColor: equipo.color_hex }} />
+        {equipo.nombre}
+      </span>
+      <span className="text-slate-400">vs</span>
+      <span className="inline-flex items-center gap-1.5 font-black text-white">
+        <span className="h-3.5 w-3.5 rounded-full border border-white/40" style={{ backgroundColor: rival.color_hex }} />
+        {rival.nombre}
+      </span>
+    </p>
   );
 }

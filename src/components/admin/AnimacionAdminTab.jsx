@@ -1,8 +1,7 @@
 import { ClipboardList, Flag, Map, Radio, Settings, Trophy } from 'lucide-react';
 import { useEstadoPersistente } from '../../hooks/useEstadoPersistente';
 import ResumenAnimacion from './ResumenAnimacion';
-import GestionBasesGymkana from './GestionBasesGymkana';
-import IniciarGymkanaPanel from './IniciarGymkanaPanel';
+import ConsolaGymkana from '../gymkana/ConsolaGymkana';
 import AlertasGymkana from './AlertasGymkana';
 import TorneoAdminTab from './TorneoAdminTab';
 import AjustesForm from './AjustesForm';
@@ -28,7 +27,7 @@ const MODULOS = [
   {
     id: 'gymkana',
     nombre: 'Gymkana',
-    detalle: 'Bases y alertas',
+    detalle: 'Circuito y alertas',
     icon: Flag,
     clases: 'from-emerald-500 to-emerald-700',
   },
@@ -82,8 +81,6 @@ export default function AnimacionAdminTab({
   ajustes,
   alertas,
   alertasPendientes,
-  coloresGymkana,
-  rutasGymkana,
   partidosGymkana,
   gymkanaIniciada,
   onCambio,
@@ -144,10 +141,6 @@ export default function AnimacionAdminTab({
 
       {modulo === 'radar' && (
         <RadarAdmin
-          coloresGymkana={coloresGymkana}
-          rutasGymkana={rutasGymkana}
-          partidosGymkana={partidosGymkana}
-          gymkanaIniciada={gymkanaIniciada}
           alertasPendientes={alertasPendientes}
           onCambio={onCambio}
         />
@@ -177,16 +170,7 @@ export default function AnimacionAdminTab({
           </div>
 
           {subGymkana === 'controles' ? (
-            <div className="space-y-8">
-              <GestionBasesGymkana />
-              <IniciarGymkanaPanel
-                equipos={coloresGymkana}
-                rutas={rutasGymkana}
-                partidos={partidosGymkana}
-                gymkanaIniciada={gymkanaIniciada}
-                onCambio={onCambio}
-              />
-            </div>
+            <ConsolaGymkana esAdmin onCambio={onCambio} />
           ) : (
             <AlertasGymkana alertas={alertas} onCambio={onCambio} />
           )}

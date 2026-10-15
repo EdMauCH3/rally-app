@@ -29,6 +29,7 @@ const MODULOS = {
 // Cada rol de staff ve SOLO su actividad asignada; el Admin las ve todas.
 const ACTIVIDADES_POR_ROL = {
   staff_gymkana: ['gymkana'],
+  coordinador_gymkana: ['gymkana'],
   arbitro: ['torneo'],
   staff_tesoro: ['tesoro'],
   admin: ['gymkana', 'torneo', 'tesoro'],
@@ -57,7 +58,8 @@ export default function BloqueActividades({ rol }) {
     const { Componente } = MODULOS[claves[0]];
     return (
       <>
-        <PausaActividadOverlay actividad={claves[0]} />
+        {/* La Coordinación no se bloquea con su propia pausa: necesita poder reanudar. */}
+        {rol !== 'coordinador_gymkana' && <PausaActividadOverlay actividad={claves[0]} />}
         <Componente />
       </>
     );

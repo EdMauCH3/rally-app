@@ -25,7 +25,7 @@ export async function obtenerUbicacionesTesoro() {
 export function suscribirseVisor(onChange) {
   const channel = supabase
     .channel(nombreCanalUnico('visor-general'))
-    .on('postgres_changes', { event: '*', schema: 'public', table: 'rutas_gymkana' }, onChange)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'gymkana_circuito' }, onChange)
     .on('postgres_changes', { event: '*', schema: 'public', table: 'puntuaciones_gymkana' }, onChange)
     .on('postgres_changes', { event: '*', schema: 'public', table: 'puntuaciones_tesoro' }, onChange)
     .on('postgres_changes', { event: '*', schema: 'public', table: 'partidos_torneo' }, onChange)

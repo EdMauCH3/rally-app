@@ -14,7 +14,7 @@ const INVERSO = { gano: 'perdio', perdio: 'gano', empato: 'empato' };
 
 /** Fila editable de un enfrentamiento de Gymkana: el Admin puede fijar
  * o corregir el resultado de cualquier base, esté o no marcada en alerta. */
-export default function PartidoGymkanaRow({ partido, onCambio }) {
+export default function PartidoGymkanaRow({ partido, onCambio, titulo }) {
   const { showToast } = useToast();
   const [editando, setEditando] = useState(false);
   const [seleccion, setSeleccion] = useState(partido.resultado_a ?? 'gano');
@@ -38,7 +38,7 @@ export default function PartidoGymkanaRow({ partido, onCambio }) {
     <div className="glass-row px-3 py-2.5 space-y-2">
       <div className="flex items-center justify-between gap-2 flex-wrap">
         <span className="text-sm text-slate-300">
-          Base {partido.base_id} ·{' '}
+          {titulo ?? `Base ${partido.base_id}`} ·{' '}
           <span style={{ color: partido.equipo_a?.color_hex }}>{partido.equipo_a?.nombre}</span>
           {' vs '}
           <span style={{ color: partido.equipo_b?.color_hex }}>{partido.equipo_b?.nombre}</span>

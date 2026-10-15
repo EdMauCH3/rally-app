@@ -11,11 +11,12 @@ const ETIQUETAS_ROL = {
   arbitro: 'Árbitro',
   formacion: 'Formación',
   director_tecnico: 'Director Técnico',
+  coordinador_gymkana: 'Coordinación Gymkana',
 };
 
 // Todo el staff que opera DESDE el Panel del Animador (ademas del Admin,
 // que tiene acceso a ambos paneles).
-const ROLES_PANEL_ANIMADOR = ['animador', 'staff_gymkana', 'staff_tesoro', 'arbitro', 'formacion', 'director_tecnico'];
+const ROLES_PANEL_ANIMADOR = ['animador', 'staff_gymkana', 'staff_tesoro', 'arbitro', 'formacion', 'director_tecnico', 'coordinador_gymkana'];
 
 /**
  * Header compartido por toda la app.

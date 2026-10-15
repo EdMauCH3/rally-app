@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { Flag, Map, Trophy, Radio } from 'lucide-react';
 
 const ACTIVIDADES = [
-  { to: '/gymkana', icon: Flag, nombre: 'Gymkana', desc: 'Rutas emparejadas por base' },
+  { to: '/gymkana', icon: Flag, nombre: 'Gymkana', desc: 'Circuito de bases por rondas' },
   { to: '/tesoro', icon: Map, nombre: 'Las Tinajas Perdidas', desc: '10 tinajas por equipo' },
   { to: '/torneo', icon: Trophy, nombre: 'Torneo', desc: 'Partidos entre equipos' },
 ];
