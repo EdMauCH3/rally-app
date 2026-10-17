@@ -5,6 +5,7 @@ import {
   listarEquipos,
   suscribirseColores,
 } from '../services/coloresService';
+import { programarRefresco } from '../services/refrescoInteligente';
 import { obtenerDesfaseConServidor } from '../services/horaServidorService';
 
 /**
@@ -43,10 +44,10 @@ export function useRotacionFormacion() {
     let temporizador;
     const refrescar = () => {
       clearTimeout(temporizador);
-      temporizador = setTimeout(cargar, 250);
+      temporizador = setTimeout(cargar, 600);
     };
     const cancelar = suscribirseColores(refrescar);
-    const intervalo = setInterval(cargar, 20000);
+    const detenerRepaso = programarRefresco(cargar);
 
     obtenerDesfaseConServidor()
       .then((d) => montado.current && setDesfaseMs(d))
@@ -55,7 +56,7 @@ export function useRotacionFormacion() {
     return () => {
       montado.current = false;
       clearTimeout(temporizador);
-      clearInterval(intervalo);
+      detenerRepaso();
       cancelar();
     };
   }, [cargar]);

@@ -1,6 +1,6 @@
 import { X } from 'lucide-react';
 
-const VIDEO_ID = 'zC0JJGgnf9g';
+const VIDEO_ID = 'AkFP7iUmmdU';
 
 /**
  * Controlado desde afuera (Home.jsx) con `abierto`/`onCerrar`, para que

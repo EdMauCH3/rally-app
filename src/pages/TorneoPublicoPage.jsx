@@ -1,24 +1,11 @@
-import { useEffect, useState } from 'react';
-import {
-  listarEstadoActividades,
-  suscribirseEstadoActividades,
-} from '../services/estadoActividadesService';
+import { useEstadoActividad } from '../hooks/useEstadoActividades';
 import LetreroActividadNoIniciada from '../components/common/LetreroActividadNoIniciada';
 import PausaActividadOverlay from '../components/common/PausaActividadOverlay';
 import TorneoPublicoFases from '../components/torneo/fases/TorneoPublicoFases';
 
 export default function TorneoPublicoPage() {
-  const [iniciada, setIniciada] = useState(null);
-
-  useEffect(() => {
-    function cargarEstadoGlobal() {
-      listarEstadoActividades().then((lista) => {
-        setIniciada(lista.find((e) => e.actividad === 'torneo')?.iniciada ?? false);
-      });
-    }
-    cargarEstadoGlobal();
-    return suscribirseEstadoActividades(cargarEstadoGlobal);
-  }, []);
+  const { iniciada: iniciadaHook, cargando: cargandoEstado } = useEstadoActividad('torneo');
+  const iniciada = cargandoEstado ? null : iniciadaHook; // null = aun no sabemos
 
   if (iniciada === null) return null;
 

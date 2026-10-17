@@ -1,6 +1,6 @@
 import { useAuth } from '../context/AuthContext';
 import { useEstadoPersistente } from '../hooks/useEstadoPersistente';
-import BloqueComisiones from '../components/panel/BloqueComisiones';
+import BloqueInformacionGeneral from '../components/panel/BloqueInformacionGeneral';
 import BloqueActividades from '../components/panel/BloqueActividades';
 import BloqueCronograma from '../components/panel/BloqueCronograma';
 import BloqueAyuda from '../components/panel/BloqueAyuda';
@@ -9,7 +9,7 @@ import DirectorTecnicoPanel from '../components/torneo/DirectorTecnicoPanel';
 import ConsolaGymkana from '../components/gymkana/ConsolaGymkana';
 
 // Permisos de pestañas:
-// - Comisiones, Cronograma y Ayuda: TODO el staff (admin, animador,
+// - Información General, Cronograma y Ayuda: TODO el staff (admin, animador,
 //   staff_gymkana, staff_tesoro, arbitro y formacion).
 // - Actividades: todos menos el animador, y cada rol ve SOLO la suya
 //   (ver BloqueActividades); el Admin ve las tres.
@@ -18,11 +18,11 @@ import ConsolaGymkana from '../components/gymkana/ConsolaGymkana';
 // - Torneo (DT): solo el rol `director_tecnico`. Reúne la gestión completa del torneo
 //   (equipos, grupos, etapas, W.O.) y todo lo del árbitro (planillas y partidos en vivo).
 // - Formación: solo el rol `formacion` (y el Admin). El formador ve además
-//   Comisiones, Cronograma y Ayuda, pero NO Actividades (sin módulos competitivos).
+//   Información General, Cronograma y Ayuda, pero NO Actividades (sin módulos competitivos).
 const TODOS_LOS_TABS = [
   {
-    id: 'comisiones',
-    label: 'Comisiones',
+    id: 'informacion',
+    label: 'Información General',
     roles: ['admin', 'animador', 'staff_gymkana', 'staff_tesoro', 'arbitro', 'formacion', 'director_tecnico', 'coordinador_gymkana'],
   },
   {
@@ -96,7 +96,7 @@ export default function PanelAnimadorPage() {
       </nav>
 
       <main className="px-4 py-6">
-        {tabActivo === 'comisiones' && <BloqueComisiones />}
+        {tabActivo === 'informacion' && <BloqueInformacionGeneral />}
         {tabActivo === 'actividades' && <BloqueActividades rol={perfil?.rol} />}
         {tabActivo === 'control_gymkana' && <ConsolaGymkana conAlertas />}
         {tabActivo === 'torneo_dt' && <DirectorTecnicoPanel />}

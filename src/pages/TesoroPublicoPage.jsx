@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Loader2, Amphora, Compass, Clock, MapPin, Check } from 'lucide-react';
 import IconoGota from '../components/tesoro/IconoGota';
 import { listarSubEquiposColorPorActividad } from '../services/subEquiposColorService';
-import { listarEstadoActividades, suscribirseEstadoActividades } from '../services/estadoActividadesService';
+import { useEstadoActividad } from '../hooks/useEstadoActividades';
 import {
   obtenerPuntuacionesTesoro,
   obtenerProgresoTesoroEquipo,
@@ -12,6 +12,7 @@ import {
 import PausaActividadOverlay from '../components/common/PausaActividadOverlay';
 import EquipoSelector from '../components/gymkana/EquipoSelector';
 import LetreroActividadNoIniciada from '../components/common/LetreroActividadNoIniciada';
+import { programarRefresco } from '../services/refrescoInteligente';
 
 const LS_KEY = 'tesoro_equipo_seleccionado';
 
@@ -108,7 +109,8 @@ function TarjetaDestino({ destino, llenas, total, color }) {
 }
 
 export default function TesoroPublicoPage() {
-  const [iniciada, setIniciada] = useState(null);
+  const { iniciada: iniciadaHook, cargando: cargandoEstado } = useEstadoActividad('tesoro');
+  const iniciada = cargandoEstado ? null : iniciadaHook; // null = aun no sabemos
   const [equipos, setEquipos] = useState([]);
   const [equipoId, setEquipoId] = useState(() => localStorage.getItem(LS_KEY));
   const [registros, setRegistros] = useState([]);
@@ -116,17 +118,6 @@ export default function TesoroPublicoPage() {
   const [destino, setDestino] = useState(null); // { estado, tinaja, pista, completadas, total }
   const [cargandoEquipos, setCargandoEquipos] = useState(true);
   const [cargandoRegistros, setCargandoRegistros] = useState(false);
-
-  useEffect(() => {
-    function cargarEstadoGlobal() {
-      listarEstadoActividades().then((lista) => {
-        setIniciada(lista.find((e) => e.actividad === 'tesoro')?.iniciada ?? false);
-      });
-    }
-    cargarEstadoGlobal();
-    const unsubscribe = suscribirseEstadoActividades(cargarEstadoGlobal);
-    return unsubscribe;
-  }, []);
 
   useEffect(() => {
     if (!iniciada) return;
@@ -158,7 +149,7 @@ export default function TesoroPublicoPage() {
     cargarRegistros(equipoId);
     // Se escucha TODO el Tesoro (no solo a este equipo): cuando otro equipo califica y libera
     // una tinaja, el destino de este equipo puede cambiar sin que su propia fila se toque.
-    // El repaso cada 15 s cubre una conexión caída. Las recargas no vuelven a mostrar el spinner.
+    // El repaso cada ~3 min cubre una conexión caída. Las recargas no vuelven a mostrar el spinner.
     const refrescar = () => {
       Promise.all([
         obtenerPuntuacionesTesoro(equipoId),
@@ -173,10 +164,10 @@ export default function TesoroPublicoPage() {
         .catch(() => {});
     };
     const unsubscribe = suscribirseTesoroGlobal(refrescar);
-    const intervalo = setInterval(refrescar, 15000);
+    const detenerRepaso = programarRefresco(refrescar);
     return () => {
       unsubscribe();
-      clearInterval(intervalo);
+      detenerRepaso();
     };
   }, [equipoId, iniciada, cargarRegistros]);
 

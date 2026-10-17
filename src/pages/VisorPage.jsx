@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { programarRefresco } from '../services/refrescoInteligente';
 import { Loader2, Radio } from 'lucide-react';
 import {
   obtenerMarcadorGeneral,
@@ -47,8 +48,18 @@ export default function VisorPage() {
 
   useEffect(() => {
     cargarTodo();
-    const unsubscribe = suscribirseVisor(cargarTodo);
-    return unsubscribe;
+    // Varias tablas avisan a la vez: se juntan y se lee una sola vez.
+    let temporizador;
+    const unsubscribe = suscribirseVisor(() => {
+      clearTimeout(temporizador);
+      temporizador = setTimeout(cargarTodo, 700);
+    });
+    const detenerRepaso = programarRefresco(cargarTodo);
+    return () => {
+      clearTimeout(temporizador);
+      detenerRepaso();
+      unsubscribe();
+    };
   }, [cargarTodo]);
 
   return (

@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   listarEstadoActividades,
   suscribirseEstadoActividades,
 } from '../services/estadoActividadesService';
+import { programarRefresco } from '../services/refrescoInteligente';
 
 /**
  * Estado de las tres actividades de la tarde, siempre al día por Realtime:
@@ -11,40 +12,73 @@ import {
  * valores son "no iniciada / no pausada": nunca se bloquea una pantalla por
  * no haber podido leer.
  *
- * Además de Realtime, repasa cada 20 s: si el celular perdió la conexión un
- * momento, la pausa (o la reanudación) igual llega sin recargar el navegador.
+ * UNA sola lectura, UN solo canal Realtime y UN solo repaso para toda la app,
+ * por muchos componentes que usen este hook a la vez (antes cada uno consultaba
+ * por su cuenta). El repaso de seguridad es cada ~3 min, solo con la pestaña visible.
  */
-export function useEstadoActividades() {
-  const [estados, setEstados] = useState({});
-  const [cargando, setCargando] = useState(true);
+const oyentes = new Set();
+let estadoActual = { estados: {}, cargando: true };
+let detener = null;
+let temporizador = null;
 
-  const cargar = useCallback(() => {
-    listarEstadoActividades()
-      .then((lista) => {
-        setEstados(
-          Object.fromEntries(
-            lista.map((e) => [
-              e.actividad,
-              { iniciada: !!e.iniciada, pausada: !!e.pausada, pausadaEn: e.pausada_en ?? null },
-            ])
-          )
-        );
-      })
-      .catch(() => {})
-      .finally(() => setCargando(false));
-  }, []);
+function notificar() {
+  oyentes.forEach((fn) => fn(estadoActual));
+}
+
+function cargar() {
+  listarEstadoActividades()
+    .then((lista) => {
+      estadoActual = {
+        cargando: false,
+        estados: Object.fromEntries(
+          lista.map((e) => [
+            e.actividad,
+            { iniciada: !!e.iniciada, pausada: !!e.pausada, pausadaEn: e.pausada_en ?? null },
+          ])
+        ),
+      };
+      notificar();
+    })
+    .catch(() => {
+      if (estadoActual.cargando) {
+        estadoActual = { ...estadoActual, cargando: false };
+        notificar();
+      }
+    });
+}
+
+function iniciar() {
+  cargar();
+  const cancelarRealtime = suscribirseEstadoActividades(() => {
+    clearTimeout(temporizador);
+    temporizador = setTimeout(cargar, 150); // la pausa debe llegar rápido
+  });
+  const cancelarRepaso = programarRefresco(cargar);
+  detener = () => {
+    clearTimeout(temporizador);
+    cancelarRealtime();
+    cancelarRepaso();
+  };
+}
+
+export function useEstadoActividades() {
+  const [estado, setEstado] = useState(estadoActual);
 
   useEffect(() => {
-    cargar();
-    const unsubscribe = suscribirseEstadoActividades(cargar);
-    const intervalo = setInterval(cargar, 20000);
+    oyentes.add(setEstado);
+    if (oyentes.size === 1) iniciar();
+    else setEstado(estadoActual);
     return () => {
-      unsubscribe();
-      clearInterval(intervalo);
+      oyentes.delete(setEstado);
+      if (oyentes.size === 0 && detener) {
+        detener();
+        detener = null;
+        estadoActual = { estados: {}, cargando: true };
+      }
     };
-  }, [cargar]);
+  }, []);
 
-  return { estados, cargando };
+  return { estados: estado.estados, cargando: estado.cargando };
 }
 
 /** Lo mismo, para UNA actividad: { iniciada, pausada, cargando }. */

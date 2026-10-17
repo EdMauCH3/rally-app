@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { obtenerCircuito, listarCrucesGymkana, suscribirseCircuito } from '../services/gymkanaCircuitoService';
 import { listarSubEquiposColorPorActividad } from '../services/subEquiposColorService';
+import { programarRefresco } from '../services/refrescoInteligente';
 import { obtenerDesfaseConServidor } from '../services/horaServidorService';
 
 /**
@@ -10,7 +11,7 @@ import { obtenerDesfaseConServidor } from '../services/horaServidorService';
  * Cero consultas por segundo: la cuenta regresiva se calcula en el celular con
  * (inicio + duración) y la hora del servidor. Solo se vuelve a leer cuando llega
  * un aviso Realtime (el coordinador cambió de fase o alguien calificó), al volver
- * a la pestaña y, como red de seguridad ante una caída de señal, cada 90 s.
+ * a la pestaña y, como red de seguridad ante una caída de señal, cada ~3 min (solo con la pestaña visible).
  */
 export function useCircuitoGymkana() {
   const [datos, setDatos] = useState(null);
@@ -40,12 +41,10 @@ export function useCircuitoGymkana() {
     let temporizador;
     const refrescar = () => {
       clearTimeout(temporizador);
-      temporizador = setTimeout(cargar, 250);
+      temporizador = setTimeout(cargar, 600);
     };
     const cancelar = suscribirseCircuito(refrescar);
-    const intervalo = setInterval(cargar, 90000);
-    const alVolver = () => document.visibilityState === 'visible' && cargar();
-    document.addEventListener('visibilitychange', alVolver);
+    const detenerRepaso = programarRefresco(cargar);
 
     obtenerDesfaseConServidor()
       .then((d) => montado.current && setDesfaseMs(d))
@@ -54,8 +53,7 @@ export function useCircuitoGymkana() {
     return () => {
       montado.current = false;
       clearTimeout(temporizador);
-      clearInterval(intervalo);
-      document.removeEventListener('visibilitychange', alVolver);
+      detenerRepaso();
       cancelar();
     };
   }, [cargar]);

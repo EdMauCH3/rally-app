@@ -2,7 +2,7 @@ import { supabase } from './supabaseClient';
 import { nombreCanalUnico } from './canalUnico';
 
 export async function listarEstadoActividades() {
-  const { data, error } = await supabase.from('estado_actividades_tarde').select('*');
+  const { data, error } = await supabase.from('estado_actividades_tarde').select('actividad, iniciada, pausada, pausada_en');
   if (error) throw error;
   return data;
 }

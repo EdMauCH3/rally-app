@@ -19,6 +19,7 @@ import { EncabezadoEstacion, EstacionCerrada, EstacionEnEspera } from '../estaci
 import IconoGota from './IconoGota';
 import { etiquetaTinaja, listarPistasTesoro } from '../../services/tesoroPistasService';
 import { MapPin } from 'lucide-react';
+import { programarRefresco } from '../../services/refrescoInteligente';
 
 /**
  * Pantalla del juez FIJO de una Tinaja. El juez se queda en su tinaja: la
@@ -62,13 +63,13 @@ export default function EstacionTesoro({ tinaja }) {
     let temporizador;
     const refrescar = () => {
       clearTimeout(temporizador);
-      temporizador = setTimeout(cargar, 250);
+      temporizador = setTimeout(cargar, 600);
     };
     const cancelar = suscribirseTesoroGlobal(refrescar);
-    const intervalo = setInterval(cargar, 30000);
+    const detenerRepaso = programarRefresco(cargar);
     return () => {
       clearTimeout(temporizador);
-      clearInterval(intervalo);
+      detenerRepaso();
       cancelar();
     };
   }, [cargar]);

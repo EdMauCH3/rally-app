@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Loader2, Lock, Hourglass, Check } from 'lucide-react';
-import { listarEstadoActividades, suscribirseEstadoActividades } from '../services/estadoActividadesService';
+import { useEstadoActividad } from '../hooks/useEstadoActividades';
 import EquipoSelector from '../components/gymkana/EquipoSelector';
 import CabeceraBase from '../components/gymkana/CabeceraBase';
 import RelojRonda from '../components/gymkana/RelojRonda';
@@ -27,7 +27,8 @@ const ETIQUETAS_RESULTADO = {
 
 export default function GymkanaPublicoPage() {
   const bases = useBasesGymkana();
-  const [iniciada, setIniciada] = useState(null); // null = aun no sabemos
+  const { iniciada: iniciadaHook, cargando: cargandoEstado } = useEstadoActividad('gymkana');
+  const iniciada = cargandoEstado ? null : iniciadaHook; // null = aun no sabemos
   const [equipoId, setEquipoId] = useState(() => {
     try {
       return localStorage.getItem(LS_KEY);
@@ -36,16 +37,6 @@ export default function GymkanaPublicoPage() {
     }
   });
   const { circuito, cruces, equipos, desfaseMs, cargando } = useCircuitoGymkana();
-
-  useEffect(() => {
-    function cargarEstadoGlobal() {
-      listarEstadoActividades()
-        .then((lista) => setIniciada(lista.find((e) => e.actividad === 'gymkana')?.iniciada ?? false))
-        .catch(() => setIniciada(false));
-    }
-    cargarEstadoGlobal();
-    return suscribirseEstadoActividades(cargarEstadoGlobal);
-  }, []);
 
   function elegirEquipo(equipo) {
     try {

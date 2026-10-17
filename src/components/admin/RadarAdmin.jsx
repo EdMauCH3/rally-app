@@ -19,6 +19,7 @@ import ResultadosCircuito from '../gymkana/ResultadosCircuito';
 import { FichasBasesGymkana } from '../gymkana/ConsolaGymkana';
 import RelojRonda from '../gymkana/RelojRonda';
 import SupervisionTesoroAdmin from './SupervisionTesoroAdmin';
+import { programarRefresco } from '../../services/refrescoInteligente';
 
 function Punto({ color, grande = false }) {
   return (
@@ -187,13 +188,13 @@ export default function RadarAdmin({ alertasPendientes, onCambio }) {
     let temporizador;
     const refrescar = () => {
       clearTimeout(temporizador);
-      temporizador = setTimeout(cargar, 300);
+      temporizador = setTimeout(cargar, 600);
     };
     const c2 = suscribirseTesoroGlobal(refrescar);
-    const intervalo = setInterval(cargar, 30000);
+    const detenerRepaso = programarRefresco(cargar, 90000);
     return () => {
       clearTimeout(temporizador);
-      clearInterval(intervalo);
+      detenerRepaso();
       c2();
     };
   }, [cargar]);
